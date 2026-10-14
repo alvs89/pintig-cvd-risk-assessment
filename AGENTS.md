@@ -1,6 +1,8 @@
 # PINTIG development instructions
 
 - Project repository: `https://github.com/alvs89/pintig-cvd-risk-assessment.git`. Use this repository for subsequent Git and GitHub work. Preserve the local frontend changes when synchronizing.
+- Keep working branches local unless the user explicitly asks to publish a separate branch or pull request. The user does not want unsolicited GitHub "Compare & pull request" banners. Do not merge into `main` without authorization; preserve unpublished commits locally when deleting remote working branches.
+- End development responses with a concise suggested commit message.
 
 - Visual and workflow reference is `legacy/PINTIG_Web_Application_v27.html`, preserved unchanged. The working frontend is React + TypeScript in `src/`, with the original CSS in `src/styles.css`. The extracted original JavaScript is archived in `legacy/extracted-v27.js` for regression tests. Preserve all functionality unless a requirement explicitly changes it.
 - `README.md`, `docs/FEATURE_INVENTORY.md` and `docs/KNOWN_LIMITATIONS.md` identify the implementation baseline. Chapter 1–3 manuscript and verified dataset definitions supersede any provisional demo assumptions when provided.
