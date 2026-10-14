@@ -1,6 +1,7 @@
 import { b, f, head, patientIdent, sel } from "../components/shared";
 import { P, patients, S } from "../state/store";
 import { age, dt, esc } from "../utils/format";
+import { seededIntake } from "../state/seededIntakes";
 export function AssessmentPage() {
   let x = S.draft || {},
     p = S.patientId ? P(S.patientId) : null;
@@ -56,6 +57,11 @@ export function AssessmentPage() {
           <div className={"identity-context"} id={"assessmentIdentity"}>
             {patientIdent(p)}
           </div>
+          {p && seededIntake(p.id) && (
+            <div className="actions">
+              {b("Load recorded intake", "loadRecordedIntake")}
+            </div>
+          )}
           <div className={"profile-meta-header"}>
             <strong>{"Patient information"}</strong>
             <span className={"source-hint"}>

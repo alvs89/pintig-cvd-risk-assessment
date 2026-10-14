@@ -1,7 +1,8 @@
 import type { ClipboardEvent } from "react";
 import { deriveInputs } from "../services/intake";
 import { phoneDigits } from "../utils/phone";
-import { formValues } from "./actions";
+import { formValues, openPintigConfirm } from "./actions";
+import { hasIntakeAnswers } from "./seededIntakes";
 import { P, render, S } from "./store";
 type FilterKey =
   | "query"
@@ -38,6 +39,31 @@ export function handleInput(target: HTMLInputElement) {
   }
   const form = target.closest<HTMLFormElement>("#assessmentForm");
   if (form) {
+    if (
+      target.id === "pid" &&
+      Number(target.value) !== (S.patientId ?? 0) &&
+      hasIntakeAnswers(S.draft)
+    ) {
+      const nextPatient = P(target.value)?.id ?? null;
+      target.value = S.patientId ? String(S.patientId) : "";
+      openPintigConfirm({
+        title: "Change assessment patient?",
+        description:
+          "This will clear the unsaved questionnaire answers so they are not assigned to another patient. Saved assessments will not be affected.",
+        actionLabel: "Change patient",
+        onConfirm: () => {
+          S.patientId = nextPatient;
+          S.draft = nextPatient
+            ? { pid: String(nextPatient), mode: "extended" }
+            : null;
+          S.result = null;
+          S.revealedId = null;
+          S.formRevision++;
+          render();
+        },
+      });
+      return;
+    }
     S.draft = deriveInputs(formValues(form), S.draft);
     S.patientId = P(S.draft.pid)?.id ?? null;
     render();

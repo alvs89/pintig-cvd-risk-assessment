@@ -2,6 +2,7 @@ import { download } from "../services/export";
 import { flushSync } from "react-dom";
 import { generateGuidance } from "../services/guidance";
 import { deriveInputs } from "../services/intake";
+import { hasIntakeAnswers, seededIntake } from "./seededIntakes";
 import { simulate } from "../services/prediction";
 import { reportRows } from "../services/reports";
 import { createSnapshot } from "../services/snapshots";
@@ -61,6 +62,9 @@ export function go(page: string) {
     return render();
   }
   S.page = page as Page;
+  if (page === "New Risk Assessment" && P(S.draft?.pid)) {
+    S.patientId = Number(S.draft!.pid);
+  }
   S.revealedId = null;
   S.editPatient = null;
   S.editUser = null;
@@ -186,12 +190,49 @@ export function handleClick(e: ActionEvent) {
     return render();
   }
   if (action === "assessPatient") {
-    S.revealedId = null;
-    S.patientId = +arg;
-    S.page = "New Risk Assessment";
-    S.result = null;
-    S.draft = null;
-    return render();
+    if (!P(arg)) return;
+    const open = () => {
+      if (Number(S.draft?.pid) !== +arg) S.draft = null;
+      S.revealedId = null;
+      S.patientId = +arg;
+      S.page = "New Risk Assessment";
+      S.result = null;
+      S.formRevision++;
+      render();
+    };
+    if (Number(S.draft?.pid) !== +arg && hasIntakeAnswers(S.draft)) {
+      openPintigConfirm({
+        title: "Start an assessment for another patient?",
+        description:
+          "This will replace the unsaved questionnaire answers. Saved assessments will not be affected.",
+        actionLabel: "Continue",
+        onConfirm: open,
+      });
+      return;
+    }
+    return open();
+  }
+  if (action === "loadRecordedIntake") {
+    const input = S.patientId ? seededIntake(S.patientId) : undefined;
+    if (!input || !formById("assessmentForm")) return;
+    const load = () => {
+      S.draft = input;
+      S.result = null;
+      S.formRevision++;
+      msg("Review and confirm the recorded intake before continuing.");
+      render();
+    };
+    if (hasIntakeAnswers(S.draft)) {
+      openPintigConfirm({
+        title: "Replace questionnaire answers?",
+        description:
+          "Loading the recorded intake will replace the current unsaved answers. You can review and edit the loaded information before submitting.",
+        actionLabel: "Load intake",
+        onConfirm: load,
+      });
+      return;
+    }
+    return load();
   }
   if (action === "searchPatient") {
     S.revealedId = null;
@@ -254,9 +295,7 @@ export function handleClick(e: ActionEvent) {
     S.draft = deriveInputs({ ...formValues(form), ...data });
     S.patientId = Number(S.draft.pid) || null;
     S.formRevision++;
-    msg(
-      "Review the patient and assessment information before continuing.",
-    );
+    msg("Review the patient and assessment information before continuing.");
     render();
     return;
   }
@@ -468,10 +507,7 @@ export function handleSubmit(e: FormEvent) {
       return render();
     }
     if (pin && !/^\d{12}$/.test(pin)) {
-      msg(
-        "Enter a 12-digit PhilHealth PIN, or leave it blank.",
-        true,
-      );
+      msg("Enter a 12-digit PhilHealth PIN, or leave it blank.", true);
       return render();
     }
     if (pin && patients.some((p) => p.pin === pin && p.id !== existing?.id)) {

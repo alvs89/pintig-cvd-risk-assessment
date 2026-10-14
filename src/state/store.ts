@@ -41,7 +41,7 @@ export const patients: Patient[] = [
     dob: "1968-04-17",
     sex: "Male",
     locality: "Quezon City",
-    phone: "+639170000001",
+    phone: "",
     pin: "",
     facility: "Community Health Center",
   },
