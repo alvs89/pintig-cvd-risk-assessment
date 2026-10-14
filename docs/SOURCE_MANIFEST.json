@@ -1,0 +1,6 @@
+{
+  "baseline": "PINTIG_Web_Application_v27.html",
+  "baseline_sha256": "a19f768d67b32d18582217e087a666fdf2f7d7870d59c7da372635832c46253e",
+  "frontend_structure": "React + TypeScript frontend in src; original CSS blocks retained in order; original inline JS archived unchanged in legacy/extracted-v27.js",
+  "runtime": "Frontend only, no live backend or RSF model"
+}

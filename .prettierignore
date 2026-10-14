@@ -1,0 +1,7 @@
+legacy/
+dist/
+node_modules/
+test-results/
+playwright-report/
+# Preserve the original v27 style blocks verbatim.
+src/styles.css
