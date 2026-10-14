@@ -66,3 +66,33 @@ The approved cleanup was verified on `chore/repository-cleanup` on 14 October 20
 
 No merge into `main` was performed. The remaining CSS and compatibility-handler
 cleanup candidates require separate investigation and approval.
+
+## Cumulative incidence reference-marker verification
+
+- `npm run check`: strict TypeScript and all 26 unit/regression tests passed.
+- `npm run build`: passed; isolated CIF fixtures are absent from production assets.
+- `npm run test:e2e`: all ten browser tests passed, including the six existing
+  workflow tests and four CIF-specific tests.
+- `npm run verify:production`: assets, sign-in and exact original dashboard layout
+  checks passed on the rebuilt frontend.
+- CIF tests cover exact reference equality, final-year crossings, irregular time
+  grids, right-continuous annual evaluation, non-crossing/rounding, months and
+  explicitly defined day units, participant/model/endpoint/event mismatches,
+  malformed/nonfinite/unsorted/decreasing data, inadequate horizon coverage,
+  ten-year consistency and independent snapshot copies.
+- Browser checks cover immediate marker changes, unchanged ten-year grouping,
+  keyboard selection, screen-reader labels/live summaries, an expandable data
+  table, loading/unavailable states and existing live/historical records without
+  curves. Desktop, tablet, 390px/320px mobile reflow and 200% CSS zoom passed;
+  reduced-motion preferences were exercised and screenshots reviewed.
+- Main text contrast is at least 10.35:1 on white; curve/focus teal is 4.93:1
+  and reference-line gray is 5.61:1 on white. No full accessibility certification
+  or native browser-zoom audit is claimed.
+- The original stylesheet and legacy references, questionnaire, eligibility,
+  illustrative calculation, risk-band rules and educational guidance are unchanged.
+
+The in-app Browser connection could not initialize; verification used local
+Playwright/Chromium. No lint command is configured. There is no trained RSF output,
+R prediction script, FastAPI endpoint or verified event-code mapping in this
+repository. Current assessments show a neutral unavailable state. The required
+future adapter and optional frontend contract are documented in `CIF_INTEGRATION.md`.

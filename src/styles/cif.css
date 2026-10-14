@@ -1,0 +1,211 @@
+/* Supplementary CIF presentation; original v27 style blocks remain untouched. */
+.cif-panel {
+  color: #17344a;
+}
+.cif-panel h2 {
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.cif-heading {
+  margin-bottom: 16px;
+}
+.cif-endpoint,
+.cif-help {
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.cif-endpoint {
+  margin: 0;
+}
+.cif-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 14px 0;
+}
+.cif-control {
+  flex: 1 1 210px;
+  max-width: 360px;
+  min-width: 0;
+}
+.cif-control label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 7px;
+}
+.cif-control select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #a5bdc9;
+  border-radius: 10px;
+  background: #fff;
+  color: #17344a;
+  font-size: 14px;
+}
+.cif-panel select:focus-visible,
+.cif-details summary:focus-visible {
+  outline: 3px solid #087d81;
+  outline-offset: 3px;
+}
+.cif-marker-status,
+.cif-empty {
+  background: #f1f7f8;
+  border: 1px solid #c5dce0;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 14px 0;
+}
+.cif-marker-status p,
+.cif-empty p {
+  margin: 7px 0 0;
+  color: #334155;
+  line-height: 1.6;
+  font-size: 14px;
+}
+.cif-axis-title {
+  margin: 18px 0 10px;
+  font-size: 14px;
+  font-weight: 650;
+}
+.cif-plot-grid {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 8px;
+}
+.cif-y-scale {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  padding: 0 0 2px;
+  height: 260px;
+  font-size: 12px;
+  color: #334155;
+}
+.cif-svg {
+  width: 100%;
+  height: 260px;
+  overflow: visible;
+}
+.cif-gridline {
+  stroke: #d8e5eb;
+  stroke-width: 1;
+}
+.cif-curve {
+  fill: none;
+  stroke: #087d81;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+.cif-point {
+  fill: #087d81;
+}
+.cif-reference-line {
+  stroke: #526b7a;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 5;
+}
+.cif-marker {
+  fill: #fff;
+  stroke: #17344a;
+  stroke-width: 3;
+}
+.cif-inspected-point {
+  fill: #fff;
+  stroke: #087d81;
+  stroke-width: 2;
+}
+.cif-x-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #334155;
+  gap: 2px;
+}
+.cif-x-title {
+  text-align: center;
+  font-size: 14px;
+  color: #17344a;
+  margin: 10px 0 16px;
+}
+.cif-readouts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  background: #f5f9fb;
+  padding: 12px 16px;
+  border-radius: 10px;
+}
+.cif-readouts p,
+.cif-readouts output {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.cif-readouts strong,
+.cif-readouts span {
+  display: block;
+}
+.cif-explanation {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.cif-details {
+  border-top: 1px solid #d8e5eb;
+  padding-top: 10px;
+}
+.cif-details summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: list-item;
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 650;
+}
+.cif-details p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.cif-details table {
+  min-width: 0;
+}
+.cif-details caption {
+  text-align: left;
+  padding: 10px 0;
+  font-weight: 650;
+  font-size: 14px;
+}
+@media (max-width: 570px) {
+  .cif-control {
+    max-width: none;
+    flex-basis: 100%;
+  }
+  .cif-plot-grid {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 6px;
+  }
+  .cif-marker-status,
+  .cif-empty {
+    padding: 12px;
+  }
+  .cif-panel h2 {
+    font-size: 17px;
+  }
+}
+@media print {
+  .cif-controls {
+    display: none;
+  }
+  .cif-panel {
+    break-inside: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cif-panel * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

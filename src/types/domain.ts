@@ -1,3 +1,4 @@
+import type { CumulativeIncidenceOutput, ModelPredictionContext } from "./cif";
 export type Role = "admin" | "worker";
 export type RiskBand = "Low" | "Moderate" | "High" | "Very High";
 export type Page =
@@ -46,6 +47,8 @@ export interface Prediction {
   risk: number;
   bmi: number;
   parts: Factor[];
+  predictionContext?: ModelPredictionContext;
+  cif?: CumulativeIncidenceOutput;
 }
 export interface Result extends Prediction {
   pid: number;
@@ -70,6 +73,8 @@ export interface AssessmentRecord {
   guidanceVersion?: string;
   riskBandVersion?: string;
   explanationVersion?: string;
+  predictionContext?: ModelPredictionContext;
+  cif?: CumulativeIncidenceOutput;
 }
 export interface AuditEntry {
   when: string;

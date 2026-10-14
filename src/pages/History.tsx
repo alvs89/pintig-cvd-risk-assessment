@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { ModelStatus } from "../components/ModelStatus";
+import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel";
 import {
   assessmentLabels,
   displayAssessmentValue,
@@ -121,6 +122,14 @@ export function RecordPage() {
           </p>
         </div>
       </div>
+      <CumulativeIncidencePanel
+        key={r.id}
+        risk={r.risk}
+        patientId={r.pid}
+        cif={r.cif}
+        predictionContext={r.predictionContext}
+        storedModelVersion={r.model}
+      />
       <div className={"panel"}>
         <h2>{"Recorded assessment information"}</h2>
         <div className={"threecol"}>

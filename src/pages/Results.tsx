@@ -3,6 +3,7 @@ import { styleFromText, withKeys } from "../components/markup";
 import { b, guidanceHtml, head, patientIdent, tag } from "../components/shared";
 import { generateGuidance } from "../services/guidance";
 import { ModelStatus } from "../components/ModelStatus";
+import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel";
 import { P, S } from "../state/store";
 import { esc } from "../utils/format";
 export function ResultsPage() {
@@ -113,6 +114,12 @@ export function ResultsPage() {
           )}
         </div>
       </div>
+      <CumulativeIncidencePanel
+        risk={r.risk}
+        patientId={r.pid}
+        cif={r.cif}
+        predictionContext={r.predictionContext}
+      />
       <section className={"panel"}>
         <div className={"section-divider"}>
           <h2>{"General Educational Guidance"}</h2>

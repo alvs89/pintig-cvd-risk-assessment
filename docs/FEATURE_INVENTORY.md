@@ -20,6 +20,10 @@ The React + TypeScript frontend preserves these v27 workflows. Nothing is deploy
 - Core and extended input flows, validation and clear-assessment dialog.
 - `simulate` illustrative score output, risk grouping, model-oriented factor description and `generateGuidance` rule-based content.
 - Saved assessment snapshots and review through Assessment History.
+- Cumulative incidence panel in live and saved results, with 5%, 10% and 20%
+  numerical reference markers, supported-year inspection and a readable data table.
+  Curves require verified compatible model output; existing illustrative assessments
+  show an unavailable state. See `CIF_INTEGRATION.md` for the integration contract.
 
 ## Records and administration
 - Dashboard totals and recent records.
