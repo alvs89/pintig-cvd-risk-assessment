@@ -24,12 +24,12 @@ The React + TypeScript frontend preserves these v27 workflows. Nothing is deploy
 ## Records and administration
 - Dashboard totals and recent records.
 - Live search/filter in Patients, History, Users, Audit and Reports; CSV reports.
-- User account CRUD/status changes, confirmation dialog for account deactivation, audit events, and maintenance/export functions.
+- User account creation, viewing, editing and activation/deactivation; confirmation dialog for account deactivation, audit events, and maintenance/export functions. Account deletion is not implemented.
 - Help and About pages, browser-responsive layout, top navigation, custom favicon.
 
 ## Current runtime characteristics
 - No persistence after page reload; no actual backend API/database; authentication and privacy UI are browser-only.
-- Some historical seeded records use a previous illustrative model version. Avoid interpreting or comparing them as real clinical observations.
+- Seeded historical records and new assessments use `ILLUSTRATIVE-0.2`; seeded records have a limited legacy input schema. Avoid interpreting or comparing them as real clinical observations.
 - React owns the role-specific layout, all pages, confirmation dialog and live updates. No runtime HTML replacement or global document event handlers remain.
 - Prediction, classification, calculation explanation and educational guidance have separate versions; newly saved snapshots retain them.
-- Browser tests compare every questionnaire field, label, option and constraint against the original v27.
+- Browser tests compare clinical questionnaire fields, labels, response values and constraints against the original v27. The input-set selector has professional presentation labels while retaining its original values and behavior.

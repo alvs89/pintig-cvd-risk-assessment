@@ -22,13 +22,43 @@ project configuration. Reloading restores the starting fictional records.
 For the production frontend:
 
 ```powershell
-npm run build
 npm run start:local
 ```
 
 `start:local` builds and serves the frontend on **http://127.0.0.1:5174/**.
 `npm run preview` also serves the built Vite application. The original standalone
 HTML can still be opened directly without installing dependencies.
+
+## Configuration
+
+No environment file is required by the current frontend. Application code does not
+read `import.meta.env`, and the Node scripts do not load `.env` files. Set optional
+tooling variables in the shell before running the relevant command:
+
+| Variable | Used by | Default / purpose |
+| --- | --- | --- |
+| `PORT` | `scripts/serve.mjs` | `5174`; changes the production static-server port |
+| `PINTIG_PREVIEW_URL` | `scripts/verify-production.mjs` | `http://127.0.0.1:5174`; selects the production server to verify |
+| `PLAYWRIGHT_CHROMIUM_EXECUTABLE` | Browser tests and production verification | Optional path to an existing Chromium executable; otherwise Playwright uses its installed browser |
+| `CI` | `playwright.config.ts` | When set to a nonempty value, prevents tests from reusing an existing development server |
+
+For example, to verify the production server on another port, use two terminals:
+
+```powershell
+# Terminal 1
+$env:PORT = '5175'
+npm run start:local
+```
+
+```powershell
+# Terminal 2
+$env:PINTIG_PREVIEW_URL = 'http://127.0.0.1:5175'
+npm run verify:production
+```
+
+The browser-test server remains on port `5173`; `PORT` does not change it.
+Never put secrets or patient information in `VITE_*` variables: Vite can expose
+them to browser code. Future backend settings belong in server-only configuration.
 
 ## Fictional demo accounts
 
@@ -92,7 +122,7 @@ An existing Chromium executable can be selected with the
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` environment variable.
 
 See [verification](docs/VERIFICATION.md) and the
-[phased frontend migration plan](docs/FRONTEND_MIGRATION.md).
+[frontend architecture, migration history and integration roadmap](docs/FRONTEND_MIGRATION.md).
 All subsequent frontend work follows the permanent [UI/UX standards](docs/UI_UX_STANDARDS.md).
 
 ## Scope and limitations

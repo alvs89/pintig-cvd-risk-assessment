@@ -19,7 +19,6 @@ export const eyeClosed = (
     <path d="M9.8 9.8a3 3 0 0 0 4.4 4.4" />
   </svg>
 );
-export const patientLabel = (p?: Patient) => p?.record || "Patient record";
 export const b = (label: ReactNode, act: string, kind = "") => (
   <button type="button" className={"btn " + kind} data-act={act}>
     {label}

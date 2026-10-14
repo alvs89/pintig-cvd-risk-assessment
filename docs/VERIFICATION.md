@@ -42,3 +42,27 @@ Screenshots are generated under ignored `test-results/` and contain fictional da
 
 With the production server running, `npm run verify:production` repeats the asset,
 sign-in, reference and layout checks. It uses the same Chromium configuration.
+
+## Repository cleanup verification
+
+The approved cleanup was verified on `chore/repository-cleanup` on 14 October 2026:
+
+- `npm run check`: strict TypeScript checks and all 16 regression tests passed.
+- `npm run build`: production build passed.
+- `npm run test:e2e`: all six browser tests passed, covering both roles, patient
+  registration/editing, assessments, saved history, accounts, filtering, exports,
+  responsive forms, validation and keyboard confirmations.
+- `npm run verify:production`: asset loading, React sign-in/dashboard, original
+  reference access and exact dashboard layout comparison passed on port 5174.
+- Complete diff review confirmed that the only runtime-source edit removes the
+  unused `patientLabel` export. No pages, styles, action handlers, tests, clinical
+  calculations, thresholds or educational rules changed; `legacy/` remains intact.
+- Unique roadmap content from `NEXT_STEPS.md` was transferred to
+  `FRONTEND_MIGRATION.md` before deletion. FastAPI, PostgreSQL, competing-risk RSF,
+  preprocessing/missingness, authorization, audit and governance requirements remain.
+- The unused environment template was replaced by accurate README configuration
+  guidance. The unsupported ESLint recommendation and outdated documentation
+  references were removed or corrected.
+
+No merge into `main` was performed. The remaining CSS and compatibility-handler
+cleanup candidates require separate investigation and approval.
