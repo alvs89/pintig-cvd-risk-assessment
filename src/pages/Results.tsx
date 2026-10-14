@@ -1,4 +1,6 @@
 import { Fragment } from "react";
+import { FurtherAssessmentPanel } from "../components/FurtherAssessmentPanel";
+import { furtherAssessment } from "../services/furtherAssessment";
 import { styleFromText, withKeys } from "../components/markup";
 import { b, guidanceHtml, head, patientIdent, tag } from "../components/shared";
 import { generateGuidance } from "../services/guidance";
@@ -120,6 +122,7 @@ export function ResultsPage() {
         cif={r.cif}
         predictionContext={r.predictionContext}
       />
+      <FurtherAssessmentPanel result={furtherAssessment(r.risk, r.band)} />
       <section className={"panel"}>
         <div className={"section-divider"}>
           <h2>{"General Educational Guidance"}</h2>
@@ -132,7 +135,9 @@ export function ResultsPage() {
         </p>
         {guidanceHtml(guid)}
         <p className={"tiny muted"}>
-          {"The risk category is not used as a medication or referral threshold."}
+          {
+            "The risk category is not used as a medication or referral threshold."
+          }
         </p>
       </section>
       <div className={"panel"}>

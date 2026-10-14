@@ -9,6 +9,9 @@ import type {
   ModelPredictionContext,
 } from "../../../src/types/cif";
 import { band } from "../../../src/utils/risk";
+import { FurtherAssessmentPanel } from "../../../src/components/FurtherAssessmentPanel";
+import { furtherAssessment } from "../../../src/services/furtherAssessment";
+import "../../../src/styles/furtherAssessment.css";
 
 const context: ModelPredictionContext = {
   source: "competing-risk-rsf",
@@ -66,6 +69,13 @@ function Harness() {
         predictionContext={context}
         cif={data}
         loading={loading}
+      />
+      <FurtherAssessmentPanel
+        result={furtherAssessment(0.081, "Moderate", {
+          validatedModel: true,
+          clinicallyReviewedRules: true,
+          modelVersion: "ISOLATED-TEST-ONLY",
+        })}
       />
     </main>
   );

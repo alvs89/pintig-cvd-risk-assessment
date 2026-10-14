@@ -1,4 +1,5 @@
 import type { CumulativeIncidenceOutput, ModelPredictionContext } from "./cif";
+import type { FurtherAssessmentSnapshot } from "../services/furtherAssessment";
 export type Role = "admin" | "worker";
 export type RiskBand = "Low" | "Moderate" | "High" | "Very High";
 export type Page =
@@ -59,6 +60,7 @@ export interface Result extends Prediction {
   guidanceRules?: Guidance[];
 }
 export interface AssessmentRecord {
+  furtherAssessmentGuidance?: FurtherAssessmentSnapshot;
   id: number;
   pid: number;
   uid: number;

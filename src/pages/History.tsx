@@ -1,4 +1,6 @@
 import { Fragment } from "react";
+import { FurtherAssessmentPanel } from "../components/FurtherAssessmentPanel";
+import { storedFurtherAssessment } from "../services/furtherAssessment";
 import { ModelStatus } from "../components/ModelStatus";
 import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel";
 import {
@@ -129,6 +131,14 @@ export function RecordPage() {
         cif={r.cif}
         predictionContext={r.predictionContext}
         storedModelVersion={r.model}
+      />
+      <FurtherAssessmentPanel
+        result={storedFurtherAssessment(
+          r.furtherAssessmentGuidance,
+          r.risk,
+          r.band,
+          r.model,
+        )}
       />
       <div className={"panel"}>
         <h2>{"Recorded assessment information"}</h2>

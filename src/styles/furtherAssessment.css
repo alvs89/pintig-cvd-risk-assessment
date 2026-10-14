@@ -1,0 +1,21 @@
+.further-assessment {
+  color: #17344a;
+  overflow-wrap: anywhere;
+}
+.further-assessment h2 {
+  margin: 0 0 12px;
+}
+.further-assessment p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+.further-assessment .further-assessment-category {
+  font-weight: 600;
+}
+.further-assessment .further-assessment-note {
+  color: #334155;
+  border-top: 1px solid #cbd5e1;
+  padding-top: 12px;
+  font-size: 0.9375rem;
+}
