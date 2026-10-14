@@ -1,11 +1,15 @@
 import { Fragment } from "react";
+import { TenYearProbabilityChart } from "../components/TenYearProbabilityChart";
 import { FurtherAssessmentPanel } from "../components/FurtherAssessmentPanel";
 import { furtherAssessment } from "../services/furtherAssessment";
+import { prototypeFollowUp } from "../services/prototypeFollowUp";
 import { styleFromText, withKeys } from "../components/markup";
 import { b, guidanceHtml, head, patientIdent, tag } from "../components/shared";
 import { generateGuidance } from "../services/guidance";
 import { ModelStatus } from "../components/ModelStatus";
 import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel";
+import { ResearchCigPanel } from "../components/ResearchCigPanel";
+import { AssessmentVisualizations } from "../components/AssessmentVisualizations";
 import { P, S } from "../state/store";
 import { esc } from "../utils/format";
 export function ResultsPage() {
@@ -31,6 +35,7 @@ export function ResultsPage() {
             {"%"}
           </div>
           {tag(r.band)}
+          <TenYearProbabilityChart risk={r.risk} />
           <div className={"progress"}>
             <div
               style={styleFromText(
@@ -91,38 +96,20 @@ export function ResultsPage() {
               "These factors describe the calculation used for the displayed estimate; they do not establish cause and effect."
             }
           </p>
-          {withKeys(
-            r.parts.slice(0, 7).map(([n, v], _index) => (
-              <Fragment key={_index}>
-                <div className={"factor"}>
-                  <div className={"row"}>
-                    <span>{esc(n)}</span>
-                    <b>
-                      {v >= 0 ? "+" : ""}
-                      {(v * 100).toFixed(2)}
-                      {" points"}
-                    </b>
-                  </div>
-                  <div className={"progress"}>
-                    <div
-                      style={styleFromText(
-                        "width:" + Math.min(100, Math.abs(v) * 1300) + "%",
-                      )}
-                    ></div>
-                  </div>
-                </div>
-              </Fragment>
-            )),
-          )}
+          <AssessmentVisualizations risk={r.risk} category={r.band} parts={r.parts} />
         </div>
       </div>
+      <ResearchCigPanel patient={p} result={r} />
       <CumulativeIncidencePanel
         risk={r.risk}
         patientId={r.pid}
         cif={r.cif}
         predictionContext={r.predictionContext}
       />
-      <FurtherAssessmentPanel result={furtherAssessment(r.risk, r.band)} />
+      <FurtherAssessmentPanel
+        result={furtherAssessment(r.risk, r.band)}
+        prototype={prototypeFollowUp(r.risk, r.band, r.inputs)}
+      />
       <section className={"panel"}>
         <div className={"section-divider"}>
           <h2>{"General Educational Guidance"}</h2>

@@ -3,4 +3,7 @@ import App from "./App";
 import "./styles.css";
 import "./styles/cif.css";
 import "./styles/furtherAssessment.css";
+import "./styles/assessmentVisualizations.css";
+import "./styles/researchCig.css";
+import "./styles/probabilityChart.css";
 createRoot(document.getElementById("root")!).render(<App />);

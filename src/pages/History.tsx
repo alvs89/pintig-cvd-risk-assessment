@@ -1,6 +1,8 @@
 import { Fragment } from "react";
+import { TenYearProbabilityChart } from "../components/TenYearProbabilityChart";
 import { FurtherAssessmentPanel } from "../components/FurtherAssessmentPanel";
 import { storedFurtherAssessment } from "../services/furtherAssessment";
+import { storedPrototypeFollowUp } from "../services/prototypeFollowUp";
 import { ModelStatus } from "../components/ModelStatus";
 import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel";
 import {
@@ -112,6 +114,7 @@ export function RecordPage() {
             {"%"}
           </div>
           {tag(r.band)}
+          <TenYearProbabilityChart risk={r.risk} />
         </div>
         <div className={"panel"}>
           <h2>{"Assessment details"}</h2>
@@ -139,6 +142,16 @@ export function RecordPage() {
           r.band,
           r.model,
         )}
+        prototype={
+          r.prototypeFollowUpGuidance
+            ? storedPrototypeFollowUp(
+                r.prototypeFollowUpGuidance,
+                r.risk,
+                r.band,
+                r.model,
+              )
+            : undefined
+        }
       />
       <div className={"panel"}>
         <h2>{"Recorded assessment information"}</h2>

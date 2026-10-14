@@ -1,0 +1,19 @@
+/* Signed contribution chart based only on the current calculation terms. */
+.assessment-visualizations-factor {margin-top:16px;min-width:0}
+.assessment-visualizations-factor h3{font-size:14px;margin:0 0 6px}
+.assessment-visualizations-note{font-size:12px!important;color:#4b6676;line-height:1.55;margin:8px 0 0}
+.assessment-factor-chart{display:grid;gap:10px;margin:14px 0 10px}
+.assessment-factor-entry{min-width:0}
+.assessment-factor-meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12px;line-height:1.45;color:#17344a}
+.assessment-factor-meta span{min-width:0;overflow-wrap:anywhere}
+.assessment-factor-meta strong{white-space:nowrap;font-variant-numeric:tabular-nums}
+.assessment-factor-track{height:10px;background:#e8eef1;border-radius:7px;position:relative;margin-top:6px;overflow:hidden}
+.assessment-factor-zero{position:absolute;inset-block:0;left:50%;width:2px;background:#5a7180;z-index:1}
+.assessment-factor-bar{display:block;position:absolute;top:1px;bottom:1px;border-radius:4px}
+.assessment-factor-bar.positive{background:#087d81}
+.assessment-factor-bar.negative{background:#b66f50}
+.assessment-factor-details{margin-top:15px;border-top:1px solid #dce7ec;padding-top:12px}
+.assessment-factor-details summary{font-size:12px;font-weight:700;color:#0b6d77;cursor:pointer}
+.assessment-factor-details summary:focus-visible{outline:3px solid #2dbbb5;outline-offset:3px;border-radius:3px}
+.assessment-factor-details .tablewrap{margin-top:12px}
+@media(max-width:520px){.assessment-factor-meta{font-size:12px}}

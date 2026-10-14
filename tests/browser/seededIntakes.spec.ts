@@ -63,9 +63,10 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
     ),
   ).toBeVisible();
   await expect(page.locator(".further-assessment")).toContainText(
-    "unavailable",
+    "No additional category-based follow-up suggested",
   );
   await expect(page.locator(".cif-curve")).toHaveCount(0);
+  await expect(page.locator('.ten-year-chart [role="img"]')).toBeVisible();
   await page.locator('[data-act="saveAssessment"]').click();
   await page.evaluate(() =>
     document
@@ -76,7 +77,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
   );
   await expect(page.locator('[data-act^="record:"]')).toHaveCount(3);
   await page.locator('[data-act="record:1"]').click();
-  await expect(page.getByText("23.8%", { exact: true })).toBeVisible();
+  await expect(page.locator(".risk")).toHaveText("23.8%");
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.locator('.sidebar [data-act="nav:Patient Management"]').click();
   await page.locator('[data-act="newPatient"]').click();

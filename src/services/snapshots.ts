@@ -4,6 +4,7 @@ import { RISK_BAND_VERSION } from "../utils/risk";
 import { EXPLANATION_VERSION, explainCalculation } from "./explanation";
 import { GUIDANCE_VERSION } from "./guidance";
 import { PREDICTION_VERSION } from "./prediction";
+import { prototypeFollowUp } from "./prototypeFollowUp";
 import {
   copyCif,
   copyPredictionContext,
@@ -16,6 +17,10 @@ export function createSnapshot(
   userId: number,
 ): AssessmentRecord {
   const rules = result.guidanceRules ?? [];
+  const demoFollowUp = prototypeFollowUp(result.risk, result.band, result.inputs);
+  const demoSnapshot = demoFollowUp.status === "ready"
+    ? demoFollowUp.guidance
+    : undefined;
   const context = isModelPredictionContext(result.predictionContext, result.pid)
     ? result.predictionContext
     : undefined;
@@ -32,6 +37,14 @@ export function createSnapshot(
     model: context?.modelVersion ?? PREDICTION_VERSION,
     ...(context ? { predictionContext: copyPredictionContext(context) } : {}),
     ...(curveValid && result.cif ? { cif: copyCif(result.cif) } : {}),
+    ...(demoSnapshot
+      ? {
+          prototypeFollowUpGuidance: {
+            ...demoSnapshot,
+            actions: demoSnapshot.actions.map((item) => ({ ...item })),
+          },
+        }
+      : {}),
     riskBandVersion: RISK_BAND_VERSION,
     explanationVersion: EXPLANATION_VERSION,
     inputs: {

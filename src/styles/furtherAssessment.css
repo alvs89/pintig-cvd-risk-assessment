@@ -19,3 +19,51 @@
   padding-top: 12px;
   font-size: 0.9375rem;
 }
+
+/* Explicitly educational, rule-based prototype guidance; not clinical approval. */
+.further-assessment .further-assessment-prototype-label {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 1px solid #cce0e1;
+  border-radius: 999px;
+  background: #eef8f7;
+  color: #076b70;
+  font-weight: 750;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+}
+.further-assessment .further-assessment-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.further-assessment .further-assessment-rule {
+  min-width: 0;
+  border: 1px solid #d9e6ec;
+  border-radius: 12px;
+  padding: 15px 17px;
+  background: #fcfefe;
+}
+.further-assessment .further-assessment-rule h3 {
+  font-size: 0.98rem;
+  line-height: 1.4;
+  margin: 0 0 9px;
+  color: #173c4b;
+}
+.further-assessment .further-assessment-rule p {
+  font-size: 0.87rem;
+  line-height: 1.55;
+  margin: 7px 0;
+}
+.further-assessment .further-assessment-rule .further-assessment-finding {
+  font-size: 0.83rem;
+  color: #476779;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #e4ecf0;
+}
+@media (max-width: 840px) {
+  .further-assessment .further-assessment-rule-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

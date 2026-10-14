@@ -37,7 +37,7 @@ test("isolated guidance remains independent of keyboard-operated CIF controls an
     ),
   ).toBe(true);
 });
-test("normal results and saved records withhold category advice and retain education", async ({
+test("illustrative results show proposed factor-specific rules without clinical approval; saved rules remain frozen", async ({
   page,
 }) => {
   await page.goto("/");
@@ -65,7 +65,11 @@ test("normal results and saved records withhold category advice and retain educa
   const panel = page.getByRole("region", {
     name: "Further Assessment Guidance",
   });
-  await expect(panel).toContainText("not a clinically validated prediction");
+  await expect(panel).toContainText("Proposed rule-based follow-up");
+  await expect(panel).toContainText("High risk grouping");
+  await expect(panel).toContainText("Recorded BP: 145/92 mmHg");
+  await expect(panel).toContainText("smoking-cessation support");
+  await expect(panel).toContainText("not a validated referral threshold");
   await expect(
     page.getByRole("heading", { name: "General Educational Guidance" }),
   ).toBeVisible();
@@ -73,10 +77,47 @@ test("normal results and saved records withhold category advice and retain educa
   await page.locator('[data-act="saveAssessment"]').click();
   await page.locator('.sidebar [data-act="nav:Assessment History"]').click();
   await page.locator('[data-act^="record:"]').last().click();
-  await expect(panel).toContainText(
-    "No verified further assessment guidance was recorded",
-  );
+  await expect(panel).toContainText("Proposed rule-based follow-up");
+  await expect(panel).toContainText("Recorded BP: 145/92 mmHg");
+  await expect(panel).toContainText("smoking-cessation support");
   await expect(
     page.getByRole("heading", { name: "General Educational Guidance" }),
   ).toBeVisible();
+});
+
+test("moderate illustrative results do not receive risk-category follow-up despite factor-based education", async ({page}) => {
+  await page.goto("/");
+  await page.locator('[data-act="workerDemo"]').click();
+  await page.getByRole("button", { name: "Sign in →", exact: true }).click();
+  await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
+  await page.locator("#pid").selectOption("2");
+  await page.getByRole("button", { name: "Load recorded intake" }).click();
+  await page.getByRole("button", { name: "Review 10-year risk result →" }).click();
+  const panel = page.getByRole("region", { name: "Further Assessment Guidance" });
+  await expect(panel).toContainText("No additional category-based follow-up suggested");
+  await expect(panel.locator(".further-assessment-rule")).toHaveCount(0);
+  await expect(page.getByRole("heading", {name: "General Educational Guidance"})).toBeVisible();
+});
+
+test("very-high illustration prioritizes review of actual recorded factors and works on mobile", async ({page}) => {
+  await page.goto("/");
+  await page.locator('[data-act="workerDemo"]').click();
+  await page.getByRole("button", { name: "Sign in →", exact: true }).click();
+  await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
+  await page.locator("#pid").selectOption("1");
+  await page.getByRole("button", { name: "Load recorded intake" }).click();
+  await page.locator("#sbp").fill("175");
+  await page.locator("#weight").fill("105");
+  await page.locator("#alcoholDays").fill("5");
+  await page.locator("#drinksPerDay").fill("4");
+  await page.getByRole("button", { name: "Review 10-year risk result →" }).click();
+  const panel = page.getByRole("region", { name: "Further Assessment Guidance" });
+  await expect(panel).toContainText("Very High risk grouping");
+  await expect(panel).toContainText("Recorded BP: 175/94 mmHg");
+  await expect(panel).toContainText("smoking-cessation support");
+  await expect(panel).toContainText("comprehensive clinician-led cardiovascular risk review");
+  await expect(panel).toContainText("not a validated referral threshold");
+  await page.setViewportSize({width:390,height:850});
+  await expect(panel).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
