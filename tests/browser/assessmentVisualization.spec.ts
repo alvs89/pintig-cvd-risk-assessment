@@ -6,7 +6,7 @@ test("live results display automatic probability and signed-factor graphs withou
   await page.getByRole("button", { name: "Sign in →", exact: true }).click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("1");
-  await page.getByRole("button", { name: "Load recorded intake" }).click();
+  await page.getByRole("button", { name: "Prefill questionnaire" }).click();
   await page.getByRole("button", { name: "Review 10-year risk result →" }).click();
   await expect(page.getByRole("figure", { name: /Ten-year probability overview/i })).toBeVisible();
   await expect(page.getByRole("group", { name: "Contribution chart" })).toBeVisible();

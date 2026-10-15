@@ -82,10 +82,10 @@ export function ResultsPage() {
               </div>
             </div>
           </div>
-          <h3>{"Target outcome"}</h3>
+          <h3>{"Intended research outcome"}</h3>
           <p className={"tiny"}>
             {
-              "First myocardial infarction, stroke, heart failure, or cardiovascular death within 10 years. The intended model considers competing non-cardiovascular mortality."
+              "The proposed PURE Philippines model targets a first heart attack, stroke, heart failure, or cardiovascular death within 10 years, accounting for non-cardiovascular death. It is not the source of this illustrative estimate."
             }
           </p>
         </div>
@@ -96,7 +96,11 @@ export function ResultsPage() {
               "These factors describe the calculation used for the displayed estimate; they do not establish cause and effect."
             }
           </p>
-          <AssessmentVisualizations risk={r.risk} category={r.band} parts={r.parts} />
+          <AssessmentVisualizations
+            risk={r.risk}
+            category={r.band}
+            parts={r.parts}
+          />
         </div>
       </div>
       <ResearchCigPanel patient={p} result={r} />

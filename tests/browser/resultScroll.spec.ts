@@ -15,7 +15,7 @@ for (const width of [1440, 820, 390]) {
     await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
     await page.locator("#pid").selectOption("1");
     await page
-      .getByRole("button", { name: "Load recorded intake", exact: true })
+      .getByRole("button", { name: "Prefill questionnaire", exact: true })
       .click();
     const submit = page.locator('#assessmentForm button[type="submit"]');
     await submit.scrollIntoViewIfNeeded();

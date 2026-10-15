@@ -58,6 +58,10 @@ export function LoginPage() {
               </>
             ) : (
               <>
+                <p className="tiny muted">
+                  Practice sign-in shortcuts fill a fictional account. They do
+                  not verify your identity.
+                </p>
                 <div className={"demo-accounts"}>
                   <button type={"button"} data-act={"adminDemo"}>
                     <b>{"🛡 Administrator"}</b>

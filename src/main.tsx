@@ -11,4 +11,5 @@ import "./styles/buttonStates.css";
 import "./styles/sidebar.css";
 import "./styles/riskDistribution.css";
 import "./styles/formValidation.css";
+import "./styles/assessmentHistory.css";
 createRoot(document.getElementById("root")!).render(<App />);

@@ -25,14 +25,9 @@ export type PrototypeFollowUpResult =
   | { status: "below-threshold" | "unavailable"; reason: string };
 
 const validRisk = (risk: unknown): risk is number =>
-  typeof risk === "number" &&
-  Number.isFinite(risk) &&
-  risk >= 0 &&
-  risk <= 1;
+  typeof risk === "number" && Number.isFinite(risk) && risk >= 0 && risk <= 1;
 const numeric = (raw: unknown): number | null =>
-  typeof raw === "string" &&
-  raw.trim() !== "" &&
-  Number.isFinite(Number(raw))
+  typeof raw === "string" && raw.trim() !== "" && Number.isFinite(Number(raw))
     ? Number(raw)
     : null;
 const isYes = (value: unknown) => value === "Yes";
@@ -51,12 +46,15 @@ export function prototypeFollowUp(
   modelVersion: string = PROTOTYPE_FOLLOWUP_MODEL,
 ): PrototypeFollowUpResult {
   if (!validRisk(risk) || category !== band(risk))
-    return { status: "unavailable", reason: "A consistent ten-year estimate is required." };
+    return {
+      status: "unavailable",
+      reason: "A consistent ten-year estimate is required.",
+    };
   if (risk < 0.1)
     return {
       status: "below-threshold",
       reason:
-        "This illustrative estimate is below the proposed 10% follow-up display threshold. Continue the separate condition-based educational guidance; clinical evaluation may still be appropriate for individual findings.",
+        "Review the condition-based educational guidance. Further assessment may still be appropriate for individual findings.",
     };
   if (
     modelVersion !== PROTOTYPE_FOLLOWUP_MODEL ||
@@ -66,13 +64,18 @@ export function prototypeFollowUp(
   )
     return {
       status: "unavailable",
-      reason: "Prototype follow-up could not be generated from a verified fictional intake and illustrative result.",
+      reason:
+        "Further assessment guidance is unavailable. Review the assessment information and model status.",
     };
 
   const categoryName = category as "High" | "Very High";
   const actions: PrototypeFollowUpAction[] = [];
-  const add = (id: string, title: string, finding: string, consideration: string) =>
-    actions.push({ id, title, finding, consideration });
+  const add = (
+    id: string,
+    title: string,
+    finding: string,
+    consideration: string,
+  ) => actions.push({ id, title, finding, consideration });
 
   if (categoryName === "Very High")
     add(
@@ -86,13 +89,18 @@ export function prototypeFollowUp(
       "LEVEL-HIGH",
       "Discuss further cardiovascular assessment",
       "Illustrative ten-year risk category: High (10% to below 20%)",
-      "Discuss the recorded risk factors with a qualified healthcare professional, who can decide whether further clinical or laboratory evaluation is appropriate. This prototype percentage is not a validated referral threshold.",
+      "Discuss the recorded risk factors with a qualified healthcare professional, who can decide whether further clinical or laboratory evaluation is appropriate. This illustrative percentage is not a validated referral threshold.",
     );
 
-  const sbp = numeric(inputs.sbp), dbp = numeric(inputs.dbp);
+  const sbp = numeric(inputs.sbp),
+    dbp = numeric(inputs.dbp);
   if (
-    sbp !== null && dbp !== null &&
-    sbp >= 60 && sbp <= 300 && dbp >= 30 && dbp <= 180 &&
+    sbp !== null &&
+    dbp !== null &&
+    sbp >= 60 &&
+    sbp <= 300 &&
+    dbp >= 30 &&
+    dbp <= 180 &&
     sbp > dbp
   ) {
     if (sbp >= 140 || dbp >= 90)
@@ -129,7 +137,7 @@ export function prototypeFollowUp(
       "BP-MEDICATION",
       "Review existing blood-pressure medication information",
       "Current blood-pressure medication: Yes",
-      "Confirm the medication list and discuss adherence, side effects, and repeated BP readings with the prescribing professional. Do not start, stop, or adjust doses based on this demonstration.",
+      "Confirm the medication list and discuss adherence, side effects, and repeated BP readings with the prescribing professional. Do not start, stop, or adjust doses based on this estimate.",
     );
   const bmi = numeric(inputs.bmi);
   if (bmi !== null && bmi >= 25 && bmi <= 65)
@@ -190,8 +198,8 @@ export function prototypeFollowUp(
       ruleVersion: PROTOTYPE_FOLLOWUP_VERSION,
       introduction:
         categoryName === "Very High"
-          ? "For illustration only: this shows how several recorded findings could be organized for a comprehensive professional risk discussion."
-          : "For illustration only: this shows how a professional follow-up discussion could address recorded risk factors.",
+          ? "Consider the combined recorded findings during a comprehensive professional risk discussion."
+          : "Discuss the recorded risk factors with a qualified healthcare professional.",
       actions,
     },
   };
@@ -205,7 +213,11 @@ export function storedPrototypeFollowUp(
   modelVersion: string,
 ): PrototypeFollowUpResult {
   if (!saved)
-    return { status: "unavailable", reason: "No prototype follow-up guidance was saved with this assessment." };
+    return {
+      status: "unavailable",
+      reason:
+        "No further assessment guidance was recorded with this assessment.",
+    };
   if (
     !validRisk(risk) ||
     risk < 0.1 ||
@@ -219,14 +231,20 @@ export function storedPrototypeFollowUp(
     typeof saved.introduction !== "string" ||
     !Array.isArray(saved.actions) ||
     saved.actions.length === 0 ||
-    saved.actions.some((item) =>
-      !item ||
-      typeof item.id !== "string" ||
-      typeof item.title !== "string" ||
-      typeof item.finding !== "string" ||
-      typeof item.consideration !== "string")
+    saved.actions.some(
+      (item) =>
+        !item ||
+        typeof item.id !== "string" ||
+        typeof item.title !== "string" ||
+        typeof item.finding !== "string" ||
+        typeof item.consideration !== "string",
+    )
   )
-    return { status: "unavailable", reason: "Saved prototype guidance does not match this assessment's original estimate." };
+    return {
+      status: "unavailable",
+      reason:
+        "Recorded guidance could not be verified against the original assessment.",
+    };
   return {
     status: "ready",
     guidance: { ...saved, actions: saved.actions.map((item) => ({ ...item })) },

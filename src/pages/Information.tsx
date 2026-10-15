@@ -10,10 +10,12 @@ export function MaintenancePage() {
       )}
       <div className="twocol">
         <section className="panel">
-          <h2>Export de-identified system records</h2>
+          <h2>Export system records</h2>
           <p className="muted">
-            Export records without patient names, dates of birth, contact
-            details, or PhilHealth identifiers.
+            Exports retain record identifiers, account details, assessment
+            responses, and audit entries. Patient profile names, dates of birth,
+            contact details, and PhilHealth numbers are omitted; this is not an
+            anonymous export.
           </p>
           {b("Export records", "backup", "primary")}
         </section>
@@ -173,6 +175,14 @@ export function AboutPage() {
         <p>
           PINTIG supports structured collection and review of cardiovascular
           health information for eligible adults.
+        </p>
+        <h3>Research scope and model status</h3>
+        <p>
+          The scope below describes the intended PURE Philippines model. Current
+          assessment results use an illustrative calculation, not a clinically
+          validated prediction. The separate provisional Framingham research
+          graph has a different outcome and must not replace the assessment
+          estimate. Neither output should guide clinical decisions.
         </p>
         <div className="threecol">
           {scope.map(([label, value]) => (

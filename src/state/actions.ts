@@ -220,15 +220,15 @@ export function handleClick(e: ActionEvent) {
       S.draft = input;
       S.result = null;
       S.formRevision++;
-      msg("Review and confirm the recorded intake before continuing.");
+      msg("Review the practice responses before submitting.");
       render();
     };
     if (hasIntakeAnswers(S.draft)) {
       openPintigConfirm({
         title: "Replace questionnaire answers?",
         description:
-          "Loading the recorded intake will replace the current unsaved answers. You can review and edit the loaded information before submitting.",
-        actionLabel: "Load intake",
+          "Prefilling will replace the current unsaved answers with practice responses. Review and edit them before submitting.",
+        actionLabel: "Replace answers",
         onConfirm: load,
       });
       return;

@@ -133,8 +133,8 @@ test("worker registers, edits, assesses and reviews an immutable saved snapshot"
     ),
   ).toBeVisible();
   await expect(
-    page.locator(".snapshot").filter({
-      has: page.locator("strong", { hasText: /^Systolic blood pressure$/ }),
+    page.locator(".history-question-value").filter({
+      has: page.locator("dt", { hasText: /^Systolic blood pressure$/ }),
     }),
   ).toHaveText("Systolic blood pressure132 mmHg");
   await expect(page.locator(".private-name")).toHaveCount(0);
@@ -202,7 +202,7 @@ test("administrator manages accounts, filters and exports de-identified reports"
   );
   expect(backup.users[0]).not.toHaveProperty("pass");
   expect(backup.patients[0]).not.toHaveProperty("first");
-  await page.getByRole("button", { name: "Switch role", exact: true }).click();
+  await page.getByRole("button", { name: "Switch account", exact: true }).click();
   await page.locator("#pintigConfirmAction").click();
   await expect(
     page.getByRole("heading", { name: "Welcome back", exact: true }),

@@ -57,7 +57,7 @@ export function Workspace({ children }: { children: ReactNode }) {
           <div className="muted tiny">PINTIG / {S.page}</div>
           <div className="actions top-actions" style={{ margin: 0 }}>
             <span className="tiny">{user.name}</span>
-            {b("Switch role", "switchRole")}
+            {b("Switch account", "switchRole")}
           </div>
         </header>
         <main className="maincontent">

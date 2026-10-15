@@ -23,17 +23,16 @@ export function RiskDistributionChart({
         {administrator
           ? "Overall accessible assessment records."
           : "Shared assessment records accessible to Healthcare Workers."}{" "}
-        Each saved assessment is counted separately, including repeat
-        assessments for a patient.
+        Repeat assessments are counted separately.
       </p>
       <p id={`${id}-description`} className="distribution-description">
-        Counts and percentages use recorded ten-year classifications. Select a
-        category to inspect its summary.
+        Distribution of saved assessments across cardiovascular risk categories.
+        Select a category for details.
       </p>
       {!data.total && (
         <p role="status">
           {records.length
-            ? "No compatible saved assessments are available for this chart."
+            ? "No assessments with verified risk classifications are available."
             : "No saved assessments are available. Save an assessment to view its distribution."}
         </p>
       )}
@@ -69,19 +68,19 @@ export function RiskDistributionChart({
       <p className="distribution-detail" role="status" aria-live="polite">
         {detail
           ? `${detail.category}: ${detail.count} saved ${detail.count === 1 ? "assessment" : "assessments"} (${detail.percentage.toFixed(1)}% of represented assessments).`
-          : "All four recorded categories are shown; percentages may not sum to 100% after rounding."}
+          : "Percentages are rounded to one decimal place."}
       </p>
       {!!data.excluded && (
         <p className="distribution-exclusions">
           {data.excluded}{" "}
           {data.excluded === 1 ? "record excluded" : "records excluded"}:
-          missing or invalid probability, inconsistent category, or unsupported
-          classification version.
+          incomplete or inconsistent assessment information, or classification
+          rules that could not be verified.
         </p>
       )}
       <p className="distribution-note">
-        Recorded classifications are research groupings, not diagnoses.
-        Illustrative assessments remain illustrative.
+        Risk categories are not diagnoses. Current assessment estimates are
+        illustrative.
       </p>
     </section>
   );

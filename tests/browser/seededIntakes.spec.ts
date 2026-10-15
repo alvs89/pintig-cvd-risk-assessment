@@ -18,7 +18,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
         .click();
     await expect(page.locator("#sbp")).toHaveValue("");
     await page
-      .getByRole("button", { name: "Load recorded intake", exact: true })
+      .getByRole("button", { name: "Prefill questionnaire", exact: true })
       .click();
     await expect(page.locator("#sbp")).toHaveValue(sbp);
     await expect(page.locator("#bmi")).toHaveValue(bmi);
@@ -43,7 +43,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
   await expect(page.locator("#pid")).toHaveValue("3");
   await expect(page.locator("#sbp")).toHaveValue("122");
   await page
-    .getByRole("button", { name: "Load recorded intake", exact: true })
+    .getByRole("button", { name: "Prefill questionnaire", exact: true })
     .click();
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   await expect(page.locator("#sbp")).toHaveValue("122");
@@ -52,9 +52,9 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
   await expect(page.locator("#pid")).toHaveValue("3");
   await expect(page.locator("#sbp")).toHaveValue("122");
   await page
-    .getByRole("button", { name: "Load recorded intake", exact: true })
+    .getByRole("button", { name: "Prefill questionnaire", exact: true })
     .click();
-  await page.getByRole("button", { name: "Load intake", exact: true }).click();
+  await page.getByRole("button", { name: "Replace answers", exact: true }).click();
   await page.locator("#sbp").fill("122");
   await page.locator('#assessmentForm button[type="submit"]').click();
   await expect(
@@ -63,7 +63,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
     ),
   ).toBeVisible();
   await expect(page.locator(".further-assessment")).toContainText(
-    "No additional category-based follow-up suggested",
+    "Continue risk-factor education",
   );
   await expect(page.locator(".cif-curve")).toHaveCount(0);
   await expect(page.locator('.ten-year-chart [role="img"]')).toBeVisible();
@@ -94,6 +94,6 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(page.locator("#sbp")).toHaveValue("");
   await expect(
-    page.getByRole("button", { name: "Load recorded intake", exact: true }),
+    page.getByRole("button", { name: "Prefill questionnaire", exact: true }),
   ).toHaveCount(0);
 });

@@ -74,7 +74,11 @@ export function AssessmentPage() {
           </div>
           {p && seededIntake(p.id) && (
             <div className="actions">
-              {b("Load recorded intake", "loadRecordedIntake")}
+              {b("Prefill questionnaire", "loadRecordedIntake")}
+              <span className="tiny muted">
+                Practice responses for this fictional patient. Review before
+                submitting.
+              </span>
             </div>
           )}
           <div className={"profile-meta-header"}>
@@ -267,7 +271,7 @@ export function AssessmentPage() {
               <h2>{"Lifestyle, diet and family questionnaire"}</h2>
               <p>
                 {
-                  "Structured responses are converted to compatible indicators when the derivation is supported."
+                  "Record the patient's usual lifestyle habits and relevant health history."
                 }
               </p>
             </div>
@@ -423,9 +427,7 @@ export function AssessmentPage() {
             <div className={"question-group"}>
               <div className={"group-title"}>{"Diet and nutrition"}</div>
               <p className={"hintline"}>
-                {
-                  "Record the patient’s usual intake without estimating a dietary score."
-                }
+                {"Record the patient's usual eating habits."}
               </p>
               <div className={"gridform"}>
                 {num(

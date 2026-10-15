@@ -1,0 +1,24 @@
+/* Saved assessment detail: retained values, structured to match current questionnaire. */
+.history-provenance { border-color:#cbdde4; }
+.history-provenance-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:13px 0; }
+.history-provenance-row > div { border:1px solid #dbe8ed; border-radius:10px; padding:12px 14px; min-width:0; background:#f8fbfc; }
+.history-provenance-label { display:block; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.035em; color:#58717e; margin-bottom:5px; }
+.history-provenance-row strong { font-size:15px; color:#17354a; }
+.history-provenance-row code { font-size:13px; color:#135e68; overflow-wrap:anywhere; }
+.history-provenance p { color:#344e60; font-size:13px; line-height:1.6; margin:9px 0 0; }
+.history-provenance .history-provenance-footnote { color:#536c79; font-size:12px; }
+.history-questionnaire-summary { font-size:13px; color:#536c79; line-height:1.5; margin:0 0 17px; }
+.history-questionnaire-summary > span { color:#183b4b; font-weight:750; }
+.history-questionnaire-summary p { margin:5px 0 0; }
+.history-questionnaire-summary .history-legacy-note { border-left:3px solid #b57c44; padding:8px 10px; background:#fbf6ef; border-radius:0 7px 7px 0; margin:10px 0; color:#755a39; }
+.history-question-group { margin-top:15px; border:1px solid #dce7ed; border-radius:12px; overflow:hidden; }
+.history-question-group-heading { background:#f2f8f9; padding:11px 14px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.history-question-group-heading h3 { margin:0; font-size:14px; color:#154858; }
+.history-question-group-heading span { color:#647c88; font-size:11px; white-space:nowrap; }
+.history-question-grid { margin:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:12px; }
+.history-question-value { padding:12px; min-width:0; background:#fff; border:1px solid #e0e9ee; border-radius:9px; }
+.history-question-value dt { font-size:12px; color:#576f7b; font-weight:650; margin-bottom:6px; }
+.history-question-value dd { margin:0; font-size:14px; color:#18384b; font-weight:700; overflow-wrap:anywhere; }
+@media(max-width:920px) { .history-question-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:570px) { .history-provenance-row,.history-question-grid { grid-template-columns:minmax(0,1fr); } .history-question-group-heading { align-items:flex-start; } }
+@media print { .history-question-group { break-inside:avoid; } .history-question-value { break-inside:avoid; } }

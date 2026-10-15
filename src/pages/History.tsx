@@ -5,10 +5,7 @@ import { storedFurtherAssessment } from "../services/furtherAssessment";
 import { storedPrototypeFollowUp } from "../services/prototypeFollowUp";
 import { ModelStatus } from "../components/ModelStatus";
 import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel";
-import {
-  assessmentLabels,
-  displayAssessmentValue,
-} from "../utils/assessmentLabels";
+import { SavedAssessmentProvenance, SavedQuestionnaireSections } from "../components/SavedAssessmentHistory";
 import {
   htmlAttributes,
   Select,
@@ -105,7 +102,7 @@ export function RecordPage() {
         b("← History", "nav:Assessment History"),
       )}
       <div className={"identity-context"}>{patientIdent(p)}</div>
-      <ModelStatus />
+      <ModelStatus modelVersion={r.model} />
       <div className={"twocol"}>
         <div className={"panel"}>
           <div className={"eyebrow"}>{"Ten-year estimate"}</div>
@@ -127,6 +124,7 @@ export function RecordPage() {
           </p>
         </div>
       </div>
+      <SavedAssessmentProvenance record={r} />
       <CumulativeIncidencePanel
         compatibleOnly
         key={r.id}
@@ -156,21 +154,7 @@ export function RecordPage() {
       />
       <div className={"panel"}>
         <h2>{"Recorded assessment information"}</h2>
-        <div className={"threecol"}>
-          {withKeys(
-            Object.entries(r.inputs).map(([key, value], _index) => (
-              <Fragment key={_index}>
-                <div className={"snapshot"}>
-                  <strong>
-                    {assessmentLabels[key] ??
-                      key.replace(/([a-z])([A-Z])/g, "$1 $2")}
-                  </strong>
-                  {displayAssessmentValue(key, value, p.record)}
-                </div>
-              </Fragment>
-            )),
-          )}
-        </div>
+        <SavedQuestionnaireSections record={r} patientRecord={p.record} />
         <h3>{"Assessment explanation"}</h3>
         <p>{esc(r.explanation)}</p>
         <h3>{"General Educational Guidance"}</h3>

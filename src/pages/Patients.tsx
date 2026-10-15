@@ -55,7 +55,6 @@ export function PatientsPage() {
                   <th>{"Patient ID"}</th>
                   <th>{"Identity"}</th>
                   <th>{"Facility"}</th>
-                  <th>{"Record status"}</th>
                   <th>{"Actions"}</th>
                 </tr>
               </thead>
@@ -69,7 +68,6 @@ export function PatientsPage() {
                         </td>
                         <td>{patientIdent(p, false)}</td>
                         <td>{esc(p.facility)}</td>
-                        <td>{"Active"}</td>
                         <td>
                           <button
                             className={"link"}

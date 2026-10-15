@@ -20,7 +20,7 @@ async function navigateToFictionalAssessment(page: Page) {
   await page.locator('button[type="submit"]').click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("1");
-  await page.getByRole("button", {name:"Load recorded intake",exact:true}).click();
+  await page.getByRole("button", {name:"Prefill questionnaire",exact:true}).click();
   await page.locator('#assessmentForm button[type="submit"]').click();
 }
 test("fictional form inputs invoke isolated local research model; genuine-shaped response displays CIG", async ({page}) => {
@@ -57,7 +57,7 @@ test("fictional form inputs invoke isolated local research model; genuine-shaped
     expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   }
   await expect(page.locator(".cif-panel")).toHaveCount(0);
-  await expect(page.locator(".further-assessment")).toContainText("Proposed rule-based follow-up");
+  await expect(page.locator(".further-assessment")).toContainText("Educational follow-up considerations");
   await expect(page.locator(".further-assessment")).toContainText("not a validated referral threshold");
 });
 
@@ -65,7 +65,7 @@ test("private research service failure never fabricates a CIG", async ({page})=>
   await page.route("http://127.0.0.1:8765/research-cif",route=>
     route.fulfill({status:503,contentType:"application/json",body:'{"error":"offline"}'}));
   await navigateToFictionalAssessment(page);
-  await expect(page.locator(".research-cig-empty")).toContainText("Research CIG unavailable");
+  await expect(page.locator(".research-cig-empty")).toContainText("Research graph unavailable");
   await expect(page.locator(".research-cif-curve")).toHaveCount(0);
   await expect(page.locator(".cif-panel")).toHaveCount(0);
 });

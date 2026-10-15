@@ -7,8 +7,7 @@ interface Props {
   category: RiskBand;
   parts: readonly Factor[];
 }
-const formatted = (value: number) =>
-  (value >= 0 ? "+" : "") + value.toFixed(2);
+const formatted = (value: number) => (value >= 0 ? "+" : "") + value.toFixed(2);
 
 /** Displays existing illustrative arithmetic terms; not RSF feature importance. */
 export function AssessmentVisualizations({ risk, category, parts }: Props) {
@@ -17,17 +16,25 @@ export function AssessmentVisualizations({ risk, category, parts }: Props) {
   if (data.status === "unavailable")
     return <p role="status">Calculation chart unavailable: {data.reason}</p>;
   if (!data.factors.length)
-    return <p>There are no nonzero calculation factors to chart.</p>;
+    return <p>No contributing factors are available for this chart.</p>;
 
   return (
-    <div className="assessment-visualizations-factor" role="group" aria-labelledby={id}>
+    <div
+      className="assessment-visualizations-factor"
+      role="group"
+      aria-labelledby={id}
+    >
       <h3 id={id}>Contribution chart</h3>
       <p className="assessment-visualizations-note">
-        Bars show arithmetic contributions from the illustrative calculation in
-        percentage points, not RSF explanations or causal effects. The vertical
-        middle line represents zero.
+        Bars show contributions to the illustrative calculation in percentage
+        points, not RSF explanations or causal effects. The vertical middle line
+        represents zero.
       </p>
-      <div className="assessment-factor-chart" role="img" aria-label="Signed factor contributions shown as bars, with values listed alongside and in the expandable table">
+      <div
+        className="assessment-factor-chart"
+        role="img"
+        aria-label="Signed factor contributions shown as bars, with values listed alongside and in the expandable table"
+      >
         {data.factors.map((factor, index) => (
           <div className="assessment-factor-entry" key={index}>
             <div className="assessment-factor-meta">
@@ -40,9 +47,10 @@ export function AssessmentVisualizations({ risk, category, parts }: Props) {
                 className={"assessment-factor-bar " + factor.direction}
                 style={{
                   width: factor.widthPercent + "%",
-                  left: factor.direction === "positive"
-                    ? "50%"
-                    : 50 - factor.widthPercent + "%",
+                  left:
+                    factor.direction === "positive"
+                      ? "50%"
+                      : 50 - factor.widthPercent + "%",
                 }}
               />
             </div>
@@ -58,7 +66,10 @@ export function AssessmentVisualizations({ risk, category, parts }: Props) {
           <table>
             <caption>Calculation contributions</caption>
             <thead>
-              <tr><th scope="col">Factor</th><th scope="col">Percentage points</th></tr>
+              <tr>
+                <th scope="col">Factor</th>
+                <th scope="col">Percentage points</th>
+              </tr>
             </thead>
             <tbody>
               {data.factors.map((factor, index) => (

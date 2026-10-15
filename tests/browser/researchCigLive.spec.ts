@@ -15,7 +15,7 @@ test("actual 500-tree questionnaire-compatible RSF returns different CIFs for tw
     await page.locator('button[type="submit"]').click();
     await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
     await page.locator("#pid").selectOption(id);
-    await page.getByRole("button",{name:"Load recorded intake",exact:true}).click();
+    await page.getByRole("button",{name:"Prefill questionnaire",exact:true}).click();
     await page.locator('#assessmentForm button[type="submit"]').click();
     const panel=page.locator(".research-cig");
     await expect(panel.locator(".research-cif-curve")).toBeVisible({timeout:60000});
