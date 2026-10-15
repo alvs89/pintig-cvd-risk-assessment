@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { styleFromText } from "../components/markup";
-import { b, f } from "../components/shared";
+import { b, f, eyeOpen, eyeClosed, requiredLabel } from "../components/shared";
 import { S } from "../state/store";
 import { esc } from "../utils/format";
 export function LoginPage() {
+  const [passwordVisible, setPasswordVisible] = useState(false);
   return (
     <>
       <div className={"login-screen"}>
@@ -72,7 +74,33 @@ export function LoginPage() {
                 </div>
                 <form id={"loginForm"}>
                   {f("Email", "email", "", "email", true)}
-                  {f("Password", "password", "", "password", true)}
+                  <div className="field">
+                    <label htmlFor="password">
+                      {requiredLabel("Password", true)}
+                    </label>
+                    <div className="password-control">
+                      <input
+                        id="password"
+                        name="password"
+                        required
+                        type={passwordVisible ? "text" : "password"}
+                        autoComplete="current-password"
+                      />
+                      <button
+                        type="button"
+                        className="password-visibility"
+                        aria-label={
+                          passwordVisible ? "Hide password" : "Show password"
+                        }
+                        aria-controls="password"
+                        onClick={() =>
+                          setPasswordVisible((visible) => !visible)
+                        }
+                      >
+                        {passwordVisible ? eyeClosed : eyeOpen}
+                      </button>
+                    </div>
+                  </div>
                   <button type={"submit"} className={"btn primary wfull"}>
                     {"Sign in →"}
                   </button>

@@ -12,4 +12,5 @@ import "./styles/sidebar.css";
 import "./styles/riskDistribution.css";
 import "./styles/formValidation.css";
 import "./styles/assessmentHistory.css";
+import "./styles/passwordVisibility.css";
 createRoot(document.getElementById("root")!).render(<App />);
