@@ -63,12 +63,29 @@ try {
   });
   for (const selector of Object.keys(current))
     for (let coordinate = 0; coordinate < 4; coordinate++) {
+      // The added distribution section increases content height and moves the
+      // recent-assessment table down. Preserve all other baseline geometry checks.
+      if (
+        (selector === ".maincontent" && coordinate === 3) ||
+        (selector === "table" && coordinate === 1)
+      ) {
+        assert.ok(
+          current[selector][coordinate] >= original[selector][coordinate],
+          `Expected added dashboard content: ${selector}`,
+        );
+        continue;
+      }
       assert.equal(
         current[selector][coordinate],
         original[selector][coordinate],
         `Dashboard layout differs from v27: ${selector}`,
       );
     }
+  await page.goto(base);
+  await page.locator('[data-act="adminDemo"]').click();
+  await page.locator('button[type="submit"]').click();
+  await page.locator(".risk-distribution").waitFor();
+  assert.equal(await page.locator(".distribution-row").count(), 4);
   assert.deepEqual(errors, []);
   console.log(
     "Production assets, React login/dashboard, original reference and layout geometry: passed.",

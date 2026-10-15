@@ -78,7 +78,7 @@ test("professional copy, responsive form alignment and keyboard confirmations", 
     page.getByRole("button", { name: "Clear assessment", exact: true }),
   ).toBeFocused();
   await page.locator('.sidebar [data-act="nav:Help"]').click();
-  await page.getByRole("button", { name: "FAQs", exact: true }).click();
+  await page.getByRole("tab", { name: "FAQs", exact: true }).click();
   await expect(
     page.getByRole("heading", {
       name: "Frequently asked questions",

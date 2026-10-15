@@ -1,6 +1,7 @@
 import { b, head, metric, recordsTable } from "../components/shared";
 import { patients, records, S, users } from "../state/store";
 import { T } from "../utils/format";
+import { RiskDistributionChart } from "../components/RiskDistributionChart";
 export function DashboardPage() {
   let admin = S.user!.role === "admin";
   return (
@@ -55,6 +56,7 @@ export function DashboardPage() {
           </p>
         </div>
       </div>
+      <RiskDistributionChart records={records} administrator={admin} />
       <section className={"panel"}>
         <h2>{"Recent assessments"}</h2>
         {recordsTable(records.slice().reverse().slice(0, 5))}

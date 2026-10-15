@@ -9,4 +9,5 @@ import "./styles/probabilityChart.css";
 import "./styles/reports.css";
 import "./styles/buttonStates.css";
 import "./styles/sidebar.css";
+import "./styles/riskDistribution.css";
 createRoot(document.getElementById("root")!).render(<App />);
