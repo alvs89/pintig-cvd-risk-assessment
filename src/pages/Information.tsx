@@ -46,57 +46,102 @@ export function HelpPage() {
         "Guidance for patient records and assessment workflows.",
       )}
       <section className="panel">
-        <div className="actions">
-          {b("User Guide", "help:guide")}
-          {b("FAQs", "help:faq")}
+        <div className="actions" role="tablist" aria-label="Help topics">
+          {[
+            ["guide", "User Guide"],
+            ["faq", "FAQs"],
+          ].map(([key, label]) => (
+            <button
+              key={key}
+              id={`help-tab-${key}`}
+              type="button"
+              role="tab"
+              className={`btn${S.help === key ? " primary" : ""}`}
+              style={S.help === key ? undefined : { background: "transparent" }}
+              aria-selected={S.help === key}
+              aria-controls="help-topic-panel"
+              tabIndex={S.help === key ? 0 : -1}
+              data-act={`help:${key}`}
+              onKeyDown={(event) => {
+                if (
+                  !["ArrowLeft", "ArrowRight", "Home", "End"].includes(
+                    event.key,
+                  )
+                )
+                  return;
+                event.preventDefault();
+                const next =
+                  event.key === "Home"
+                    ? "guide"
+                    : event.key === "End"
+                      ? "faq"
+                      : key === "guide"
+                        ? "faq"
+                        : "guide";
+                const tab = document.getElementById(`help-tab-${next}`);
+                tab?.click();
+                tab?.focus();
+              }}
+            >
+              {label}
+            </button>
+          ))}
         </div>
         <div className="separator" />
-        {S.help === "guide" ? (
-          <>
-            <h2>Assessment workflow</h2>
-            <ol>
-              <li>
-                Find or register a patient in Patient Management. Use the eye
-                control to verify identity when needed.
-              </li>
-              <li>
-                Open New Risk Assessment, confirm eligibility, and complete the
-                measurements and interview questions.
-              </li>
-              <li>
-                Review the estimate, risk category, contributing factors, and
-                educational guidance.
-              </li>
-              <li>
-                Save the assessment and retrieve it from Assessment History.
-              </li>
-              <li>
-                Administrators can manage accounts and export filtered reports.
-              </li>
-            </ol>
-          </>
-        ) : (
-          <>
-            <h2>Frequently asked questions</h2>
-            <h3>How should I interpret an estimate?</h3>
-            <p>
-              Read the model-status notice with the result and review it
-              alongside the recorded health information.
-            </p>
-            <h3>How do I verify a patient’s identity?</h3>
-            <p>
-              Use the eye control next to the patient record number. Hide the
-              name when verification is complete.
-            </p>
-            <h3>What is the PhilHealth PIN used for?</h3>
-            <p>
-              It is an optional patient identifier. It does not connect PINTIG
-              to PhilHealth services.
-            </p>
-            <h3>How do I get help accessing my account?</h3>
-            <p>Contact your system administrator.</p>
-          </>
-        )}
+        <div
+          id="help-topic-panel"
+          role="tabpanel"
+          aria-labelledby={`help-tab-${S.help}`}
+          tabIndex={0}
+        >
+          {S.help === "guide" ? (
+            <>
+              <h2>Assessment workflow</h2>
+              <ol>
+                <li>
+                  Find or register a patient in Patient Management. Use the eye
+                  control to verify identity when needed.
+                </li>
+                <li>
+                  Open New Risk Assessment, confirm eligibility, and complete
+                  the measurements and interview questions.
+                </li>
+                <li>
+                  Review the estimate, risk category, contributing factors, and
+                  educational guidance.
+                </li>
+                <li>
+                  Save the assessment and retrieve it from Assessment History.
+                </li>
+                <li>
+                  Administrators can manage accounts and export filtered
+                  reports.
+                </li>
+              </ol>
+            </>
+          ) : (
+            <>
+              <h2>Frequently asked questions</h2>
+              <h3>How should I interpret an estimate?</h3>
+              <p>
+                Read the model-status notice with the result and review it
+                alongside the recorded health information.
+              </p>
+              <h3>How do I verify a patient’s identity?</h3>
+              <p>
+                Use the eye control next to the patient record number. Hide the
+                name when verification is complete.
+              </p>
+              <h3>What is the PhilHealth PIN used for?</h3>
+              <p>
+                It is an optional patient identifier. It does not connect PINTIG
+                to PhilHealth services.
+              </p>
+              <h3>How do I get help accessing my account?</h3>
+              <p>Contact your system administrator.</p>
+            </>
+          )}
+        </div>
       </section>
     </>
   );

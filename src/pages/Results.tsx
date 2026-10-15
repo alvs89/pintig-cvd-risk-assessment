@@ -101,6 +101,7 @@ export function ResultsPage() {
       </div>
       <ResearchCigPanel patient={p} result={r} />
       <CumulativeIncidencePanel
+        compatibleOnly
         risk={r.risk}
         patientId={r.pid}
         cif={r.cif}

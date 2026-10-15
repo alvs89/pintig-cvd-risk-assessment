@@ -56,7 +56,7 @@ test("fictional form inputs invoke isolated local research model; genuine-shaped
     await page.setViewportSize({width,height:900});
     expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   }
-  await expect(page.locator(".cif-empty")).toBeVisible();
+  await expect(page.locator(".cif-panel")).toHaveCount(0);
   await expect(page.locator(".further-assessment")).toContainText("Proposed rule-based follow-up");
   await expect(page.locator(".further-assessment")).toContainText("not a validated referral threshold");
 });
@@ -67,5 +67,5 @@ test("private research service failure never fabricates a CIG", async ({page})=>
   await navigateToFictionalAssessment(page);
   await expect(page.locator(".research-cig-empty")).toContainText("Research CIG unavailable");
   await expect(page.locator(".research-cif-curve")).toHaveCount(0);
-  await expect(page.locator(".cif-empty")).toBeVisible();
+  await expect(page.locator(".cif-panel")).toHaveCount(0);
 });

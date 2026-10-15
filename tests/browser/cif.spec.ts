@@ -3,6 +3,28 @@ import { test, expect, type Page } from "@playwright/test";
 async function openHarness(page: Page, scenario = "ready") {
   await page.goto("/tests/browser/fixtures/cif-harness.html?case=" + scenario);
 }
+test("compatible-only mode omits whole invalid panels and retains valid recorded curves", async ({
+  page,
+}) => {
+  for (const scenario of ["missing", "invalid", "wrong-event", "loading"]) {
+    await page.goto(
+      "/tests/browser/fixtures/cif-harness.html?compatibleOnly&case=" +
+        scenario,
+    );
+    await expect(page.locator(".cif-panel")).toHaveCount(0);
+    await expect(page.locator(".cif-svg")).toHaveCount(0);
+  }
+  await page.goto("/tests/browser/fixtures/cif-harness.html?compatibleOnly");
+  await expect(page.locator(".cif-panel")).toHaveCount(1);
+  await expect(page.locator(".cif-svg")).toBeVisible();
+  await page.getByLabel("Cumulative probability reference").selectOption("0.1");
+  await expect(page.locator(".cif-marker-status")).toContainText(
+    "Reference level not reached",
+  );
+  await page.goto('/tests/browser/fixtures/cif-harness.html?compatibleOnly&historical');
+  await expect(page.locator('.cif-svg')).toBeVisible();
+  await expect(page.locator('.cif-readouts')).toContainText('8.1%');
+});
 test("reference and inspection controls update immediately without changing ten-year grouping", async ({
   page,
 }) => {
@@ -134,7 +156,7 @@ test("chart remains readable on desktop, tablet, mobile and 200% zoom-equivalent
     fullPage: true,
   });
 });
-test("existing live and historical assessments show a neutral unavailable state", async ({
+test("existing live and historical assessments omit unavailable CIF panels", async ({
   page,
 }) => {
   await page.goto("/");
@@ -144,8 +166,9 @@ test("existing live and historical assessments show a neutral unavailable state"
   await page.getByRole("button", { name: "View", exact: true }).first().click();
   await expect(
     page.getByText("Cumulative probability curve unavailable", { exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(page.locator(".cif-svg")).toHaveCount(0);
+  await expect(page.locator(".cif-panel")).toHaveCount(0);
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   for (const [key, value] of [
     ["pid", "1"],
@@ -167,8 +190,9 @@ test("existing live and historical assessments show a neutral unavailable state"
     .click();
   await expect(
     page.getByText("Cumulative probability curve unavailable", { exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(page.locator(".cif-svg")).toHaveCount(0);
+  await expect(page.locator(".cif-panel")).toHaveCount(0);
   await page
     .getByRole("button", { name: "Save assessment", exact: true })
     .click();

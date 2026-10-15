@@ -128,6 +128,7 @@ export function RecordPage() {
         </div>
       </div>
       <CumulativeIncidencePanel
+        compatibleOnly
         key={r.id}
         risk={r.risk}
         patientId={r.pid}

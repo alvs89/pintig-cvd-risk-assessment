@@ -12,7 +12,7 @@ test("live results display automatic probability and signed-factor graphs withou
   await expect(page.getByRole("group", { name: "Contribution chart" })).toBeVisible();
   await expect(page.getByText("17.2%", { exact: true }).first()).toBeVisible();
   await expect(page.locator(".assessment-factor-bar.positive").first()).toBeVisible();
-  await expect(page.getByText("Cumulative probability curve unavailable")).toBeVisible();
+  await expect(page.getByText("Cumulative probability curve unavailable")).toHaveCount(0);
   await expect(page.locator(".cif-curve")).toHaveCount(0);
   await page.getByText("View numerical contributions").click();
   await expect(page.getByRole("table", { name: "Calculation contributions" })).toBeVisible();
@@ -31,5 +31,5 @@ test("historical results show saved probability only without reconstructing fact
   await expect(page.getByRole("figure", { name: /Ten-year probability overview/i })).toBeVisible();
   await expect(page.getByText("23.8%", { exact: true }).first()).toBeVisible();
   await expect(page.getByRole("group", { name: "Contribution chart" })).toHaveCount(0);
-  await expect(page.getByText("Cumulative probability curve unavailable")).toBeVisible();
+  await expect(page.getByText("Cumulative probability curve unavailable")).toHaveCount(0);
 });

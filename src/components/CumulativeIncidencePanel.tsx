@@ -13,6 +13,8 @@ interface Props {
   predictionContext?: ModelPredictionContext;
   storedModelVersion?: string;
   loading?: boolean;
+  /** Normal assessment views omit unavailable/loading panels; diagnostics retain them. */
+  compatibleOnly?: boolean;
 }
 const percent = (probability: number) =>
   new Intl.NumberFormat("en-PH", { maximumFractionDigits: 6 }).format(
@@ -33,6 +35,7 @@ export function CumulativeIncidencePanel({
   predictionContext,
   storedModelVersion,
   loading = false,
+  compatibleOnly = false,
 }: Props) {
   const id = useId();
   const [reference, setReference] = useState<ReferenceProbability>(0.05);
@@ -52,7 +55,8 @@ export function CumulativeIncidencePanel({
     const observer = new ResizeObserver(update);
     observer.observe(plot);
     return () => observer.disconnect();
-  }, [validated.status, loading]);
+  }, [validated.status, loading, compatibleOnly]);
+  if (compatibleOnly && (loading || validated.status !== "ready")) return null;
   if (loading)
     return (
       <section

@@ -39,6 +39,9 @@ const cif: CumulativeIncidenceOutput = {
 };
 function Harness() {
   const scenario = new URLSearchParams(location.search).get("case");
+  const compatibleOnly = new URLSearchParams(location.search).has(
+    "compatibleOnly",
+  );
   const [loading, setLoading] = useState(scenario === "loading");
   const data =
     scenario === "missing"
@@ -64,6 +67,8 @@ function Harness() {
         </button>
       )}
       <CumulativeIncidencePanel
+        compatibleOnly={compatibleOnly}
+        storedModelVersion={new URLSearchParams(location.search).has("historical") ? context.modelVersion : undefined}
         risk={0.081}
         patientId={1}
         predictionContext={context}

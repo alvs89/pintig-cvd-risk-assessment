@@ -670,6 +670,19 @@ export function handleSubmit(e: FormEvent) {
     log(
       "Calculated an illustrative cardiovascular risk estimate for " + p.record,
     );
-    return render();
+    // Commit the result before resetting either desktop pane or mobile document
+    // scrolling. An immediate reset avoids animating through the replaced form.
+    flushSync(() => render());
+    const main = document.querySelector<HTMLElement>(".appmain");
+    main?.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    window.scrollTo({
+      top: main ? window.scrollY + main.getBoundingClientRect().top : 0,
+      left: 0,
+      behavior: "instant",
+    });
+    const heading = main?.querySelector<HTMLElement>(".maincontent h1");
+    heading?.setAttribute("tabindex", "-1");
+    heading?.focus({ preventScroll: true });
+    return;
   }
 }
