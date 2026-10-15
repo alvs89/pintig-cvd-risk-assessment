@@ -27,7 +27,7 @@ test("eight complete fictional cases use actual calculator outputs and all four 
     assert.ok(users.some((u) => u.id === r.uid));
     assert.equal(p.phone, "");
     assert.equal(p.pin, "");
-    assert.equal(isFictionalIntakePatient(p), false);
+    assert.equal(isFictionalIntakePatient(p), true);
     assert.ok(age(p.dob, new Date(r.date + "T12:00:00")) >= 35);
     assert.ok(+r.inputs.ageAtAssessment <= 70);
     assert.equal(x.prior, "No");

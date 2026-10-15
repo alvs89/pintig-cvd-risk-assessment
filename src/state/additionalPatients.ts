@@ -18,6 +18,22 @@ const profiles: [number, string, string, string, string, string][] = [
   [10, "Ernesto", "Soriano", "1961-01-22", "Male", "San Mateo, Rizal"],
   [11, "Teresita", "Ramos", "1957-07-14", "Female", "Pasig City"],
 ];
+export function isAdditionalFictionalPatient(patient: Patient): boolean {
+  return profiles.some(
+    ([id, first, last, dob, sex, locality]) =>
+      patient.id === id &&
+      patient.record === `PNT-${String(id).padStart(6, "0")}` &&
+      patient.first === first &&
+      patient.middle === "" &&
+      patient.last === last &&
+      patient.dob === dob &&
+      patient.sex === sex &&
+      patient.locality === locality &&
+      patient.facility === "Community Health Center" &&
+      patient.phone === "" &&
+      patient.pin === "",
+  );
+}
 const base: AssessmentInputs = {
   prior: "No",
   verified: "Yes",

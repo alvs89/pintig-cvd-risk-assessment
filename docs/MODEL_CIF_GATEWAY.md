@@ -60,7 +60,7 @@ The gateway delegates full curve validation to the existing validateCif function
 
 ## Noninterference
 
-Normal patient results continue to show a neutral unavailable CIG until genuine compatible model data exist. The private, fictional three-case research CIG is not mapped to any patient ID.
+The primary CIG panel remains hidden until compatible model data exist. The separate local research CIG supports eleven approved fictional identities on new submissions; its Framingham probabilities are neither substituted for the primary illustrative estimate nor attached to saved assessments. See LOCAL_RESEARCH_CIG.md.
 
 The local uncommitted scalar and factor visualization work was retained. This phase adds only an inactive pure adapter, isolated tests and documentation; it creates no server endpoints, dependencies, database updates, model changes, training data copies or commits.
 

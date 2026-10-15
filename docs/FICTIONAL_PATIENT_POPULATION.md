@@ -25,7 +25,11 @@ period; future age eligibility and coverage must be checked before reuse.
 All added results are illustrative, not clinically validated probabilities.
 Explanations and educational guidance use the existing versioned rules.
 No validated further-assessment guidance, CIF, or prediction context is attached.
-The unchanged research-CIG allowlist excludes these additional identities.
+The local research-CIG allowlist includes all eleven known fictional identities.
+Each new assessment requests its own seven-predictor research curve when the
+private service is running. Historical records remain unchanged; no curve is
+retroactively attached. Production builds (including Netlify) disable the
+research graph; no hosted endpoint is configured or introduced.
 The existing research RSF and intended PURE Philippines model remain distinct.
 
 These fixtures must be excluded from any future live clinical deployment; they

@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page, type Route } from "@playwright/test";
 
 const modelResponse = {
   schemaVersion: "research-7p-cif-v1",
@@ -9,9 +9,17 @@ const modelResponse = {
   numberOfTrees: 500,
   risk10: 0.156,
   cif: {
-    times: [26,365.25,730.5,1095.75,1461,1826.25,2191.5,2556.75,2922,3287.25,3652.5],
-    probabilities: [0,0.01,0.022,0.038,0.061,0.085,0.104,0.118,0.131,0.145,0.156],
-    timeUnit: "days",daysPerYear:365.25,probabilityUnit:"fraction",supportedUntil:3652.5,
+    times: [
+      26, 365.25, 730.5, 1095.75, 1461, 1826.25, 2191.5, 2556.75, 2922, 3287.25,
+      3652.5,
+    ],
+    probabilities: [
+      0, 0.01, 0.022, 0.038, 0.061, 0.085, 0.104, 0.118, 0.131, 0.145, 0.156,
+    ],
+    timeUnit: "days",
+    daysPerYear: 365.25,
+    probabilityUnit: "fraction",
+    supportedUntil: 3652.5,
   },
 };
 async function navigateToFictionalAssessment(page: Page) {
@@ -20,14 +28,22 @@ async function navigateToFictionalAssessment(page: Page) {
   await page.locator('button[type="submit"]').click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("1");
-  await page.getByRole("button", {name:"Prefill questionnaire",exact:true}).click();
+  await page
+    .getByRole("button", { name: "Prefill questionnaire", exact: true })
+    .click();
   await page.locator('#assessmentForm button[type="submit"]').click();
 }
-test("fictional form inputs invoke isolated local research model; genuine-shaped response displays CIG", async ({page}) => {
+test("fictional form inputs invoke isolated local research model; genuine-shaped response displays CIG", async ({
+  page,
+}) => {
   const requests: any[] = [];
-  await page.route("http://127.0.0.1:8765/research-cif",async route=>{
+  await page.route("http://127.0.0.1:8765/research-cif", async (route) => {
     requests.push(route.request().postDataJSON());
-    await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(modelResponse)});
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(modelResponse),
+    });
   });
   await navigateToFictionalAssessment(page);
   await expect(page.locator(".research-cig")).toBeVisible();
@@ -38,34 +54,122 @@ test("fictional form inputs invoke isolated local research model; genuine-shaped
   expect(requests[0].predictors.sbp_mmhg).toBe(156);
   expect(requests[0].predictors.dbp_mmhg).toBe(94);
   expect(requests[0].predictors.sex_male).toBe(1);
-  expect(Object.keys(requests[0].predictors).sort()).toEqual([
-    "age_years","sex_male","sbp_mmhg","dbp_mmhg",
-    "bmi_kg_m2","current_smoker","bp_medication"
-  ].sort());
-  const p=page.locator(".research-cig");
+  expect(Object.keys(requests[0].predictors).sort()).toEqual(
+    [
+      "age_years",
+      "sex_male",
+      "sbp_mmhg",
+      "dbp_mmhg",
+      "bmi_kg_m2",
+      "current_smoker",
+      "bp_medication",
+    ].sort(),
+  );
+  const p = page.locator(".research-cig");
   await p.getByLabel("Inspect year").selectOption("1");
   await expect(p.locator(".research-cig-inspection")).toContainText("1.00%");
   await p.getByLabel("Probability reference").selectOption("0.2");
-  await expect(p.locator(".research-cig-reference")).toContainText("not reached");
+  await expect(p.locator(".research-cig-reference")).toContainText(
+    "not reached",
+  );
   await p.getByLabel("Probability reference").selectOption("0.05");
   await expect(p.locator(".research-cig-reference")).toContainText("Year 4");
-  await p.getByRole("button",{name:"Refresh research CIG"}).click();
-  await expect.poll(()=>requests.length).toBe(2);
+  await p.getByRole("button", { name: "Refresh research CIG" }).click();
+  await expect.poll(() => requests.length).toBe(2);
   await expect(page.getByTestId("research-cig-risk")).toHaveText("15.60%");
-  for(const width of [1440,820,390,320]){
-    await page.setViewportSize({width,height:900});
-    expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  for (const width of [1440, 820, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
   }
   await expect(page.locator(".cif-panel")).toHaveCount(0);
-  await expect(page.locator(".further-assessment")).toContainText("Educational follow-up considerations");
-  await expect(page.locator(".further-assessment")).toContainText("not a validated referral threshold");
+  await expect(page.locator(".further-assessment")).toContainText(
+    "Educational follow-up considerations",
+  );
+  await expect(page.locator(".further-assessment")).toContainText(
+    "not a validated referral threshold",
+  );
 });
 
-test("private research service failure never fabricates a CIG", async ({page})=>{
-  await page.route("http://127.0.0.1:8765/research-cif",route=>
-    route.fulfill({status:503,contentType:"application/json",body:'{"error":"offline"}'}));
+test("private research service failure never fabricates a CIG", async ({
+  page,
+}) => {
+  await page.route("http://127.0.0.1:8765/research-cif", (route) =>
+    route.fulfill({
+      status: 503,
+      contentType: "application/json",
+      body: '{"error":"offline"}',
+    }),
+  );
   await navigateToFictionalAssessment(page);
-  await expect(page.locator(".research-cig-empty")).toContainText("Research graph unavailable");
+  await expect(page.locator(".research-cig-empty")).toContainText(
+    "Research graph unavailable",
+  );
   await expect(page.locator(".research-cif-curve")).toHaveCount(0);
   await expect(page.locator(".cif-panel")).toHaveCount(0);
+});
+
+test("research request timeout exposes retry instead of an endless loading state", async ({
+  page,
+}) => {
+  await page.clock.install();
+  let pending: Route | undefined;
+  await page.route("http://127.0.0.1:8765/research-cif", (route) => {
+    pending = route;
+  });
+  await navigateToFictionalAssessment(page);
+  await expect(page.locator(".research-cig")).toContainText(
+    "Generating research graph",
+  );
+  await page.clock.fastForward(50001);
+  await expect(page.locator(".research-cig-empty")).toContainText(
+    "Research graph unavailable",
+  );
+  await expect(
+    page.getByRole("button", { name: "Refresh research CIG" }),
+  ).toBeEnabled();
+  await expect(page.locator(".research-cif-curve")).toHaveCount(0);
+  await pending?.abort().catch(() => {});
+});
+
+test("a late response for a previous patient cannot replace the current research graph", async ({
+  page,
+}) => {
+  let first: Route | undefined;
+  let requests = 0;
+  await page.route("http://127.0.0.1:8765/research-cif", async (route) => {
+    requests++;
+    if (requests === 1) {
+      first = route;
+      return;
+    }
+    await route.fulfill({
+      json: {
+        ...modelResponse,
+        risk10: 0.2,
+        cif: {
+          ...modelResponse.cif,
+          probabilities: [...modelResponse.cif.probabilities.slice(0, -1), 0.2],
+        },
+      },
+    });
+  });
+  await navigateToFictionalAssessment(page);
+  await expect.poll(() => requests).toBe(1);
+  await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
+  await page.locator("#pid").selectOption("11");
+  await page
+    .getByRole("button", { name: "Change patient", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Prefill questionnaire", exact: true })
+    .click();
+  await page.locator('#assessmentForm button[type="submit"]').click();
+  await expect(page.getByTestId("research-cig-risk")).toHaveText("20.00%");
+  await first?.fulfill({ json: modelResponse }).catch(() => {});
+  await expect(page.getByTestId("research-cig-risk")).toHaveText("20.00%");
+  expect(requests).toBe(2);
 });

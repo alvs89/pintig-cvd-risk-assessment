@@ -4,6 +4,7 @@ for (const role of ["admin", "worker"]) {
   test(`${role} can review and assess the complete fictional population`, async ({
     page,
   }) => {
+    await page.route("http://127.0.0.1:8765/research-cif", route => route.fulfill({status:503,body:"unavailable"}));
     await page.goto("/");
     await page.locator(`[data-act="${role}Demo"]`).click();
     await page.locator('button[type="submit"]').click();
@@ -56,7 +57,7 @@ for (const role of ["admin", "worker"]) {
       ).toBe(true);
       await page.locator('#assessmentForm button[type="submit"]').click();
       await expect(page.locator(".risk")).toHaveText(risk!);
-      await expect(page.locator(".research-cig")).toHaveCount(0);
+      await expect(page.locator(".research-cig")).toHaveCount(1);
       await expect(page.locator(".cif-curve")).toHaveCount(0);
       await expect(
         page.getByText(

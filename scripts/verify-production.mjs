@@ -104,6 +104,30 @@ try {
   await page.locator('button[type="submit"]').click();
   await page.locator(".risk-distribution").waitFor();
   assert.equal(await page.locator(".distribution-row").count(), 4);
+  const researchRequests = [];
+  page.on("request", (request) => {
+    if (request.url().startsWith("http://127.0.0.1:8765/"))
+      researchRequests.push(request.url());
+  });
+  await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
+  await page.locator("#pid").selectOption("11");
+  await page
+    .getByRole("button", { name: "Prefill questionnaire", exact: true })
+    .click();
+  await page.locator('#assessmentForm button[type="submit"]').click();
+  await page
+    .getByRole("heading", { name: "Assessment Result", exact: true })
+    .waitFor();
+  assert.equal(
+    await page.locator(".research-cig").count(),
+    0,
+    "Production must not enable local research inference",
+  );
+  assert.deepEqual(
+    researchRequests,
+    [],
+    "Production must not contact the private R service",
+  );
   assert.deepEqual(errors, []);
   console.log(
     "Production assets, React login/dashboard, original reference and layout geometry: passed.",

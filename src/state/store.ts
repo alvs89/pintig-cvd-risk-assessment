@@ -5,6 +5,7 @@ import type {
   Session,
   User,
 } from "../types/domain";
+import { originalPatients } from "./originalPatients";
 import { createAdditionalPopulation } from "./additionalPatients";
 const additionalPopulation = createAdditionalPopulation();
 export const users: User[] = [
@@ -34,45 +35,7 @@ export const users: User[] = [
   },
 ];
 export const patients: Patient[] = [
-  {
-    id: 1,
-    record: "PNT-000001",
-    first: "Roberto",
-    middle: "M.",
-    last: "Dela Cruz",
-    dob: "1968-04-17",
-    sex: "Male",
-    locality: "Quezon City",
-    phone: "",
-    pin: "",
-    facility: "Community Health Center",
-  },
-  {
-    id: 2,
-    record: "PNT-000002",
-    first: "Elena",
-    middle: "",
-    last: "Reyes",
-    dob: "1975-07-08",
-    sex: "Female",
-    locality: "San Mateo, Rizal",
-    phone: "",
-    pin: "",
-    facility: "Community Health Center",
-  },
-  {
-    id: 3,
-    record: "PNT-000003",
-    first: "Antonio",
-    middle: "",
-    last: "Santos",
-    dob: "1982-01-13",
-    sex: "Male",
-    locality: "Marikina City",
-    phone: "",
-    pin: "",
-    facility: "Community Health Center",
-  },
+  ...originalPatients.map((patient) => ({ ...patient })),
   ...additionalPopulation.patients,
 ];
 export const records: AssessmentRecord[] = [

@@ -19,7 +19,7 @@ death is not verified. It differs from the intended PURE Philippines composite.
 The response is checked by researchCig.ts. The curve retains step values without
 linear interpolation; the administrative ten-year terminal evaluation is defined
 by the private inference adapter. The UI remains restricted to the existing local
-development environment and three recognized fictional identities. Startup and
+development environment and eleven recognized fictional identities. Startup and
 service configuration belong in private harness documentation, not patient views.
 
 Risk-based educational follow-up is unvalidated. Its existing 10% display rule is
