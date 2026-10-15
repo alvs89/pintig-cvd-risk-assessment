@@ -1,3 +1,11 @@
+import {
+  screeningForPatient,
+  screeningSignature,
+} from "../services/preAssessment";
+import {
+  screeningDecision,
+  SCREENING_VERSION,
+} from "../services/preAssessmentRules.mjs";
 import { download } from "../services/export";
 import { flushSync } from "react-dom";
 import { generateGuidance } from "../services/guidance";
@@ -37,7 +45,7 @@ export const formValues = (form: HTMLFormElement): Record<string, string> =>
 function updateQuestionnaire() {
   const form = formById("assessmentForm");
   if (form) {
-    const x = deriveInputs(formValues(form));
+    const x = deriveInputs({ ...S.draft, ...formValues(form) });
     for (const key of [
       "bmi",
       "alcoholDays",
@@ -104,7 +112,7 @@ export function handleClick(e: ActionEvent) {
       sideScroll = document.querySelector(".sidebar")?.scrollTop || 0;
     if (ass) {
       updateQuestionnaire();
-      S.draft = formValues(ass);
+      S.draft = { ...S.draft, ...formValues(ass) };
       S.patientId = +(field(ass, "pid")?.value || 0) || null;
     }
     const showing = S.revealedId !== p.id;
@@ -153,6 +161,7 @@ export function handleClick(e: ActionEvent) {
         log("Logged out");
         S.revealedId = null;
         S.user = null;
+        S.preAssessment = null;
         S.patientId = null;
         S.historyId = null;
         S.result = null;
@@ -193,7 +202,10 @@ export function handleClick(e: ActionEvent) {
   if (action === "assessPatient") {
     if (!P(arg)) return;
     const open = () => {
-      if (Number(S.draft?.pid) !== +arg) S.draft = null;
+      if (Number(S.draft?.pid) !== +arg) {
+        S.draft = null;
+        S.preAssessment = null;
+      }
       S.revealedId = null;
       S.patientId = +arg;
       S.page = "New Risk Assessment";
@@ -212,6 +224,27 @@ export function handleClick(e: ActionEvent) {
       return;
     }
     return open();
+  }
+  if (action === "continueAssessment") {
+    const p = P(S.patientId),
+      check = S.preAssessment;
+    if (
+      !p ||
+      !check ||
+      check.pid !== p.id ||
+      screeningDecision(check.answers, age(p.dob)).status !== "eligible"
+    )
+      return;
+    check.confirmed = screeningSignature(p, check.answers);
+    S.draft = { ...S.draft, pid: String(p.id) };
+    S.message = "";
+    flushSync(() => render());
+    document
+      .querySelector<HTMLElement>(
+        ".assessment-predictors input:not([type=hidden])",
+      )
+      ?.focus();
+    return;
   }
   if (action === "loadRecordedIntake") {
     const input = S.patientId ? seededIntake(S.patientId) : undefined;
@@ -308,6 +341,7 @@ export function handleClick(e: ActionEvent) {
       actionLabel: "Clear",
       onConfirm: () => {
         S.draft = null;
+        S.preAssessment = null;
         S.result = null;
         S.formRevision++;
         msg("Assessment form cleared.");
@@ -318,6 +352,12 @@ export function handleClick(e: ActionEvent) {
   }
   if (action === "saveAssessment") {
     if (!S.result || S.result.saved) return;
+    const patient = P(S.result.pid);
+    if (!patient || !screeningForPatient(S.preAssessment, patient)) {
+      S.result = null;
+      msg("Complete the eligibility and safety check before saving.", true);
+      return render();
+    }
     const r = S.result;
     const rec = createSnapshot(
       r,
@@ -573,6 +613,16 @@ export function handleSubmit(e: FormEvent) {
   }
   if (form.id === "assessmentForm") {
     if (!S.user) return;
+    const patient = P(S.patientId);
+    if (!patient || !screeningForPatient(S.preAssessment, patient)) {
+      S.result = null;
+      S.message = "";
+      render();
+      document
+        .querySelector<HTMLElement>("#eligibility-heading")
+        ?.scrollIntoView({ block: "center" });
+      return;
+    }
     updateQuestionnaire();
     if (!validateAssessmentForm(form)) {
       S.message = "";
@@ -664,6 +714,7 @@ export function handleSubmit(e: FormEvent) {
     let out = simulate(x, p);
     S.result = {
       ...out,
+      preAssessmentVersion: SCREENING_VERSION,
       pid: p.id,
       ageAtAssessment: age(p.dob),
       inputs: x,

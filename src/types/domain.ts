@@ -53,6 +53,7 @@ export interface Prediction {
   cif?: CumulativeIncidenceOutput;
 }
 export interface Result extends Prediction {
+  preAssessmentVersion?: string;
   pid: number;
   ageAtAssessment: number;
   inputs: AssessmentInputs;
@@ -61,6 +62,7 @@ export interface Result extends Prediction {
   guidanceRules?: Guidance[];
 }
 export interface AssessmentRecord {
+  preAssessmentVersion?: string;
   furtherAssessmentGuidance?: FurtherAssessmentSnapshot;
   prototypeFollowUpGuidance?: PrototypeFollowUpSnapshot;
   id: number;
@@ -92,6 +94,7 @@ export interface Confirmation {
   onConfirm: () => void;
 }
 export interface Session {
+  preAssessment: import("../services/preAssessment").PreAssessment | null;
   user: User | null;
   page: Page;
   patientId: number | null;

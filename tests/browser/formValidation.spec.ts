@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect } from "@playwright/test";
 test("required labels and real-time numeric errors are accessible and clear on correction", async ({
   page,
@@ -9,6 +10,8 @@ test("required labels and real-time numeric errors are accessible and clear on c
   await page.locator('[data-act="workerDemo"]').click();
   await page.locator('button[type="submit"]').click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
+  await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
   await expect(page.locator('label[for="sbp"] .required-marker')).toBeVisible();
   await expect(page.locator('label[for="pid"] .required-marker')).toBeVisible();
   const sbp = page.locator("#sbp");

@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect } from "@playwright/test";
 
 for (const role of ["admin", "worker"]) {
@@ -28,6 +29,7 @@ for (const role of ["admin", "worker"]) {
     ).toHaveCount(0);
     await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
     await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
     await expect(
       page.getByText(
         "Practice responses for this fictional patient. Review before submitting.",
@@ -36,6 +38,7 @@ for (const role of ["admin", "worker"]) {
     await page
       .getByRole("button", { name: "Prefill questionnaire", exact: true })
       .click();
+  await completePreAssessment(page);
     await page.locator('#assessmentForm button[type="submit"]').click();
     await expect(
       page.getByText(

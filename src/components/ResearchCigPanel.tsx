@@ -2,6 +2,10 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Patient, Result } from "../types/domain";
 import {
+  validScreeningAttestation,
+  type ScreeningAttestation,
+} from "../services/preAssessmentRules.mjs";
+import {
   RESEARCH_CIG_ENDPOINT,
   researchInputsFor,
   verifyResearchCif,
@@ -11,6 +15,7 @@ import {
 interface Props {
   patient: Patient;
   result: Result;
+  screening: ScreeningAttestation | null;
 }
 const percent = (x: number) => (x * 100).toFixed(2) + "%";
 type RemoteState =
@@ -18,7 +23,7 @@ type RemoteState =
   | { kind: "ready"; data: ResearchCif }
   | { kind: "unavailable"; reason: string };
 
-export function ResearchCigPanel({ patient, result }: Props) {
+export function ResearchCigPanel({ patient, result, screening }: Props) {
   const [version, setVersion] = useState(0);
   const [reference, setReference] = useState(0.05);
   const [year, setYear] = useState(10);
@@ -33,8 +38,10 @@ export function ResearchCigPanel({ patient, result }: Props) {
     typeof window !== "undefined" &&
     (window.location.hostname === "localhost" ||
       window.location.hostname === "127.0.0.1");
-  const observed = researchInputsFor(patient, result);
-  const signature = JSON.stringify([patient.id, observed]);
+  const observed = validScreeningAttestation(screening, result.ageAtAssessment)
+    ? researchInputsFor(patient, result)
+    : null;
+  const signature = JSON.stringify([patient.id, observed, screening]);
   const request = useMemo(() => observed, [signature]);
   const remote: RemoteState =
     response?.assessment === result &&
@@ -72,7 +79,11 @@ export function ResearchCigPanel({ patient, result }: Props) {
         "Content-Type": "application/json",
         "X-Pintig-Research": "fictional-local-only",
       },
-      body: JSON.stringify({ fictionalOnly: true, predictors: request }),
+      body: JSON.stringify({
+        fictionalOnly: true,
+        predictors: request,
+        screening,
+      }),
     })
       .then(async (response) => {
         if (!response.ok) throw Error("Local research model unavailable");

@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect, type Page } from "@playwright/test";
 
 async function openHarness(page: Page, scenario = "ready") {
@@ -170,10 +171,9 @@ test("existing live and historical assessments omit unavailable CIF panels", asy
   await expect(page.locator(".cif-svg")).toHaveCount(0);
   await expect(page.locator(".cif-panel")).toHaveCount(0);
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
+  await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
   for (const [key, value] of [
-    ["pid", "1"],
-    ["prior", "No"],
-    ["verified", "Yes"],
     ["currentSmoking", "No"],
     ["bpMeds", "No"],
     ["mode", "observed"],

@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect } from "@playwright/test";
 test("isolated guidance remains independent of keyboard-operated CIF controls and responsive", async ({
   page,
@@ -44,10 +45,9 @@ test("illustrative results show proposed factor-specific rules without clinical 
   await page.locator('[data-act="workerDemo"]').click();
   await page.getByRole("button", { name: "Sign in →", exact: true }).click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
+  await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
   for (const [id, value] of [
-    ["pid", "1"],
-    ["prior", "No"],
-    ["verified", "Yes"],
     ["currentSmoking", "Yes"],
     ["bpMeds", "No"],
     ["mode", "observed"],
@@ -91,7 +91,9 @@ test("moderate illustrative results do not receive risk-category follow-up despi
   await page.getByRole("button", { name: "Sign in →", exact: true }).click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("2");
+  await completePreAssessment(page);
   await page.getByRole("button", { name: "Prefill questionnaire" }).click();
+  await completePreAssessment(page);
   await page.getByRole("button", { name: "Review 10-year risk result →" }).click();
   const panel = page.getByRole("region", { name: "Further Assessment Guidance" });
   await expect(panel).toContainText("Continue risk-factor education");
@@ -105,7 +107,9 @@ test("very-high illustration prioritizes review of actual recorded factors and w
   await page.getByRole("button", { name: "Sign in →", exact: true }).click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
   await page.getByRole("button", { name: "Prefill questionnaire" }).click();
+  await completePreAssessment(page);
   await page.locator("#sbp").fill("175");
   await page.locator("#weight").fill("105");
   await page.locator("#alcoholDays").fill("5");

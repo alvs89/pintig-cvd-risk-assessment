@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs/promises";
 
@@ -21,8 +22,7 @@ async function nav(page: Page, name: string) {
 async function intake(page: Page, mode = "extended") {
   await nav(page, "New Risk Assessment");
   await page.locator("#pid").selectOption("1");
-  await page.locator("#prior").selectOption("No");
-  await page.locator("#verified").selectOption("Yes");
+  await completePreAssessment(page);
   await page.locator("#sbp").fill("132");
   await page.locator("#dbp").fill("82");
   await page.locator("#height").fill("168");
@@ -222,18 +222,12 @@ test("core input mode, eligibility, invalid pressure and clear confirmation", as
   await intake(page, "observed");
   await expect(page.locator("#extraQuestionnaire")).toBeHidden();
   await expect(page.locator("#previewActivity")).toHaveText("Not included");
-  await page.locator("#prior").selectOption("Yes");
-  await page
-    .getByRole("button", { name: "Review 10-year risk result →", exact: true })
-    .click();
-  await expect(
-    page.getByText(
-      "Confirm patient eligibility and the absence of previous major-CVD events.",
-      { exact: true },
-    ),
-  ).toBeVisible();
+  await page.locator("#screen-heartAttack").selectOption("Yes");
+  await expect(page.getByRole("heading",{name:"First-Event Risk Assessment Not Applicable"})).toBeVisible();
+  await expect(page.locator(".assessment-predictors")).toBeHidden();
+  await page.locator("#screen-heartAttack").selectOption("No");
+  await completePreAssessment(page);
   await expect(page.locator("#sbp")).toHaveValue("132");
-  await page.locator("#prior").selectOption("No");
   await page.locator("#dbp").fill("140");
   await page
     .getByRole("button", { name: "Review 10-year risk result →", exact: true })
@@ -320,10 +314,10 @@ test("questionnaire fields, labels, options and constraints match the original v
   const inspect = async (target: Page) =>
     target.locator("#assessmentForm").evaluate((form) => ({
       // Only the presentation label for the input-set selector was changed.
-      labels: Array.from(form.querySelectorAll("label:not([for='mode'])")).map(
+      labels: Array.from(form.querySelectorAll("label:not([for='mode']):not([for='prior']):not([for='verified']):not([for^='screen-'])")).map(
         (label) => label.textContent?.replace(/\s*\*\s*$/, "").trim(),
       ),
-      fields: Array.from(form.querySelectorAll("input,select")).map((node) => ({
+      fields: Array.from(form.querySelectorAll("input:not([name=prior]):not([name=verified]),select:not([data-screening-key]):not([name=prior]):not([name=verified])")).map((node) => ({
         id: node.id,
         name: node.getAttribute("name"),
         type: node.getAttribute("type"),
@@ -348,6 +342,7 @@ test("questionnaire fields, labels, options and constraints match the original v
             : undefined,
       })),
     }));
+  await expect(page.locator("[data-screening-key]")).toHaveCount(18);
   const current = await inspect(page);
   const patientOptions = current.fields.find(field => field.id === "pid")!.options!;
   expect(patientOptions.slice(4)).toEqual(Array.from({length:8}, (_, index) => ({

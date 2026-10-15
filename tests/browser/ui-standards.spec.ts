@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect } from "@playwright/test";
 
 test("professional copy, responsive form alignment and keyboard confirmations", async ({
@@ -22,8 +23,7 @@ test("professional copy, responsive form alignment and keyboard confirmations", 
   await page.getByRole("button", { name: "Sign in →", exact: true }).click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("1");
-  await page.locator("#prior").selectOption("No");
-  await page.locator("#verified").selectOption("Yes");
+  await completePreAssessment(page);
   for (const [width, height] of [
     [1440, 900],
     [820, 1180],
@@ -38,7 +38,6 @@ test("professional copy, responsive form alignment and keyboard confirmations", 
     ).toBe(true);
     if (width > 570) {
       for (const [first, second] of [
-        ["#prior", "#verified"],
         ["#sbp", "#dbp"],
         ["#height", "#weight"],
         ["#bmi", "#waist"],

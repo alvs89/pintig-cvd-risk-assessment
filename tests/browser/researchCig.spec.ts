@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect, type Page, type Route } from "@playwright/test";
 
 const modelResponse = {
@@ -28,9 +29,11 @@ async function navigateToFictionalAssessment(page: Page) {
   await page.locator('button[type="submit"]').click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
   await page
     .getByRole("button", { name: "Prefill questionnaire", exact: true })
     .click();
+  await completePreAssessment(page);
   await page.locator('#assessmentForm button[type="submit"]').click();
 }
 test("fictional form inputs invoke isolated local research model; genuine-shaped response displays CIG", async ({
@@ -161,12 +164,14 @@ test("a late response for a previous patient cannot replace the current research
   await expect.poll(() => requests).toBe(1);
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("11");
+  await completePreAssessment(page);
   await page
     .getByRole("button", { name: "Change patient", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Prefill questionnaire", exact: true })
     .click();
+  await completePreAssessment(page);
   await page.locator('#assessmentForm button[type="submit"]').click();
   await expect(page.getByTestId("research-cig-risk")).toHaveText("20.00%");
   await first?.fulfill({ json: modelResponse }).catch(() => {});

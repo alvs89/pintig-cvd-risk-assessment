@@ -4,6 +4,8 @@ import { phoneDigits } from "../utils/phone";
 import { formValues, openPintigConfirm } from "./actions";
 import { hasIntakeAnswers } from "./seededIntakes";
 import { P, render, S } from "./store";
+import { screeningDecision } from "../services/preAssessmentRules.mjs";
+import { age } from "../utils/format";
 type FilterKey =
   | "query"
   | "filter"
@@ -27,6 +29,40 @@ const filters: Record<string, FilterKey> = {
   reportCategory: "reportCategory",
 };
 export function handleInput(target: HTMLInputElement) {
+  if (target.dataset.screeningKey && S.user && S.patientId) {
+    const current =
+      S.preAssessment?.pid === S.patientId ? S.preAssessment.answers : {};
+    S.preAssessment = {
+      pid: S.patientId,
+      answers: { ...current, [target.dataset.screeningKey]: target.value },
+      confirmed: null,
+    };
+    S.result = null;
+    S.message = "";
+    render();
+    const patient = P(S.patientId);
+    const decision = screeningDecision(
+      S.preAssessment.answers,
+      patient ? age(patient.dob) : NaN,
+    );
+    if (
+      target.value === "Yes" &&
+      ["warning", "history"].includes(decision.status)
+    ) {
+      requestAnimationFrame(() => {
+        const status = document.querySelector<HTMLElement>(".screening-status");
+        status?.focus({ preventScroll: true });
+        status?.scrollIntoView({
+          block: "center",
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+            ? "instant"
+            : "smooth",
+        });
+      });
+    }
+    return;
+  }
   if (target.id === "phone")
     target.value = phoneDigits(target.value).slice(0, 10);
   const key = filters[target.id];
@@ -56,6 +92,7 @@ export function handleInput(target: HTMLInputElement) {
           "This will clear the unsaved questionnaire answers so they are not assigned to another patient. Saved assessments will not be affected.",
         actionLabel: "Change patient",
         onConfirm: () => {
+          S.preAssessment = null;
           S.patientId = nextPatient;
           S.draft = nextPatient
             ? { pid: String(nextPatient), mode: "extended" }
@@ -68,7 +105,9 @@ export function handleInput(target: HTMLInputElement) {
       });
       return;
     }
-    S.draft = deriveInputs(formValues(form), S.draft);
+    if (target.id === "pid" && Number(target.value) !== (S.patientId ?? 0))
+      S.preAssessment = null;
+    S.draft = deriveInputs({ ...S.draft, ...formValues(form) }, S.draft);
     S.patientId = P(S.draft.pid)?.id ?? null;
     render();
   }

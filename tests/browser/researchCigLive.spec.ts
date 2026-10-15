@@ -1,3 +1,10 @@
+import {
+  SCREENING_VERSION,
+  SCREENING_KEYS,
+  WARNING_SIGNS,
+  EVENT_HISTORY,
+} from "../../src/services/preAssessmentRules.mjs";
+import { completePreAssessment } from "./preAssessmentHelpers";
 import { test, expect, type Page } from "@playwright/test";
 import { patients } from "../../src/state/store";
 import { seededIntake } from "../../src/state/seededIntakes";
@@ -26,7 +33,8 @@ for (const role of ["worker", "admin"]) {
   test(`actual frozen RSF: all eleven ${role} assessments and three edited predictor vectors`, async ({
     page,
   }, info) => {
-    test.setTimeout(600000);
+    test.setTimeout(300000);
+    page.setDefaultTimeout(15000);
     await page.goto("/");
     await page.locator(`[data-act="${role}Demo"]`).click();
     await page.locator('button[type="submit"]').click();
@@ -54,6 +62,15 @@ for (const role of ["worker", "admin"]) {
       expect(response.request().postDataJSON()).toEqual({
         fictionalOnly: true,
         predictors: expected,
+        screening: {
+          version: SCREENING_VERSION,
+          answers: Object.fromEntries(
+            SCREENING_KEYS.map((key) => [
+              key,
+              key === "verified" ? "Yes" : "No",
+            ]),
+          ),
+        },
       });
       const body = await response.json();
       const cif = verifyResearchCif(body);
@@ -104,10 +121,12 @@ for (const role of ["worker", "admin"]) {
       }
     }
     for (const patient of patients) {
+      console.log(`Live screening: ${role} ${patient.record}`);
       await page
         .locator('.sidebar [data-act="nav:New Risk Assessment"]')
         .click();
       await page.locator("#pid").selectOption(String(patient.id));
+      await completePreAssessment(page);
       if (await page.getByRole("alertdialog").count())
         await page
           .getByRole("button", { name: "Change patient", exact: true })
@@ -115,6 +134,7 @@ for (const role of ["worker", "admin"]) {
       await page
         .getByRole("button", { name: "Prefill questionnaire", exact: true })
         .click();
+      await completePreAssessment(page);
       await submit(patient);
       if ([1, 6, 11].includes(patient.id)) {
         await page
@@ -131,3 +151,45 @@ for (const role of ["worker", "admin"]) {
     console.log(`GENUINE_RSF_${role}: ${JSON.stringify(outputs)}`);
   });
 }
+
+test("private API rejects missing, positive, uncertain and wrong-version screening before inference", async ({
+  request,
+}) => {
+  const answers = Object.fromEntries(
+    SCREENING_KEYS.map((key) => [key, key === "verified" ? "Yes" : "No"]),
+  );
+  const predictors = researchInputsFor(patients[0], {
+    inputs: seededIntake(1)!,
+    ageAtAssessment: age(patients[0].dob),
+  })!;
+  const good = { version: SCREENING_VERSION, answers };
+  const invalid: unknown[] = [
+    undefined,
+    null,
+    { version: "old", answers },
+    { version: SCREENING_VERSION, answers: {} },
+  ];
+  for (const [key] of [...WARNING_SIGNS, ...EVENT_HISTORY])
+    invalid.push({ ...good, answers: { ...answers, [key]: "Yes" } });
+  for (const key of SCREENING_KEYS) {
+    invalid.push({ ...good, answers: { ...answers, [key]: "Unknown" } });
+    invalid.push({ ...good, answers: { ...answers, [key]: "" } });
+  }
+  for (const screening of invalid) {
+    const response = await request.post(RESEARCH_CIG_ENDPOINT, {
+      headers: {
+        Origin: "http://127.0.0.1:5173",
+        "X-Pintig-Research": "fictional-local-only",
+      },
+      data: {
+        fictionalOnly: true,
+        predictors,
+        ...(screening === undefined ? {} : { screening }),
+      },
+    });
+    expect(response.status()).toBe(422);
+    const body = await response.json();
+    expect(body.risk10).toBeUndefined();
+    expect(body.cif).toBeUndefined();
+  }
+});

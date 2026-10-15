@@ -11,6 +11,7 @@ import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel
 import { ResearchCigPanel } from "../components/ResearchCigPanel";
 import { AssessmentVisualizations } from "../components/AssessmentVisualizations";
 import { P, S } from "../state/store";
+import { screeningForPatient } from "../services/preAssessment";
 import { esc } from "../utils/format";
 export function ResultsPage() {
   let r = S.result!,
@@ -103,7 +104,11 @@ export function ResultsPage() {
           />
         </div>
       </div>
-      <ResearchCigPanel patient={p} result={r} />
+      <ResearchCigPanel
+        patient={p}
+        result={r}
+        screening={screeningForPatient(S.preAssessment, p)}
+      />
       <CumulativeIncidencePanel
         compatibleOnly
         risk={r.risk}

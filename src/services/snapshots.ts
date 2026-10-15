@@ -17,10 +17,13 @@ export function createSnapshot(
   userId: number,
 ): AssessmentRecord {
   const rules = result.guidanceRules ?? [];
-  const demoFollowUp = prototypeFollowUp(result.risk, result.band, result.inputs);
-  const demoSnapshot = demoFollowUp.status === "ready"
-    ? demoFollowUp.guidance
-    : undefined;
+  const demoFollowUp = prototypeFollowUp(
+    result.risk,
+    result.band,
+    result.inputs,
+  );
+  const demoSnapshot =
+    demoFollowUp.status === "ready" ? demoFollowUp.guidance : undefined;
   const context = isModelPredictionContext(result.predictionContext, result.pid)
     ? result.predictionContext
     : undefined;
@@ -35,6 +38,9 @@ export function createSnapshot(
     risk: result.risk,
     band: result.band,
     model: context?.modelVersion ?? PREDICTION_VERSION,
+    ...(result.preAssessmentVersion
+      ? { preAssessmentVersion: result.preAssessmentVersion }
+      : {}),
     ...(context ? { predictionContext: copyPredictionContext(context) } : {}),
     ...(curveValid && result.cif ? { cif: copyCif(result.cif) } : {}),
     ...(demoSnapshot

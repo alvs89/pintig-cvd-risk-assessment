@@ -75,6 +75,7 @@ export const logs: AuditEntry[] = [
   { when: "2026-09-30", user: "System", action: "Initialized patient records" },
 ];
 export const S: Session = {
+  preAssessment: null,
   user: null,
   page: "Dashboard",
   patientId: null,

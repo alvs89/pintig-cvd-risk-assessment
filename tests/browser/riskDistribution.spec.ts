@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect } from "@playwright/test";
 for (const role of ["admin", "worker"])
   test(`${role} distribution has accurate shared scope, interaction and responsive bars`, async ({
@@ -57,9 +58,11 @@ test("saving an assessment updates dashboard totals without refresh", async ({
   await page.locator('button[type="submit"]').click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
   await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
   await page
     .getByRole("button", { name: "Prefill questionnaire", exact: true })
     .click();
+  await completePreAssessment(page);
   await page.locator('#assessmentForm button[type="submit"]').click();
   await page.locator('[data-act="saveAssessment"]').click();
   await page.locator('.sidebar [data-act="nav:Dashboard"]').click();

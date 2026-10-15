@@ -1,9 +1,11 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect } from "@playwright/test";
 
 for (const role of ["admin", "worker"]) {
   test(`${role} can review and assess the complete fictional population`, async ({
     page,
   }) => {
+    test.setTimeout(120000);
     await page.route("http://127.0.0.1:8765/research-cif", route => route.fulfill({status:503,body:"unavailable"}));
     await page.goto("/");
     await page.locator(`[data-act="${role}Demo"]`).click();
@@ -36,6 +38,7 @@ for (const role of ["admin", "worker"]) {
       await expect(page.locator(".history-question-group")).toHaveCount(7);
       await sidebar.locator('[data-act="nav:New Risk Assessment"]').click();
       await page.locator("#pid").selectOption(String(pid));
+  await completePreAssessment(page);
       if (await page.getByRole("alertdialog").count())
         await page
           .getByRole("button", { name: "Change patient", exact: true })
@@ -43,6 +46,7 @@ for (const role of ["admin", "worker"]) {
       await page
         .getByRole("button", { name: "Prefill questionnaire", exact: true })
         .click();
+  await completePreAssessment(page);
       // Check the real form's numeric constraints and supported select choices.
       expect(
         await page.locator("#assessmentForm").evaluate((form) =>

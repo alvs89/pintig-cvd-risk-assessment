@@ -1,3 +1,5 @@
+import { PreAssessmentCheck } from "../components/PreAssessmentCheck";
+import { screeningForPatient } from "../services/preAssessment";
 import {
   b,
   f,
@@ -13,6 +15,7 @@ import { seededIntake } from "../state/seededIntakes";
 export function AssessmentPage() {
   let x = S.draft || {},
     p = S.patientId ? P(S.patientId) : null;
+  const unlocked = !!p && !!screeningForPatient(S.preAssessment, p);
   const v = (k: string, d = "") => x[k] ?? d;
   const ynu = [
     ["", "Choose an answer"],
@@ -106,32 +109,14 @@ export function AssessmentPage() {
               <dd id={"patientSex"}>{p ? esc(p.sex) : "—"}</dd>
             </div>
           </dl>
-          <div className={"intake-section-head"}>
-            <span className={"intake-step"}>{"02"}</span>
-            <div>
-              <h2>{"Eligibility questions"}</h2>
-              <p>{"Confirm the intended first-event prediction population."}</p>
-            </div>
-          </div>
-          <div className={"gridform"}>
-            {sel(
-              "Has the patient previously been diagnosed with a heart attack, stroke, or heart failure? *",
-              "prior",
-              ynu,
-              v("prior"),
-            )}
-            {sel(
-              "Is the information sufficient to proceed with the assessment? *",
-              "verified",
-              ynu,
-              v("verified"),
-            )}
-          </div>
-          <p className={"hintline"}>
-            {
-              "People with a previous component of the target event are outside the intended first-event assessment. Age eligibility is checked automatically."
-            }
-          </p>
+          <PreAssessmentCheck />
+          <input type="hidden" name="prior" value={unlocked ? "No" : ""} />
+          <input type="hidden" name="verified" value={unlocked ? "Yes" : ""} />
+          <fieldset
+            className="assessment-predictors"
+            hidden={!unlocked}
+            disabled={!unlocked}
+          >
           <div className={"intake-section-head"}>
             <span className={"intake-step"}>{"03"}</span>
             <div>
@@ -387,7 +372,8 @@ export function AssessmentPage() {
                     <span
                       id={"activityMinutesDisplay"}
                       className={
-                        "derived-main " + (activity === "" ? "placeholder" : "")
+                        "derived-main " +
+                        (activity === "" ? "placeholder" : "")
                       }
                     >
                       {activity !== ""
@@ -471,7 +457,9 @@ export function AssessmentPage() {
               </div>
             </div>
             <div className={"question-group"}>
-              <div className={"group-title"}>{"Family and social history"}</div>
+              <div className={"group-title"}>
+                {"Family and social history"}
+              </div>
               <div className={"gridform"}>
                 {sel(
                   "Has a parent or sibling been diagnosed with heart disease or stroke?",
@@ -561,6 +549,7 @@ export function AssessmentPage() {
             </button>
             {b("Clear assessment", "resetAssessment")}
           </div>
+          </fieldset>
         </form>
       </section>
     </>

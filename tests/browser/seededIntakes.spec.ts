@@ -1,3 +1,4 @@
+import {completePreAssessment} from "./preAssessmentHelpers";
 import { test, expect } from "@playwright/test";
 test("recorded intakes load explicitly, remain editable, protect drafts and preserve history", async ({
   page,
@@ -12,6 +13,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
     ["3", "118", "23.4", "0.0", "200"],
   ]) {
     await page.locator("#pid").selectOption(pid);
+  await completePreAssessment(page);
     if (pid !== "1")
       await page
         .getByRole("button", { name: "Change patient", exact: true })
@@ -20,6 +22,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
     await page
       .getByRole("button", { name: "Prefill questionnaire", exact: true })
       .click();
+  await completePreAssessment(page);
     await expect(page.locator("#sbp")).toHaveValue(sbp);
     await expect(page.locator("#bmi")).toHaveValue(bmi);
     await expect(page.locator("#alcoholDrinks")).toHaveValue(alcohol);
@@ -45,15 +48,18 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
   await page
     .getByRole("button", { name: "Prefill questionnaire", exact: true })
     .click();
+  await completePreAssessment(page);
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   await expect(page.locator("#sbp")).toHaveValue("122");
   await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   await expect(page.locator("#pid")).toHaveValue("3");
   await expect(page.locator("#sbp")).toHaveValue("122");
   await page
     .getByRole("button", { name: "Prefill questionnaire", exact: true })
     .click();
+  await completePreAssessment(page);
   await page.getByRole("button", { name: "Replace answers", exact: true }).click();
   await page.locator("#sbp").fill("122");
   await page.locator('#assessmentForm button[type="submit"]').click();
