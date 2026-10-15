@@ -1,0 +1,8 @@
+/* One contrasting hover pair across light, inverse, navigation and dialog buttons.
+ * Explicit importance overrides preserved legacy inverse-color rules, including
+ * their important dialog colors, without changing normal or disabled states. */
+html:root body button:hover:not(:disabled):not([aria-disabled="true"]) {
+  color: #17344a !important;
+  background: #edf6f6 !important;
+  border-color: #b6cbd5 !important;
+}

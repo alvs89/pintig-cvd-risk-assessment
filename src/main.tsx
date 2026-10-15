@@ -6,4 +6,6 @@ import "./styles/furtherAssessment.css";
 import "./styles/assessmentVisualizations.css";
 import "./styles/researchCig.css";
 import "./styles/probabilityChart.css";
+import "./styles/reports.css";
+import "./styles/buttonStates.css";
 createRoot(document.getElementById("root")!).render(<App />);
