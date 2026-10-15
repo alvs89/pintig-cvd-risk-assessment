@@ -9,6 +9,7 @@ import { createSnapshot } from "../services/snapshots";
 import type { Confirmation, Page, Patient } from "../types/domain";
 import { age } from "../utils/format";
 import { band } from "../utils/risk";
+import { validateAssessmentForm } from "../utils/assessmentValidation";
 import { adminActions, allowedPages, canReveal } from "./permissions";
 import {
   log,
@@ -573,6 +574,11 @@ export function handleSubmit(e: FormEvent) {
   if (form.id === "assessmentForm") {
     if (!S.user) return;
     updateQuestionnaire();
+    if (!validateAssessmentForm(form)) {
+      S.message = "";
+      render();
+      return;
+    }
     let x = formValues(form),
       p = P(x.pid);
     S.patientId = p?.id || null;

@@ -1,4 +1,12 @@
-import { b, f, head, patientIdent, sel } from "../components/shared";
+import {
+  b,
+  f,
+  head,
+  patientIdent,
+  sel,
+  requiredLabel,
+} from "../components/shared";
+import { NumericInput } from "../components/NumericInput";
 import { P, patients, S } from "../state/store";
 import { age, dt, esc } from "../utils/format";
 import { seededIntake } from "../state/seededIntakes";
@@ -29,7 +37,14 @@ export function AssessmentPage() {
       key,
       v(key),
       "number",
-      required,
+      required ||
+        (!core &&
+          [
+            "alcoholDays",
+            "drinksPerDay",
+            "activityDays",
+            "activityPerDay",
+          ].includes(key)),
       'min="0" max="' + max + '" step="' + step + '"',
     );
   return (
@@ -40,7 +55,7 @@ export function AssessmentPage() {
         b("← Dashboard", "nav:Dashboard"),
       )}
       <section className={"panel"}>
-        <form id={"assessmentForm"}>
+        <form id={"assessmentForm"} noValidate>
           <div className={"intake-section-head"}>
             <span className={"intake-step"}>{"01"}</span>
             <div>
@@ -159,10 +174,10 @@ export function AssessmentPage() {
             )}
             <div className={"field"}>
               <label htmlFor={"bmi"} id={"bmiLabel"}>
-                {"Body mass index (BMI, kg/m²) *"}
+                {requiredLabel("Body mass index (BMI, kg/m²)", true)}
               </label>
               <div className={"bmi-value-host"}>
-                <input
+                <NumericInput
                   type={"number"}
                   id={"bmi"}
                   name={"bmi"}
@@ -275,7 +290,8 @@ export function AssessmentPage() {
               <div className={"group-title"}>{"Alcohol consumption"}</div>
               <div className={"gridform"}>
                 {sel(
-                  "Has the patient consumed alcoholic drinks during the past year?",
+                  "Has the patient consumed alcoholic drinks during the past year?" +
+                    (core ? "" : " *"),
                   "alcoholUse",
                   ynu,
                   v("alcoholUse"),

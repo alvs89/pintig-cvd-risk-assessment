@@ -1,0 +1,63 @@
+.required-marker {
+  color: #b42335;
+  font-weight: 700;
+}
+.numeric-control {
+  width: 100%;
+  min-width: 0;
+}
+.select-control {
+  width: 100%;
+  min-width: 0;
+  align-self: start;
+}
+.select-control > select {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+}
+.numeric-control > input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+}
+/* Keep each control and its error together within the existing two-row subgrid. */
+.gridform > .field > .numeric-control,
+.gridform > .field > input,
+.gridform > .field > select,
+.gridform > .field > .derived-text-value,
+.gridform > .field > .bmi-value-host {
+  align-self: start;
+}
+.bmi-value-host {
+  display: flex;
+  flex-direction: column;
+}
+.bmi-value-host > .numeric-control:has(input[hidden]) {
+  display: contents;
+}
+.bmi-value-host > .derived-text-value {
+  order: 1;
+}
+.bmi-value-host .field-error {
+  order: 2;
+}
+.field-error {
+  display: block;
+  color: #b42335;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  margin-top: 6px;
+}
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"] {
+  border-color: #b42335;
+  box-shadow: 0 0 0 1px #b42335;
+}
+.field input[aria-invalid="true"]:focus-visible,
+.field select[aria-invalid="true"]:focus-visible {
+  outline-color: #b42335;
+}
+.bmi-value-host:has([aria-invalid="true"]) .derived-text-value {
+  border: 1px solid #b42335;
+}

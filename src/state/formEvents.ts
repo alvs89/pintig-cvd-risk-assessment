@@ -39,6 +39,10 @@ export function handleInput(target: HTMLInputElement) {
   }
   const form = target.closest<HTMLFormElement>("#assessmentForm");
   if (form) {
+    if (target.id === "sbp")
+      form
+        .querySelector("#dbp")
+        ?.dispatchEvent(new Event("pintig:numeric-validation"));
     if (
       target.id === "pid" &&
       Number(target.value) !== (S.patientId ?? 0) &&

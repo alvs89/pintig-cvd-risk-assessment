@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { NumericInput } from "./NumericInput";
+import { ValidatedSelect } from "./ValidatedSelect";
 import { Fragment } from "react";
 import { htmlAttributes, withKeys } from "../components/markup";
 import { generateGuidance } from "../services/guidance";
@@ -40,6 +42,22 @@ export const tag = (text: string) => (
     {text}
   </span>
 );
+export const requiredLabel = (
+  label: string,
+  required = /\*\s*$/.test(label),
+) => (
+  <>
+    {label.replace(/\s*\*\s*$/, "")}
+    {required && (
+      <>
+        {" "}
+        <span className="required-marker" aria-hidden="true">
+          *
+        </span>
+      </>
+    )}
+  </>
+);
 export const f = (
   label: string,
   key: string,
@@ -49,20 +67,30 @@ export const f = (
   attrs = "",
 ) => (
   <div className="field">
-    <label htmlFor={key}>
-      {label.replace(/\s*\*\s*$/, "")}
-      {required ? " *" : ""}
-    </label>
-    <input
-      id={key}
-      name={key}
-      type={type}
-      {...(S.page === "New Risk Assessment" && !S.result
-        ? { value: esc(value), onChange: () => {} }
-        : { defaultValue: esc(value) })}
-      required={required}
-      {...htmlAttributes(attrs)}
-    />
+    <label htmlFor={key}>{requiredLabel(label, required)}</label>
+    {type === "number" ? (
+      <NumericInput
+        id={key}
+        name={key}
+        type="number"
+        {...(S.page === "New Risk Assessment" && !S.result
+          ? { value: String(value ?? ""), onChange: () => {} }
+          : { defaultValue: String(value ?? "") })}
+        required={required}
+        {...htmlAttributes(attrs)}
+      />
+    ) : (
+      <input
+        id={key}
+        name={key}
+        type={type}
+        {...(S.page === "New Risk Assessment" && !S.result
+          ? { value: esc(value), onChange: () => {} }
+          : { defaultValue: esc(value) })}
+        required={required}
+        {...htmlAttributes(attrs)}
+      />
+    )}
   </div>
 );
 export const sel = (
@@ -72,10 +100,18 @@ export const sel = (
   value: unknown,
 ) => (
   <div className="field">
-    <label htmlFor={key}>{label}</label>
-    <select
+    <label htmlFor={key}>
+      {requiredLabel(
+        label,
+        /\*\s*$/.test(label) || ["sex", "role"].includes(key),
+      )}
+    </label>
+    <ValidatedSelect
       id={key}
       name={key}
+      aria-required={
+        /\*\s*$/.test(label) || ["sex", "role"].includes(key) || undefined
+      }
       {...(["sex", "role"].includes(key)
         ? { defaultValue: String(value ?? "") }
         : { value: String(value ?? ""), onChange: () => {} })}
@@ -88,7 +124,7 @@ export const sel = (
           </option>
         );
       })}
-    </select>
+    </ValidatedSelect>
   </div>
 );
 export const head = (

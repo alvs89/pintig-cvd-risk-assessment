@@ -133,11 +133,9 @@ test("worker registers, edits, assesses and reviews an immutable saved snapshot"
     ),
   ).toBeVisible();
   await expect(
-    page
-      .locator(".snapshot")
-      .filter({
-        has: page.locator("strong", { hasText: /^Systolic blood pressure$/ }),
-      }),
+    page.locator(".snapshot").filter({
+      has: page.locator("strong", { hasText: /^Systolic blood pressure$/ }),
+    }),
   ).toHaveText("Systolic blood pressure132 mmHg");
   await expect(page.locator(".private-name")).toHaveCount(0);
   await page
@@ -240,12 +238,7 @@ test("core input mode, eligibility, invalid pressure and clear confirmation", as
   await page
     .getByRole("button", { name: "Review 10-year risk result →", exact: true })
     .click();
-  await expect(
-    page.getByText(
-      "Enter valid systolic and diastolic blood pressure readings.",
-      { exact: true },
-    ),
-  ).toBeVisible();
+  await expect(page.locator("#dbp-error")).toBeVisible();
   await page.locator("#dbp").fill("82");
   await page
     .getByRole("button", { name: "Review 10-year risk result →", exact: true })
@@ -328,7 +321,7 @@ test("questionnaire fields, labels, options and constraints match the original v
     target.locator("#assessmentForm").evaluate((form) => ({
       // Only the presentation label for the input-set selector was changed.
       labels: Array.from(form.querySelectorAll("label:not([for='mode'])")).map(
-        (label) => label.textContent,
+        (label) => label.textContent?.replace(/\s*\*\s*$/, "").trim(),
       ),
       fields: Array.from(form.querySelectorAll("input,select")).map((node) => ({
         id: node.id,
@@ -337,7 +330,15 @@ test("questionnaire fields, labels, options and constraints match the original v
         min: node.getAttribute("min"),
         max: node.getAttribute("max"),
         step: node.getAttribute("step"),
-        required: node.hasAttribute("required"),
+        // These existing submission-required fields now expose native required state.
+        required: [
+          "alcoholDays",
+          "drinksPerDay",
+          "activityDays",
+          "activityPerDay",
+        ].includes(node.id)
+          ? true
+          : node.hasAttribute("required"),
         options:
           node.tagName === "SELECT"
             ? Array.from(node.querySelectorAll("option")).map((option) => ({

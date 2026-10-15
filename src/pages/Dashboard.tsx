@@ -39,7 +39,7 @@ export function DashboardPage() {
           <h2>{"Quick actions"}</h2>
           <div className={"actions"}>
             {b("Patient Management", "nav:Patient Management")}
-            {b("New Assessment", "nav:New Risk Assessment", "primary")}
+            {b("New Assessment", "nav:New Risk Assessment")}
             {b(
               admin ? "User Accounts" : "Assessment History",
               "nav:" + (admin ? "User Accounts" : "Assessment History"),
