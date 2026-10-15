@@ -1,5 +1,6 @@
 import type { AssessmentInputs } from "../types/domain";
 import { deriveInputs } from "../services/intake";
+import { additionalIntakes } from "./additionalPatients";
 
 // Fictional new-intake fixtures only. No model output or historical observations.
 const common: AssessmentInputs = {
@@ -9,6 +10,7 @@ const common: AssessmentInputs = {
   mode: "extended",
 };
 const intakes: Record<number, AssessmentInputs> = {
+  ...additionalIntakes,
   1: {
     ...common,
     sbp: "156",

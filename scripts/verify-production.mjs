@@ -46,6 +46,14 @@ try {
       ),
     );
   const current = await boxes();
+  const currentRows = await page.locator("table tbody tr").count();
+  assert.equal(
+    currentRows,
+    5,
+    "Dashboard displays the latest five assessments",
+  );
+  const rowHeight = (await page.locator("table tbody tr").first().boundingBox())
+    .height;
   await page.screenshot({
     path: "test-results/production-dashboard.png",
     fullPage: true,
@@ -57,12 +65,22 @@ try {
     .getByRole("heading", { name: "Administrator Dashboard", exact: true })
     .waitFor();
   const original = await boxes();
+  const originalRows = await page.locator("table tbody tr").count();
   await page.screenshot({
     path: "test-results/reference-dashboard.png",
     fullPage: true,
   });
   for (const selector of Object.keys(current))
     for (let coordinate = 0; coordinate < 4; coordinate++) {
+      // Added saved fixtures fill the existing five-row recent-assessments limit.
+      if (selector === "table" && coordinate === 3) {
+        assert.equal(
+          current.table[3],
+          original.table[3] + (currentRows - originalRows) * rowHeight,
+          "Recent table height must differ only by its added record rows",
+        );
+        continue;
+      }
       // The added distribution section increases content height and moves the
       // recent-assessment table down. Preserve all other baseline geometry checks.
       if (

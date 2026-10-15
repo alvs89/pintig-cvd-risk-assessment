@@ -5,7 +5,10 @@ import { storedFurtherAssessment } from "../services/furtherAssessment";
 import { storedPrototypeFollowUp } from "../services/prototypeFollowUp";
 import { ModelStatus } from "../components/ModelStatus";
 import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel";
-import { SavedAssessmentProvenance, SavedQuestionnaireSections } from "../components/SavedAssessmentHistory";
+import {
+  SavedAssessmentProvenance,
+  SavedQuestionnaireSections,
+} from "../components/SavedAssessmentHistory";
 import {
   htmlAttributes,
   Select,
@@ -103,26 +106,24 @@ export function RecordPage() {
       )}
       <div className={"identity-context"}>{patientIdent(p)}</div>
       <ModelStatus modelVersion={r.model} />
-      <div className={"twocol"}>
-        <div className={"panel"}>
-          <div className={"eyebrow"}>{"Ten-year estimate"}</div>
-          <div className={"risk"}>
-            {(r.risk * 100).toFixed(1)}
-            {"%"}
-          </div>
-          {tag(r.band)}
-          <TenYearProbabilityChart risk={r.risk} />
+      <dl className="history-assessment-meta" aria-label="Assessment metadata">
+        <div>
+          <dt>Assessment date</dt>
+          <dd>{dt(r.date)}</dd>
         </div>
-        <div className={"panel"}>
-          <h2>{"Assessment details"}</h2>
-          <p>
-            {"Assessment date: "}
-            {dt(r.date)}
-            <br />
-            {"Assessor: "}
-            {esc(U(r.uid)?.name || "Unknown")}
-          </p>
+        <div>
+          <dt>Assessor</dt>
+          <dd>{U(r.uid)?.name || "Unknown"}</dd>
         </div>
+      </dl>
+      <div className={"panel"}>
+        <div className={"eyebrow"}>{"Ten-year estimate"}</div>
+        <div className={"risk"}>
+          {(r.risk * 100).toFixed(1)}
+          {"%"}
+        </div>
+        {tag(r.band)}
+        <TenYearProbabilityChart risk={r.risk} />
       </div>
       <SavedAssessmentProvenance record={r} />
       <CumulativeIncidencePanel

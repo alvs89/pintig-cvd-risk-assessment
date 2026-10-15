@@ -6,7 +6,7 @@ import { age } from "../src/utils/format.ts";
 import { generateGuidance } from "../src/services/guidance.ts";
 test("three fictional identities and original history remain intact", () => {
   assert.deepEqual(
-    patients.map((p) => [
+    patients.slice(0, 3).map((p) => [
       p.id,
       p.record,
       p.first,
@@ -55,7 +55,7 @@ test("three fictional identities and original history remain intact", () => {
     ),
   );
   assert.deepEqual(
-    records.map((r) => [r.id, r.pid, r.date, r.risk, r.model]),
+    records.slice(0, 2).map((r) => [r.id, r.pid, r.date, r.risk, r.model]),
     [
       [1, 1, "2026-09-26", 0.238, "ILLUSTRATIVE-0.2"],
       [2, 2, "2026-09-30", 0.114, "ILLUSTRATIVE-0.2"],
@@ -96,7 +96,7 @@ test("intakes derive BMI, alcohol and activity without assigning model predictio
     "FAMILY",
   ])
     assert.ok(rules.some((r) => r.id === id));
-  assert.equal(seededIntake(4), undefined);
+  assert.equal(seededIntake(12), undefined);
   const edited = seededIntake(1);
   edited.sbp = "120";
   assert.equal(seededIntake(1).sbp, "156");

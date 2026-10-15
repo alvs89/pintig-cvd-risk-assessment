@@ -5,6 +5,8 @@ import type {
   Session,
   User,
 } from "../types/domain";
+import { createAdditionalPopulation } from "./additionalPatients";
+const additionalPopulation = createAdditionalPopulation();
 export const users: User[] = [
   {
     id: 1,
@@ -71,6 +73,7 @@ export const patients: Patient[] = [
     pin: "",
     facility: "Community Health Center",
   },
+  ...additionalPopulation.patients,
 ];
 export const records: AssessmentRecord[] = [
   {
@@ -103,6 +106,7 @@ export const records: AssessmentRecord[] = [
     explanation: "Age and systolic blood pressure.",
     guidance: "General cardiovascular health education.",
   },
+  ...additionalPopulation.records,
 ];
 export const logs: AuditEntry[] = [
   { when: "2026-09-30", user: "System", action: "Initialized patient records" },

@@ -6,7 +6,7 @@ test("Reports has compact counts, responsive controls and working filters", asyn
   await page.locator('[data-act="adminDemo"]').click();
   await page.locator('button[type="submit"]').click();
   await page.locator('.sidebar [data-act="nav:Reports"]').click();
-  await expect(page.locator(".report-count")).toHaveText("(3 records found)");
+  await expect(page.locator(".report-count")).toHaveText("(11 records found)");
   await expect(page.locator(".report-count")).toHaveCSS(
     "border-top-width",
     "0px",
@@ -35,10 +35,10 @@ test("Reports has compact counts, responsive controls and working filters", asyn
   await page.locator("#reportSearch").fill("PNT-000001");
   await expect(page.locator("tbody tr")).toHaveCount(1);
   await page.locator('[data-act="clearReport"]').click();
-  await expect(page.locator("tbody tr")).toHaveCount(3);
+  await expect(page.locator("tbody tr")).toHaveCount(11);
   await page.locator("#reportType").selectOption("Assessments");
   await page.locator("#reportCategory").selectOption("High");
-  await expect(page.locator("tbody tr")).toHaveCount(1);
+  await expect(page.locator("tbody tr")).toHaveCount(3);
   for (const width of [1440, 820, 390]) {
     await page.setViewportSize({ width, height: 900 });
     expect(

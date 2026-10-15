@@ -13,6 +13,17 @@ test("legacy History shows only captured inputs, no reconstructed eligibility, a
   await openHistory(page);
   await page.locator('[data-act="record:1"]').click();
   await expect(page.getByRole("heading",{name:"Assessment AST-0001"})).toBeVisible();
+  const metadata = page.locator('.history-assessment-meta');
+  await expect(metadata).toContainText('Assessment date');
+  await expect(metadata).toContainText('Assessor');
+  await expect(page.getByRole('heading', {name:'Assessment details', exact:true})).toHaveCount(0);
+  expect(await metadata.evaluate(el => {
+    const status = el.previousElementSibling!;
+    const estimate = el.nextElementSibling!;
+    return status.getBoundingClientRect().bottom <= el.getBoundingClientRect().top &&
+      el.getBoundingClientRect().bottom <= estimate.getBoundingClientRect().top &&
+      estimate.getBoundingClientRect().width >= el.getBoundingClientRect().width - 1;
+  })).toBe(true);
   const source=page.getByRole("region",{name:"Assessment Result Information"});
   await expect(source).toContainText("Illustrative estimate");
   await expect(source).toContainText("Assessment period");
@@ -45,8 +56,8 @@ test("new saved assessment retains all questionnaire fields in their original se
   await page.locator('#assessmentForm button[type="submit"]').click();
   await page.locator('[data-act="saveAssessment"]').click();
   await openHistory(page);
-  await page.locator('[data-act="record:3"]').click();
-  await expect(page.getByRole("heading",{name:"Assessment AST-0003"})).toBeVisible();
+  await page.locator('[data-act="record:11"]').click();
+  await expect(page.getByRole("heading",{name:"Assessment AST-0011"})).toBeVisible();
   const info=page.getByRole("heading",{name:"Recorded assessment information"}).locator("..");
   const groups=info.locator(".history-question-group");
   await expect(groups).toHaveCount(7);

@@ -1,4 +1,8 @@
 /* Saved assessment detail: retained values, structured to match current questionnaire. */
+.history-assessment-meta { display:flex; flex-wrap:wrap; gap:12px 36px; margin:16px 0 20px; }
+.history-assessment-meta > div { display:flex; flex-wrap:wrap; gap:4px 10px; min-width:0; }
+.history-assessment-meta dt { color:#455b70; font-weight:600; }
+.history-assessment-meta dd { margin:0; color:#17354a; overflow-wrap:anywhere; }
 .history-provenance { border-color:#cbdde4; }
 .history-provenance-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:13px 0; }
 .history-provenance-row > div { border:1px solid #dbe8ed; border-radius:10px; padding:12px 14px; min-width:0; background:#f8fbfc; }

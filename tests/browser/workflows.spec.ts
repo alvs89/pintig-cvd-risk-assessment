@@ -63,13 +63,13 @@ test("worker registers, edits, assesses and reviews an immutable saved snapshot"
     .getByRole("button", { name: "Register patient", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Patient PNT-000004", exact: true }),
+    page.getByRole("heading", { name: "Patient PNT-000012", exact: true }),
   ).toBeVisible();
   await expect(page.getByText("Fictional Demo", { exact: true })).toHaveCount(
     0,
   );
   await page
-    .getByRole("button", { name: "Reveal name for PNT-000004", exact: true })
+    .getByRole("button", { name: "Reveal name for PNT-000012", exact: true })
     .click();
   await expect(page.getByText("Fictional Demo", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Edit profile", exact: true }).click();
@@ -79,12 +79,12 @@ test("worker registers, edits, assesses and reviews an immutable saved snapshot"
     page.getByText("Updated Fictional Demo", { exact: true }),
   ).toBeVisible();
   await nav(page, "Patient Management");
-  await page.locator("#patientQuery").fill("000004");
+  await page.locator("#patientQuery").fill("000012");
   await expect(page.locator("#patientLiveResults tbody tr")).toHaveCount(1);
   await expect(page.locator("#patientQuery")).toBeFocused();
   await page.getByRole("button", { name: "Clear", exact: true }).click();
   await expect(page.locator("#patientQuery")).toHaveValue("");
-  await expect(page.locator("#patientLiveResults tbody tr")).toHaveCount(4);
+  await expect(page.locator("#patientLiveResults tbody tr")).toHaveCount(12);
   await intake(page);
   await expect(page.locator("#bmiDisplay")).toHaveText("25.3 kg/m²");
   await expect(page.locator("#alcoholDrinksDisplay")).toHaveText(
@@ -121,11 +121,11 @@ test("worker registers, edits, assesses and reviews an immutable saved snapshot"
     page.getByText("Saved assessment", { exact: true }),
   ).toBeVisible();
   await nav(page, "Assessment History");
-  await page.locator("#historySearch").fill("AST-3");
+  await page.locator("#historySearch").fill("AST-11");
   await expect(page.locator("#historyLiveResults tbody tr")).toHaveCount(1);
   await page.getByRole("button", { name: "View", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Assessment AST-0003", exact: true }),
+    page.getByRole("heading", { name: "Assessment AST-0011", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByText(
@@ -183,7 +183,7 @@ test("administrator manages accounts, filters and exports de-identified reports"
   await expect(page.locator("#reportCategory")).toBeDisabled();
   await page.locator("#reportType").selectOption("Assessments");
   await page.locator("#reportCategory").selectOption("High");
-  await expect(page.locator("#reportLiveResults tbody tr")).toHaveCount(1);
+  await expect(page.locator("#reportLiveResults tbody tr")).toHaveCount(3);
   const downloaded = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export CSV", exact: true }).click();
   const csv = await fs.readFile((await (await downloaded).path())!, "utf8");
@@ -349,6 +349,12 @@ test("questionnaire fields, labels, options and constraints match the original v
       })),
     }));
   const current = await inspect(page);
+  const patientOptions = current.fields.find(field => field.id === "pid")!.options!;
+  expect(patientOptions.slice(4)).toEqual(Array.from({length:8}, (_, index) => ({
+    value: String(index + 4), text: `PNT-${String(index + 4).padStart(6, "0")}`,
+  })));
+  // The questionnaire is unchanged; only the explicitly added patient choices differ.
+  current.fields.find(field => field.id === "pid")!.options = patientOptions.slice(0, 4);
   const reference = await context.newPage();
   await reference.goto("/legacy/PINTIG_Web_Application_v27.html");
   await reference.locator('[data-act="workerDemo"]').click();

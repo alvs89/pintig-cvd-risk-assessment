@@ -75,7 +75,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
       )!
       .click(),
   );
-  await expect(page.locator('[data-act^="record:"]')).toHaveCount(3);
+  await expect(page.locator('[data-act^="record:"]')).toHaveCount(11);
   await page.locator('[data-act="record:1"]').click();
   await expect(page.locator(".risk")).toHaveText("23.8%");
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -90,7 +90,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
     await page.locator("#" + id).fill(v);
   await page.locator("#sex").selectOption("Female");
   await page.locator('#patientForm button[type="submit"]').click();
-  await page.locator('[data-act="assessPatient:4"]').click();
+  await page.locator('[data-act="assessPatient:12"]').click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(page.locator("#sbp")).toHaveValue("");
   await expect(

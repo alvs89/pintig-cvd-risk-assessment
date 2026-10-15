@@ -9,7 +9,7 @@ for (const role of ["admin", "worker"])
     const panel = page.getByRole("region", {
       name: "Cardiovascular Risk Distribution",
     });
-    await expect(panel).toContainText("2 saved assessments represented");
+    await expect(panel).toContainText("10 saved assessments represented");
     await expect(panel).toContainText(
       role === "admin" ? "Overall accessible" : "Shared assessment records",
     );
@@ -19,15 +19,15 @@ for (const role of ["admin", "worker"])
       ).toBeVisible();
     await expect(
       panel.getByRole("button", {
-        name: "High 1 assessment 50.0%",
+        name: "High 3 assessments 30.0%",
         exact: true,
       }),
     ).toBeVisible();
     await panel
-      .getByRole("button", { name: "High 1 assessment 50.0%", exact: true })
+      .getByRole("button", { name: "High 3 assessments 30.0%", exact: true })
       .press("Enter");
     await expect(panel.locator(".distribution-detail")).toContainText(
-      "High: 1 saved assessment",
+      "High: 3 saved assessments",
     );
     if (role === "worker")
       for (const name of [
@@ -64,11 +64,11 @@ test("saving an assessment updates dashboard totals without refresh", async ({
   await page.locator('[data-act="saveAssessment"]').click();
   await page.locator('.sidebar [data-act="nav:Dashboard"]').click();
   await expect(page.locator(".risk-distribution")).toContainText(
-    "3 saved assessments represented",
+    "11 saved assessments represented",
   );
   await expect(
     page
       .locator(".risk-distribution")
-      .getByRole("button", { name: "High 2 assessments 66.7%", exact: true }),
+      .getByRole("button", { name: "High 4 assessments 36.4%", exact: true }),
   ).toBeVisible();
 });
