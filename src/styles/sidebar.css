@@ -1,0 +1,13 @@
+/* Keep navigation scrollable on short screens, with spare space above the profile. */
+@media screen and (min-width: 571px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar > * {
+    flex-shrink: 0;
+  }
+  .sidebar .userinfo {
+    margin-top: auto;
+  }
+}
