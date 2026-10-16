@@ -1,4 +1,4 @@
-import {SCREENING_KEYS} from "../src/services/preAssessmentRules.mjs";
+import { SCREENING_KEYS } from "../src/services/preAssessmentRules.mjs";
 import assert from "node:assert/strict";
 import { chromium } from "@playwright/test";
 const base = process.env.PINTIG_PREVIEW_URL ?? "http://127.0.0.1:5174";
@@ -115,8 +115,11 @@ try {
   await page
     .getByRole("button", { name: "Prefill questionnaire", exact: true })
     .click();
-  for(const key of SCREENING_KEYS) await page.locator(`#screen-${key}`).selectOption(key==="verified"?"Yes":"No");
-  await page.getByRole("button",{name:"Continue to Risk Assessment",exact:true}).click();
+  for (const key of SCREENING_KEYS)
+    await page.locator(`#screen-${key}`).selectOption("No");
+  await page
+    .getByRole("button", { name: "Continue to Risk Assessment", exact: true })
+    .click();
   await page.locator('#assessmentForm button[type="submit"]').click();
   await page
     .getByRole("heading", { name: "Assessment Result", exact: true })

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import ts from "typescript";
 import { createHash } from "node:crypto";
 
 const read = (file) => fs.readFileSync(new URL(file, import.meta.url), "utf8");
@@ -82,9 +83,26 @@ test("React runtime has no HTML replacement or global event handlers", () => {
             : [],
       );
   const runtime = visit("../src").join("\n");
+  // Check TypeScript tokens so clinical copy containing "any" is not a false positive.
+  const scanner = ts.createScanner(
+    ts.ScriptTarget.Latest,
+    true,
+    ts.LanguageVariant.JSX,
+    runtime,
+  );
+  for (
+    let token = scanner.scan();
+    token !== ts.SyntaxKind.EndOfFileToken;
+    token = scanner.scan()
+  )
+    assert.notEqual(
+      token,
+      ts.SyntaxKind.AnyKeyword,
+      "Avoid explicit any types in runtime code",
+    );
   assert.doesNotMatch(
     runtime,
-    /innerHTML|dangerouslySetInnerHTML|document\.addEventListener|\bany\b/,
+    /innerHTML|dangerouslySetInnerHTML|document\.addEventListener/,
   );
 });
 test("the source has no external runtime script dependency", () => {

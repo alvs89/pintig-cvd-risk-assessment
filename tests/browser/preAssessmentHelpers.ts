@@ -7,9 +7,7 @@ export async function completePreAssessment(page: Page) {
   if (!(await pid.count()) || !(await pid.inputValue())) return;
   if (await page.locator(".assessment-predictors").isVisible()) return;
   for (const key of SCREENING_KEYS)
-    await page
-      .locator(`#screen-${key}`)
-      .selectOption(key === "verified" ? "Yes" : "No");
+    await page.locator(`#screen-${key}`).selectOption("No");
   await page
     .getByRole("button", { name: "Continue to Risk Assessment", exact: true })
     .click();

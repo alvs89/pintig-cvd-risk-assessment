@@ -222,10 +222,10 @@ test("core input mode, eligibility, invalid pressure and clear confirmation", as
   await intake(page, "observed");
   await expect(page.locator("#extraQuestionnaire")).toBeHidden();
   await expect(page.locator("#previewActivity")).toHaveText("Not included");
-  await page.locator("#screen-heartAttack").selectOption("Yes");
+  await page.locator("#screen-cardiovascularHistory").selectOption("Yes");
   await expect(page.getByRole("heading",{name:"First-Event Risk Assessment Not Applicable"})).toBeVisible();
   await expect(page.locator(".assessment-predictors")).toBeHidden();
-  await page.locator("#screen-heartAttack").selectOption("No");
+  await page.locator("#screen-cardiovascularHistory").selectOption("No");
   await completePreAssessment(page);
   await expect(page.locator("#sbp")).toHaveValue("132");
   await page.locator("#dbp").fill("140");
@@ -342,7 +342,7 @@ test("questionnaire fields, labels, options and constraints match the original v
             : undefined,
       })),
     }));
-  await expect(page.locator("[data-screening-key]")).toHaveCount(18);
+  await expect(page.locator("[data-screening-key]")).toHaveCount(2);
   const current = await inspect(page);
   const patientOptions = current.fields.find(field => field.id === "pid")!.options!;
   expect(patientOptions.slice(4)).toEqual(Array.from({length:8}, (_, index) => ({

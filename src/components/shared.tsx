@@ -44,10 +44,10 @@ export const tag = (text: string) => (
 );
 export const requiredLabel = (
   label: string,
-  required = /\*\s*$/.test(label),
+  required = /(?:\s*\*)+\s*$/.test(label),
 ) => (
   <>
-    {label.replace(/\s*\*\s*$/, "")}
+    {label.replace(/(?:\s*\*)+\s*$/, "")}
     {required && (
       <>
         {" "}
@@ -103,14 +103,14 @@ export const sel = (
     <label htmlFor={key}>
       {requiredLabel(
         label,
-        /\*\s*$/.test(label) || ["sex", "role"].includes(key),
+        /(?:\s*\*)+\s*$/.test(label) || ["sex", "role"].includes(key),
       )}
     </label>
     <ValidatedSelect
       id={key}
       name={key}
       aria-required={
-        /\*\s*$/.test(label) || ["sex", "role"].includes(key) || undefined
+        /(?:\s*\*)+\s*$/.test(label) || ["sex", "role"].includes(key) || undefined
       }
       {...(["sex", "role"].includes(key)
         ? { defaultValue: String(value ?? "") }

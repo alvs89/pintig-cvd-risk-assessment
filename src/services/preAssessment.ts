@@ -16,6 +16,7 @@ export function screeningSignature(
   answers: Record<string, string>,
 ) {
   return JSON.stringify([
+    SCREENING_VERSION,
     p.id,
     p.record,
     p.first,
@@ -38,5 +39,9 @@ export function screeningForPatient(
     screeningDecision(check.answers, age(p.dob)).status !== "eligible"
   )
     return null;
-  return { version: SCREENING_VERSION, answers: { ...check.answers } };
+  return {
+    version: SCREENING_VERSION,
+    ageYears: age(p.dob),
+    answers: { ...check.answers },
+  };
 }

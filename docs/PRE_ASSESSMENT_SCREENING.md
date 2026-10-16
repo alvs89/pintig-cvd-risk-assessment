@@ -22,33 +22,37 @@ look-back interval or dismissing recently resolved symptoms. Wording, recognitio
 of these signs, and local response procedures require qualified clinical review.
 This is a pause-and-evaluate safeguard, not a complete triage or diagnostic tool.
 
-Prior myocardial infarction, stroke and heart failure are separate history items.
-The frozen Framingham training script also excludes `PREVCHD == 1`; therefore a
-fourth history question covers other coronary heart disease, including angina.
-This conservative gate preserves that research-model exclusion. It does not claim
-that the Framingham endpoint equals the intended PURE Philippines composite.
+The aggregate cardiovascular-history confirmation includes myocardial infarction,
+stroke, heart failure and other diagnosed coronary heart disease, including angina.
+The frozen Framingham training script excludes `PREVCHD == 1`; this scope is retained.
+Cardiovascular death is a prediction outcome, not a prior diagnosis question for a
+living patient. The Framingham and intended PURE outcomes remain distinct.
 
 ## Workflow and decisions
 
-Patient selection and demographic review precede the screening. No safety or
-history answer is preselected, including when practice questionnaire inputs are
-prefilled. The medical-history group follows completion of negative warning-sign
-answers. Existing predictor fields remain hidden and disabled until the worker
-explicitly chooses **Continue to Risk Assessment**.
+Patient selection and demographic review precede a read-only, always-visible
+13-item safety checklist. Only two mandatory, initially unanswered selections follow:
+`warningSigns` and `cardiovascularHistory`. Each records No, Yes or Unknown (displayed
+as Unable to confirm). They are aggregate healthcare-worker attestations: individual
+symptom or diagnosis answers are never manufactured from them. The separate former
+verification question is replaced by a verification instruction before Continue.
 
-Priority is: an acute warning reported Yes; a previous qualifying condition
-reported Yes; age outside 35–70 or invalid; uncertain/unverified/incomplete answers.
-Every warning and history answer must be No, and information verification must be
-Yes. Unknown, blank and invalid answers never count as No. A positive warning
-immediately shows the clinical-evaluation message without requiring other answers.
-Prior disease alone is not presented as an emergency. Neither state produces a
-probability, category, referral order or medication instruction.
+Priority is: warning signs identified; qualifying cardiovascular history; invalid age
+or age outside 35?70 inclusive; uncertainty; incomplete/invalid responses. Both
+confirmations must explicitly be No. A warning immediately presents the evaluation
+message; prior disease alone is not described as an emergency. Predictor fields stay
+hidden and disabled until the explicit Continue action. Blocked assessments produce
+no new result, category, graph, explanation or guidance.
 
-Confirmation is associated with the patient identity/profile and exact answers.
-Changing an answer revokes confirmation. Changing patients or clearing/signing
-out removes it; refreshing clears session state. Correction requires a new
-explicit Continue action. Predictor drafts survive temporary blocking. Prefill
-cannot overwrite positive or uncertain screening responses.
+Confirmation is bound to the rule version, patient identity/profile, current age and
+exact responses. Editing either answer revokes it. Patient changes, clearing,
+sign-out and refresh remove confirmation; changing a patient with an unsaved draft
+still uses the existing confirmation dialog. Draft measurements survive temporary
+blocking. Practice prefill never supplies or replaces screening responses.
+
+The shortened workflow requires clinical review; it has not received clinical
+approval and is not a certified triage tool. Negative attestations do not establish
+clinical safety or rule out illness.
 
 ## Enforcement and privacy
 
@@ -62,10 +66,12 @@ policy before calling R. The request now requires:
 
 ```text
 { fictionalOnly: true, predictors: <unchanged seven numeric predictors>,
-  screening: { version: <configured version>, answers: <all required responses> } }
+  screening: { version: "PINTIG-AGGREGATE-PHILPEN2022-2",
+    ageYears: <DOB-derived assessment age matching predictors.age_years>,
+    answers: { warningSigns: "No", cardiovascularHistory: "No" } } }
 ```
 
-Missing, wrong-version, positive, uncertain, incomplete or age-ineligible screening
+Missing, legacy/wrong-version, positive, uncertain, extra-key, age-mismatched, incomplete or age-ineligible screening
 is rejected with HTTP 422 before inference; no probability/CIF is returned. The
 screening object is not passed to R or added to predictors. No RDS, training file,
 research dataset, event definition or CIF calculation was changed.
@@ -84,65 +90,30 @@ use still requires an authorized backend, authenticated access and clinical appr
 Detailed screening answers stay only in the current session and transient API request.
 They are not logged, persisted, copied into old assessments or sent to R. No blocked
 attempt is saved as a completed assessment. Historical screening is never inferred
-from legacy records. The existing canonical prior/verified answers in newly saved
-questionnaires follow the completed screening; detailed symptom answers are omitted.
+from legacy records. The existing canonical prior/verified fields in newly saved questionnaires remain
+compatibility indicators derived from the aggregate history confirmation and explicit
+verified continuation. They are not reconstructed individual symptom/event answers.
 New manually completed assessments retain the screening rule version as metadata.
 Initial and historical records are not retroactively assigned a screening version.
 
 ## Verification
 
-Shared-policy tests enumerate all thirteen positive warning signs, four prior
-conditions, missing/uncertain answers, priority and age boundaries. Browser tests
-exercise the explicit gate, immediate blocking, draft retention, correction,
-refresh, keyboard focus, responsive widths, and existing assessment workflows.
-Opt-in private-service tests issue direct HTTP bypass attempts and verify 422
-responses without risk/CIF, then run real frozen-model prediction workflows.
+Shared-policy tests cover both aggregate confirmations, positive/uncertain/missing
+answers, exact contract keys/version, matching age, clinical-message priority and
+35/70 boundaries. Browser tests exercise all 13 read-only items, exactly two controls,
+required markers, blocking without inference, correction, patient changes, refresh,
+keyboard focus, responsive widths and existing assessment/history/report workflows.
+Opt-in private-service tests reject direct HTTP bypass attempts before inference and
+exercise genuine frozen-model predictions for both roles.
 
-No lint command is configured. Run `npm run check`, `npm run build`,
-`npm run test:e2e`, and `npm run verify:production`. With the private service
-running, set `PINTIG_LIVE_RSF=1` for the live tests. The main prediction and research
-CIG remain separate and not clinically validated.
+Required-marker audit: patient selection, current smoking, current BP medication,
+manual BMI, SBP/DBP, input mode and applicable extended alcohol/activity inputs retain
+required indicators. Calculated BMI, weekly totals and profile demographics have no
+asterisk. Height/weight, waist and the other existing optional questionnaire inputs
+remain optional. Validation limits and submission rules have not been relaxed.
 
-## Implementation inventory and executed checks
-
-- `backend/README.md`
-- `docs/PRE_ASSESSMENT_SCREENING.md`
-- `scripts/verify-production.mjs`
-- `src/components/PreAssessmentCheck.tsx`
-- `src/components/ResearchCigPanel.tsx`
-- `src/main.tsx`
-- `src/pages/Assessment.tsx`
-- `src/pages/Results.tsx`
-- `src/services/preAssessment.ts`
-- `src/services/preAssessmentRules.d.mts`
-- `src/services/preAssessmentRules.mjs`
-- `src/services/snapshots.ts`
-- `src/state/actions.ts`
-- `src/state/formEvents.ts`
-- `src/state/store.ts`
-- `src/styles/preAssessment.css`
-- `src/types/domain.ts`
-- `tests/browser/additionalPatients.spec.ts`
-- `tests/browser/assessmentHistoryView.spec.ts`
-- `tests/browser/assessmentVisualization.spec.ts`
-- `tests/browser/cif.spec.ts`
-- `tests/browser/contentReview.spec.ts`
-- `tests/browser/formValidation.spec.ts`
-- `tests/browser/furtherAssessment.spec.ts`
-- `tests/browser/missingFields.spec.ts`
-- `tests/browser/preAssessment.spec.ts`
-- `tests/browser/preAssessmentHelpers.ts`
-- `tests/browser/researchCig.spec.ts`
-- `tests/browser/researchCigLive.spec.ts`
-- `tests/browser/resultScroll.spec.ts`
-- `tests/browser/riskDistribution.spec.ts`
-- `tests/browser/seededIntakes.spec.ts`
-- `tests/browser/ui-standards.spec.ts`
-- `tests/browser/workflows.spec.ts`
-- `tests/preAssessment.test.mjs`
-
-The private `PINTIG_RSF_LOCAL_RESEARCH_HARNESS/questionnaire_model/research_server.cjs` was also changed locally to enforce screening. It is outside this public Git repository.
-
-Executed results: TypeScript plus 64 unit tests passed; production build passed; ordinary browser suite 45 passed with 3 private-service tests skipped; opt-in live suite 3 passed, including 28 eligible real-model browser predictions and 57 rejected direct API requests; production verification passed; Git whitespace checks passed. Desktop, tablet, mobile, keyboard focus, immediate blocking, and clarification-row alignment were checked. No lint script is configured.
-
-The frozen RDS SHA-256 remained `6989c1cb6b100cfbfdcb7e05ab930541f31b50ed5f9f1bbb645c0cb1539f766d`. The 11 patient fixtures and 10 initial assessments were preserved. No model, dataset, algorithm coefficients, risk thresholds, role permissions, or CIF mathematics changed. No commit, push, or deployment was performed.
+Run `npm run check`, `npm run build`, `npm run test:e2e`, and
+`npm run verify:production`. With the private service running, set
+`PINTIG_LIVE_RSF=1` for the live tests. No lint script is configured. Restart the
+private service after shared-contract changes. The model, research mathematics,
+original fixtures/history, permissions and clinical limitations are unchanged.

@@ -1,5 +1,5 @@
 // Shared executable policy: React and the private Node API use the same rules.
-export const SCREENING_VERSION = "PINTIG-PREASSESSMENT-PHILPEN2022-1";
+export const SCREENING_VERSION = "PINTIG-AGGREGATE-PHILPEN2022-2";
 export const WARNING_SIGNS = [
   ["chestPain", "Chest pain"],
   ["breathing", "Difficulty breathing"],
@@ -15,31 +15,21 @@ export const WARNING_SIGNS = [
   ["eyeInjury", "Eye injury or a foreign body in the eye"],
   ["severeInjury", "Severe injuries"],
 ];
-export const EVENT_HISTORY = [
-  ["heartAttack", "Previous heart attack (myocardial infarction)"],
-  ["stroke", "Previous stroke"],
-  ["heartFailure", "Previously diagnosed heart failure"],
-  [
-    "coronaryDisease",
-    "Other previously diagnosed coronary heart disease, including angina",
-  ],
-];
-export const SCREENING_KEYS = [...WARNING_SIGNS, ...EVENT_HISTORY]
-  .map(([key]) => key)
-  .concat("verified");
+// Aggregate attestations, not reconstructed answers for individual symptoms/events.
+export const SCREENING_KEYS = ["warningSigns", "cardiovascularHistory"];
 export function screeningDecision(answers, years) {
   const a =
     answers && typeof answers === "object" && !Array.isArray(answers)
       ? answers
       : {};
-  if (WARNING_SIGNS.some(([key]) => a[key] === "Yes"))
+  if (a.warningSigns === "Yes")
     return {
       status: "warning",
       title: "Routine Risk Assessment Paused",
       message:
         "A warning sign has been reported that may require immediate clinical evaluation. Notify the responsible healthcare professional and follow the facility's established emergency or referral procedures, including transfer to an appropriate level of care when indicated. PINTIG estimates long-term cardiovascular risk and cannot diagnose or rule out an acute medical condition. Do not delay clinical assessment to obtain a risk score.",
     };
-  if (EVENT_HISTORY.some(([key]) => a[key] === "Yes"))
+  if (a.cardiovascularHistory === "Yes")
     return {
       status: "history",
       title: "First-Event Risk Assessment Not Applicable",
@@ -60,23 +50,15 @@ export function screeningDecision(answers, years) {
       message:
         "A required answer is unable to be confirmed. Pause routine assessment and ask the responsible healthcare professional to clarify it before continuing.",
     };
-  if (a.verified === "No")
-    return {
-      status: "unverified",
-      title: "Information not verified",
-      message:
-        "Confirm that the information is sufficient and verified before continuing.",
-    };
   if (
-    !SCREENING_KEYS.every(
-      (key) => a[key] === (key === "verified" ? "Yes" : "No"),
-    )
+    Object.keys(a).length !== SCREENING_KEYS.length ||
+    !SCREENING_KEYS.every((key) => a[key] === "No")
   )
     return {
       status: "incomplete",
       title: "Eligibility check incomplete",
       message:
-        "Complete every safety and previous cardiovascular-history question before continuing.",
+        "Complete both healthcare-worker confirmations before continuing.",
     };
   return {
     status: "eligible",
@@ -88,7 +70,10 @@ export function screeningDecision(answers, years) {
 export function validScreeningAttestation(screening, years) {
   return (
     !!screening &&
+    !Array.isArray(screening) &&
+    Object.keys(screening).sort().join("|") === "ageYears|answers|version" &&
     screening.version === SCREENING_VERSION &&
+    screening.ageYears === years &&
     !!screening.answers &&
     Object.keys(screening.answers).length === SCREENING_KEYS.length &&
     screeningDecision(screening.answers, years).status === "eligible"

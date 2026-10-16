@@ -7,8 +7,9 @@
 .screening-group summary {font-weight:750;cursor:pointer;min-height:32px;}
 .screening-group h3 {margin:0 0 8px;}
 .screening-group p {line-height:1.6;max-width:90ch;}
-.screening-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px;}
+.screening-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px;align-items:stretch;}
 .screening-grid .field {display:grid;grid-template-rows:subgrid;grid-row:span 3;gap:6px;min-width:0;margin:0;}
+.screening-grid .field label {margin:0;align-self:end;}
 .screening-grid select {min-height:44px;}
 .assessment-predictors {border:0;padding:0;margin:0;min-width:0;}
 .screening-group small {color:#455b70;}
@@ -16,3 +17,26 @@
 .screening-status:focus-visible {outline:3px solid #087f85;outline-offset:3px;}
 @media(max-width:650px) {.screening-grid {grid-template-columns:minmax(0,1fr);} .screening-group {padding:12px;}}
 @media print {.pre-assessment .actions {display:none;}}
+
+.screening-checklist {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 28px;padding-left:22px;line-height:1.5;}
+.screening-checklist li {padding-left:2px;}
+@media(max-width:650px) {.screening-checklist {grid-template-columns:minmax(0,1fr);}}
+
+/* Keep the instruction and its list together while separating the card sections. */
+.screening-safety-card {padding:22px 24px;}
+.screening-safety-card h3 {margin:0 0 14px;}
+.screening-safety-card p {margin:0;line-height:1.75;max-width:none;}
+.screening-safety-card p + p {margin-top:20px;}
+.screening-safety-card .screening-checklist {margin:10px 0 22px;row-gap:10px;line-height:1.65;}
+.screening-safety-card > small {display:block;line-height:1.6;}
+@media(max-width:650px) {.screening-safety-card {padding:18px 16px;}}
+
+/* Share label/control rows; let question text grow upward above aligned controls. */
+#assessmentForm .gridform {align-items:stretch;}
+#assessmentForm .gridform > .field {display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:span 2;row-gap:8px;}
+#assessmentForm .gridform > .field > label {min-height:0;margin:0;align-self:end;}
+#assessmentForm .gridform > .field > :not(label) {align-self:start;}
+@media(max-width:570px) {
+  #assessmentForm .gridform > .field {display:flex;flex-direction:column;grid-row:auto;gap:8px;}
+  #assessmentForm .gridform > .field > label {align-self:auto;}
+}

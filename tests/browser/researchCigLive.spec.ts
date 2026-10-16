@@ -1,8 +1,6 @@
 import {
   SCREENING_VERSION,
   SCREENING_KEYS,
-  WARNING_SIGNS,
-  EVENT_HISTORY,
 } from "../../src/services/preAssessmentRules.mjs";
 import { completePreAssessment } from "./preAssessmentHelpers";
 import { test, expect, type Page } from "@playwright/test";
@@ -64,12 +62,8 @@ for (const role of ["worker", "admin"]) {
         predictors: expected,
         screening: {
           version: SCREENING_VERSION,
-          answers: Object.fromEntries(
-            SCREENING_KEYS.map((key) => [
-              key,
-              key === "verified" ? "Yes" : "No",
-            ]),
-          ),
+          ageYears: expected.age_years,
+          answers: Object.fromEntries(SCREENING_KEYS.map((key) => [key, "No"])),
         },
       });
       const body = await response.json();
@@ -155,21 +149,26 @@ for (const role of ["worker", "admin"]) {
 test("private API rejects missing, positive, uncertain and wrong-version screening before inference", async ({
   request,
 }) => {
-  const answers = Object.fromEntries(
-    SCREENING_KEYS.map((key) => [key, key === "verified" ? "Yes" : "No"]),
-  );
+  const answers = Object.fromEntries(SCREENING_KEYS.map((key) => [key, "No"]));
   const predictors = researchInputsFor(patients[0], {
     inputs: seededIntake(1)!,
     ageAtAssessment: age(patients[0].dob),
   })!;
-  const good = { version: SCREENING_VERSION, answers };
+  const good = {
+    version: SCREENING_VERSION,
+    ageYears: predictors.age_years,
+    answers,
+  };
   const invalid: unknown[] = [
     undefined,
     null,
     { version: "old", answers },
     { version: SCREENING_VERSION, answers: {} },
+    { ...good, ageYears: predictors.age_years + 1 },
+    { ...good, version: "PINTIG-PREASSESSMENT-PHILPEN2022-1" },
+    { ...good, answers: { ...answers, chestPain: "No" } },
   ];
-  for (const [key] of [...WARNING_SIGNS, ...EVENT_HISTORY])
+  for (const key of SCREENING_KEYS)
     invalid.push({ ...good, answers: { ...answers, [key]: "Yes" } });
   for (const key of SCREENING_KEYS) {
     invalid.push({ ...good, answers: { ...answers, [key]: "Unknown" } });

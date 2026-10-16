@@ -36,16 +36,23 @@ test("professional copy, responsive form alignment and keyboard confirmations", 
         () => document.documentElement.scrollWidth <= window.innerWidth,
       ),
     ).toBe(true);
+    // Labels bottom-align above shared control rows, preserving an 8px gap.
+    for (const id of ["sbp", "dbp", "height", "weight", "bmi", "waist",
+      "alcoholUse", "alcoholDays", "drinksPerDay"]) {
+      const label = await page.locator(`label[for="${id}"]`).boundingBox();
+      const control = await page.locator(`#${id}`).boundingBox();
+      expect(label).not.toBeNull();
+      expect(control).not.toBeNull();
+      expect(Math.abs(control!.y - (label!.y + label!.height) - 8)).toBeLessThanOrEqual(1);
+    }
+    const derivedLabel = await page.locator("#alcoholDrinksLabel").boundingBox();
+    const derivedControl = await page.locator("#alcoholDrinksLabel + .derived-text-value").boundingBox();
+    expect(Math.abs(derivedControl!.y - (derivedLabel!.y + derivedLabel!.height) - 8)).toBeLessThanOrEqual(1);
     if (width > 570) {
-      for (const [first, second] of [
-        ["#sbp", "#dbp"],
-        ["#height", "#weight"],
-        ["#bmi", "#waist"],
-      ]) {
-        const a = await page.locator(first).boundingBox(),
-          b = await page.locator(second).boundingBox();
-        expect(a).not.toBeNull();
-        expect(b).not.toBeNull();
+      for (const [left, right] of [["sbp", "dbp"], ["alcoholUse", "alcoholDays"],
+        ["drinksPerDay", "alcoholDrinksLabel + .derived-text-value"]]) {
+        const a = await page.locator(`#${left}`).boundingBox();
+        const b = await page.locator(`#${right}`).boundingBox();
         expect(Math.abs(a!.y - b!.y)).toBeLessThanOrEqual(1);
       }
     }

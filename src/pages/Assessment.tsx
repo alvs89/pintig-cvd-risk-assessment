@@ -163,7 +163,7 @@ export function AssessmentPage() {
             )}
             <div className={"field"}>
               <label htmlFor={"bmi"} id={"bmiLabel"}>
-                {requiredLabel("Body mass index (BMI, kg/m²)", true)}
+                {requiredLabel("Body mass index (BMI, kg/m²)", !bmiAuto)}
               </label>
               <div className={"bmi-value-host"}>
                 <NumericInput

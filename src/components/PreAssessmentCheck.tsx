@@ -1,7 +1,6 @@
 import { P, S } from "../state/store";
 import {
   WARNING_SIGNS,
-  EVENT_HISTORY,
   screeningDecision,
 } from "../services/preAssessmentRules.mjs";
 import { age } from "../utils/format";
@@ -12,13 +11,13 @@ export function PreAssessmentCheck() {
     answers =
       S.preAssessment?.pid === p?.id ? (S.preAssessment?.answers ?? {}) : {};
   const decision = screeningDecision(answers, p ? age(p.dob) : NaN);
-  const safe = WARNING_SIGNS.every(([key]) => answers[key] === "No");
-  const question = (key: string, label: string) => (
+  const question = (key: string, label: string, no: string, yes: string) => (
     <div className="field" key={key}>
       <label htmlFor={`screen-${key}`}>{requiredLabel(label, true)}</label>
       <select
         id={`screen-${key}`}
         data-screening-key={key}
+        required
         aria-required="true"
         aria-invalid={answers[key] === "Unknown" || undefined}
         aria-describedby={
@@ -29,9 +28,9 @@ export function PreAssessmentCheck() {
         onChange={() => {}}
       >
         <option value="">Choose an answer</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-        <option value="Unknown">Unable to Confirm</option>
+        <option value="No">{no}</option>
+        <option value="Yes">{yes}</option>
+        <option value="Unknown">Unable to confirm</option>
       </select>
       {answers[key] === "Unknown" && (
         <small id={`screen-${key}-note`} className="screening-clarification">
@@ -62,8 +61,8 @@ export function PreAssessmentCheck() {
         <h3>{decision.title}</h3>
         <p>{decision.message}</p>
       </div>
-      <details open className="screening-group">
-        <summary>Pre-Assessment Safety Check</summary>
+      <div className="screening-group screening-safety-card">
+        <h3>Pre-Assessment Safety Checklist</h3>
         <p>
           Before proceeding, ask about the warning signs below. If a warning
           sign is reported, pause routine assessment and arrange immediate
@@ -75,33 +74,41 @@ export function PreAssessmentCheck() {
           A recently resolved concerning symptom still requires clarification;
           do not assume it is safe.
         </p>
-        <div className="screening-grid">
-          {WARNING_SIGNS.map(([key, label]) => question(key, label))}
-        </div>
+        <ul className="screening-checklist">
+          {WARNING_SIGNS.map(([key, label]) => (
+            <li key={key}>{label}</li>
+          ))}
+        </ul>
         <small>
           Reference: DOH PhilPEN Risk Assessment Form, Revised 2022.
         </small>
-      </details>
-      <div
-        hidden={!safe && !EVENT_HISTORY.some(([key]) => !!answers[key])}
-        className="screening-group"
-      >
-        <h3>Previous Major Cardiovascular Event</h3>
+      </div>
+      <div className="screening-group">
+        <h3>Healthcare Worker Confirmation</h3>
         <p>
-          Confirm the patient's own history before estimating a first event.
-          These questions do not concern family history.
+          PINTIG predicts a first major cardiovascular event; it does not
+          estimate recurrent cardiovascular risk. Confirm the patient's own
+          history, including other diagnosed coronary heart disease such as
+          angina.
         </p>
         <div className="screening-grid">
-          {EVENT_HISTORY.map(([key, label]) => question(key, label))}
+          {question(
+            "warningSigns",
+            "After reviewing the safety checklist, were any warning signs identified?",
+            "No warning signs identified",
+            "Yes, one or more warning signs identified",
+          )}
+          {question(
+            "cardiovascularHistory",
+            "Does the patient have a history of any qualifying cardiovascular condition, including heart attack, stroke, heart failure, or other diagnosed coronary heart disease?",
+            "No previous qualifying cardiovascular condition",
+            "Yes, previously experienced or diagnosed",
+          )}
         </div>
         <p className="tiny">
-          The connected research model also excludes previous coronary heart
-          disease, including angina.
+          Before continuing, ensure these responses are sufficient and verified.
+          These confirmations do not independently establish clinical safety.
         </p>
-        {question(
-          "verified",
-          "Is the information sufficient and verified to proceed?",
-        )}
       </div>
       <div className="actions">
         <button
