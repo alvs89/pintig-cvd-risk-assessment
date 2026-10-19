@@ -17,6 +17,8 @@ export function ResultsPage() {
   let r = S.result!,
     p = P(r.pid)!,
     guid = r.guidanceRules || generateGuidance(r.inputs, p);
+  const approximateEventsPer100 = Math.round(r.risk * 100);
+  const approximateWithoutEventPer100 = 100 - approximateEventsPer100;
   return (
     <>
       {head(
@@ -36,6 +38,24 @@ export function ResultsPage() {
             {"%"}
           </div>
           {tag(r.band)}
+          <div className={"risk-meaning"}>
+            <div className={"risk-meaning-title"}>
+              <span className={"risk-meaning-icon"} aria-hidden={"true"}>
+                {"i"}
+              </span>
+              {"What does this mean?"}
+            </div>
+            <p>
+              {"Among 100 people with similar recorded risk characteristics, approximately "}
+              <strong>{approximateEventsPer100}</strong>
+              {" may experience a first major cardiovascular event within 10 years, while approximately "}
+              <strong>{approximateWithoutEventPer100}</strong>
+              {" may not experience that event within the same period."}
+            </p>
+            <p className={"risk-meaning-note"}>
+              {"This is a model-estimated probability for people with similar recorded characteristics, not a certainty or diagnosis of what will happen to this individual."}
+            </p>
+          </div>
           <TenYearProbabilityChart risk={r.risk} />
           <div className={"progress"}>
             <div

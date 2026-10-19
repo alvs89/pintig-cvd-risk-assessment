@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../pintig_pre_model_data_audit"
+		},
+		{
+			"path": "../../PINTIG_INITIAL_TRAINING_BASELINE_LOCKED_2026-10-07"
+		},
+		{
+			"path": "../../PINTIG_RSF_LOCAL_RESEARCH_HARNESS"
+		}
+	],
+	"settings": {}
+}

@@ -364,3 +364,47 @@ button.btn.danger,button.btn.danger:hover:not(:disabled){color:#8b1e2e}
 .pintig-confirm p{color:#334155}
 @media(max-width:570px){.pintig-table-filters .search,.pintig-table-filters select.search{min-width:0;max-width:100%;flex:1 1 100%}}
 
+
+/* Assessment result: plain-language explanation of the 10-year risk probability. */
+.risk-meaning{
+  margin:14px 0 18px;
+  padding:14px 16px;
+  border:1px solid #d7e3e8;
+  border-radius:12px;
+  background:#f7fbfc;
+  color:#1f2937;
+}
+.risk-meaning-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:7px;
+  color:#17324b;
+  font-size:15px;
+  font-weight:750;
+}
+.risk-meaning-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:19px;
+  height:19px;
+  flex:0 0 19px;
+  border:1.5px solid #64748b;
+  border-radius:50%;
+  color:#475569;
+  font-size:12px;
+  font-weight:800;
+  line-height:1;
+}
+.risk-meaning p{margin:0;line-height:1.55;font-size:14px}
+.risk-meaning strong{color:#111827;font-weight:800}
+.risk-meaning .risk-meaning-note{
+  margin-top:9px;
+  padding-top:9px;
+  border-top:1px solid #e2e8f0;
+  color:#475569;
+  font-size:13px;
+}
+@media(max-width:570px){.risk-meaning{padding:12px 13px}.risk-meaning p{font-size:13.5px}}
+@media print{.risk-meaning{break-inside:avoid;background:#fff}}
