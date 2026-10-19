@@ -6,7 +6,7 @@
 .screening-group {margin:18px 0;padding:16px;border:1px solid #d5e4ea;border-radius:12px;}
 .screening-group summary {font-weight:750;cursor:pointer;min-height:32px;}
 .screening-group h3 {margin:0 0 8px;}
-.screening-group p {line-height:1.6;max-width:90ch;}
+.screening-group p {line-height:1.6;max-width:none;}
 .screening-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px;align-items:stretch;}
 .screening-grid .field {display:grid;grid-template-rows:subgrid;grid-row:span 3;gap:6px;min-width:0;margin:0;}
 .screening-grid .field label {margin:0;align-self:end;}
@@ -40,3 +40,6 @@
   #assessmentForm .gridform > .field {display:flex;flex-direction:column;grid-row:auto;gap:8px;}
   #assessmentForm .gridform > .field > label {align-self:auto;}
 }
+
+/* Confirmation note uses the full card width. */
+.screening-group > .tiny {max-width:none;}

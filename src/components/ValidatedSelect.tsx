@@ -42,6 +42,13 @@ export function ValidatedSelect(
             .filter(Boolean)
             .join(" ") || undefined
         }
+        onFocus={(event) => {
+          if (props.id === "pid" && event.currentTarget.value === "") {
+            touched.current = true;
+            validate(event.currentTarget);
+          }
+          props.onFocus?.(event);
+        }}
         onChange={(event) => {
           if (touched.current) validate(event.currentTarget);
           props.onChange?.(event);

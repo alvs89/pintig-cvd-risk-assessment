@@ -158,3 +158,63 @@ test("patient changes revoke confirmation and required markers follow editable a
     "true",
   );
 });
+
+for (const role of ["admin", "worker"]) {
+  test(`${role}: missing patient prompts, highlights and focuses selection without scoring`, async ({
+    page,
+  }) => {
+    let calls = 0;
+    await page.route("http://127.0.0.1:8765/research-cif", (route) => {
+      calls++;
+      return route.fulfill({ status: 503, body: "unavailable" });
+    });
+    await page.goto("/");
+    await page.locator(`[data-act="${role}Demo"]`).click();
+    await page.locator('button[type="submit"]').click();
+    await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
+    const patient = page.locator("#pid");
+    await expect(
+      page.getByRole("heading", { name: "Select a patient", exact: true }),
+    ).toBeVisible();
+    await expect(patient).not.toHaveAttribute("aria-invalid", "true");
+    await patient.focus();
+    await expect(patient).toHaveAttribute("aria-invalid", "true");
+    await expect(page.locator("#pid-error")).toHaveText(
+      "Choose a patient before continuing.",
+    );
+    for (const width of [1440, 820, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page
+        .getByRole("button", {
+          name: "Select patient to continue",
+          exact: true,
+        })
+        .click();
+      await expect(patient).toBeFocused();
+      await expect(patient).toHaveCSS("border-top-color", "rgb(180, 35, 53)");
+      await expect(patient).toHaveAttribute("aria-describedby", "pid-error");
+      await expect(page.locator(".assessment-predictors")).toBeHidden();
+      await expect.poll(() => patient.evaluate((input) => {
+        const box = input.getBoundingClientRect();
+        return box.top >= 0 && box.bottom <= innerHeight;
+      })).toBe(true);
+    }
+    await page
+      .locator("#assessmentForm")
+      .evaluate((form) => (form as HTMLFormElement).requestSubmit());
+    await expect(patient).toBeFocused();
+    await expect(page.locator(".risk")).toHaveCount(0);
+    expect(calls).toBe(0);
+    await patient.selectOption("1");
+    await expect(page.locator("#pid-error")).toHaveCount(0);
+    await expect(patient).not.toHaveAttribute("aria-invalid", "true");
+    await expect(
+      page.getByRole("button", {
+        name: "Continue to Risk Assessment",
+        exact: true,
+      }),
+    ).toBeDisabled();
+    await completePreAssessment(page);
+    await expect(page.locator(".assessment-predictors")).toBeVisible();
+  });
+}

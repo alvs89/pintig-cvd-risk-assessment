@@ -42,6 +42,18 @@ export const formValues = (form: HTMLFormElement): Record<string, string> =>
   Object.fromEntries(
     Array.from(new FormData(form), ([k, v]) => [k, String(v)]),
   );
+function promptPatientSelection() {
+  S.result = null;
+  S.message = "";
+  flushSync(() => render());
+  const patientSelect = document.querySelector<HTMLSelectElement>("#pid");
+  patientSelect?.dispatchEvent(new Event("pintig:assessment-validation"));
+  patientSelect?.focus({ preventScroll: true });
+  patientSelect?.scrollIntoView({
+    block: "center",
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+  });
+}
 function updateQuestionnaire() {
   const form = formById("assessmentForm");
   if (form) {
@@ -226,6 +238,7 @@ export function handleClick(e: ActionEvent) {
     return open();
   }
   if (action === "continueAssessment") {
+    if (!P(S.patientId)) return promptPatientSelection();
     const p = P(S.patientId),
       check = S.preAssessment;
     if (
@@ -614,7 +627,8 @@ export function handleSubmit(e: FormEvent) {
   if (form.id === "assessmentForm") {
     if (!S.user) return;
     const patient = P(S.patientId);
-    if (!patient || !screeningForPatient(S.preAssessment, patient)) {
+    if (!patient) return promptPatientSelection();
+    if (!screeningForPatient(S.preAssessment, patient)) {
       S.result = null;
       S.message = "";
       render();

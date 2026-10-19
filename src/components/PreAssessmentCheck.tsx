@@ -10,7 +10,14 @@ export function PreAssessmentCheck() {
   const p = P(S.patientId),
     answers =
       S.preAssessment?.pid === p?.id ? (S.preAssessment?.answers ?? {}) : {};
-  const decision = screeningDecision(answers, p ? age(p.dob) : NaN);
+  const decision = p
+    ? screeningDecision(answers, age(p.dob))
+    : {
+        status: "incomplete",
+        title: "Select a patient",
+        message:
+          "Choose a patient in Patient identification before completing the eligibility and safety check.",
+      };
   const question = (key: string, label: string, no: string, yes: string) => (
     <div className="field" key={key}>
       <label htmlFor={`screen-${key}`}>{requiredLabel(label, true)}</label>
@@ -115,9 +122,9 @@ export function PreAssessmentCheck() {
           type="button"
           className="btn primary"
           data-act="continueAssessment"
-          disabled={decision.status !== "eligible"}
+          disabled={!!p && decision.status !== "eligible"}
         >
-          Continue to Risk Assessment
+          {p ? "Continue to Risk Assessment" : "Select patient to continue"}
         </button>
         {p && (
           <button
