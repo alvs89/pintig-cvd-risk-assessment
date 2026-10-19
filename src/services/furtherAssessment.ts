@@ -28,6 +28,16 @@ const validProbability = (risk: unknown): risk is number =>
 const nonempty = (value: unknown): value is string =>
   typeof value === "string" && value.trim().length > 0;
 
+/** Presentation-only educational summary; does not grant clinical approval or generate detail rules. */
+export function generalGuidanceMessage(
+  risk: unknown,
+  category: unknown,
+): string | undefined {
+  return validProbability(risk) && category === band(risk)
+    ? messages[band(risk)]
+    : undefined;
+}
+
 /** Approval is a future trusted integration prerequisite, never inferred from CIF metadata.
  * Current application callers do not supply it. Fixtures exercise the proposed rules only.
  */

@@ -67,3 +67,18 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.further-assessment-details {margin:12px 0;}
+.further-assessment-details > summary {
+  min-height:44px;
+  padding:10px 0;
+  color:#076b70;
+  font-weight:650;
+  line-height:1.5;
+  cursor:pointer;
+}
+.further-assessment-details > summary:focus-visible {
+  outline:3px solid #2dbbb5;
+  outline-offset:3px;
+  border-radius:4px;
+}

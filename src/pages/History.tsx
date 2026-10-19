@@ -136,6 +136,7 @@ export function RecordPage() {
         storedModelVersion={r.model}
       />
       <FurtherAssessmentPanel
+        assessment={r}
         result={storedFurtherAssessment(
           r.furtherAssessmentGuidance,
           r.risk,

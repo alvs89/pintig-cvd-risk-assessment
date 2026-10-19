@@ -69,7 +69,7 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
     ),
   ).toBeVisible();
   await expect(page.locator(".further-assessment")).toContainText(
-    "Continue risk-factor education",
+    "Provide general cardiovascular health education",
   );
   await expect(page.locator(".cif-curve")).toHaveCount(0);
   await expect(page.locator('.ten-year-chart [role="img"]')).toBeVisible();

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   furtherAssessment,
+  generalGuidanceMessage,
   storedFurtherAssessment,
   FURTHER_ASSESSMENT_VERSION,
 } from "../src/services/furtherAssessment.ts";
@@ -145,4 +146,20 @@ test("educational blood-pressure rules and illustrative snapshots remain indepen
   );
   assert.equal(snapshot.furtherAssessmentGuidance, undefined);
   assert.deepEqual(snapshot.guidanceRules, education);
+});
+
+test("presentation summaries reuse category messages without enabling clinically approved guidance", () => {
+  for (const risk of [
+    0, 0.049999999, 0.05, 0.099999999, 0.1, 0.199999999, 0.2, 1,
+  ]) {
+    const category = band(risk);
+    assert.equal(
+      generalGuidanceMessage(risk, category),
+      furtherAssessment(risk, category, approval).guidance.message,
+    );
+    assert.equal(furtherAssessment(risk, category).status, "unavailable");
+  }
+  for (const risk of [undefined, null, NaN, Infinity, -0.01, 1.01, "0.2"])
+    assert.equal(generalGuidanceMessage(risk, "Very High"), undefined);
+  assert.equal(generalGuidanceMessage(0.05, "Low"), undefined);
 });

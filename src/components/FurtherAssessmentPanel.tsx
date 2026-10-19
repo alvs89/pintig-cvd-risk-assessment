@@ -1,16 +1,31 @@
 import { useId } from "react";
-import type { FurtherAssessmentResult } from "../services/furtherAssessment";
+import {
+  generalGuidanceMessage,
+  type FurtherAssessmentResult,
+} from "../services/furtherAssessment";
+import type { RiskBand } from "../types/domain";
 import type { PrototypeFollowUpResult } from "../services/prototypeFollowUp";
 
 export function FurtherAssessmentPanel({
   result,
   prototype,
+  assessment,
 }: {
   result: FurtherAssessmentResult;
   prototype?: PrototypeFollowUpResult;
+  assessment?: { risk: number; band: RiskBand };
 }) {
   const id = useId();
   const showingPrototype = prototype?.status === "ready";
+  const summary =
+    prototype?.status === "ready"
+      ? generalGuidanceMessage(
+          prototype.guidance.probability,
+          prototype.guidance.category,
+        )
+      : prototype?.status === "below-threshold" && assessment
+        ? generalGuidanceMessage(assessment.risk, assessment.band)
+        : undefined;
   return (
     <section
       className="panel further-assessment"
@@ -27,22 +42,29 @@ export function FurtherAssessmentPanel({
             {prototype.guidance.category} risk grouping · illustrative 10-year
             estimate
           </p>
-          <p>{prototype.guidance.introduction}</p>
-          <div className="further-assessment-rule-grid" role="list">
-            {prototype.guidance.actions.map((action) => (
-              <article
-                className="further-assessment-rule"
-                role="listitem"
-                key={action.id}
-              >
-                <h3>{action.title}</h3>
-                <p className="further-assessment-finding">
-                  <strong>Recorded finding:</strong> {action.finding}
-                </p>
-                <p>{action.consideration}</p>
-              </article>
-            ))}
-          </div>
+          <p>{summary ?? prototype.guidance.introduction}</p>
+          <details
+            className="further-assessment-details"
+            key={`${prototype.guidance.probability}-${prototype.guidance.category}`}
+          >
+            <summary>View Detailed Guidance</summary>
+            <p>{prototype.guidance.introduction}</p>
+            <div className="further-assessment-rule-grid" role="list">
+              {prototype.guidance.actions.map((action) => (
+                <article
+                  className="further-assessment-rule"
+                  role="listitem"
+                  key={action.id}
+                >
+                  <h3>{action.title}</h3>
+                  <p className="further-assessment-finding">
+                    <strong>Recorded finding:</strong> {action.finding}
+                  </p>
+                  <p>{action.consideration}</p>
+                </article>
+              ))}
+            </div>
+          </details>
           <p className="further-assessment-note">
             This guidance is educational and does not replace evaluation by a
             qualified healthcare professional. Risk-based guidance is
@@ -54,9 +76,20 @@ export function FurtherAssessmentPanel({
       ) : prototype?.status === "below-threshold" ? (
         <div role="status" aria-live="polite">
           <p className="further-assessment-category">
-            Continue risk-factor education
+            {summary && assessment
+              ? `${assessment.band} risk grouping · illustrative 10-year estimate`
+              : "Continue risk-factor education"}
           </p>
-          <p>{prototype.reason}</p>
+          <p>{summary ?? prototype.reason}</p>
+          {summary && (
+            <details
+              className="further-assessment-details"
+              key={assessment?.band}
+            >
+              <summary>View Detailed Guidance</summary>
+              <p>{prototype.reason}</p>
+            </details>
+          )}
           <p className="further-assessment-note">
             Risk-based guidance is unvalidated. A probability below 10% does not
             rule out the need for clinical assessment.

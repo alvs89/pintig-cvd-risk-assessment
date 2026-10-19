@@ -137,6 +137,7 @@ export function ResultsPage() {
         predictionContext={r.predictionContext}
       />
       <FurtherAssessmentPanel
+        assessment={r}
         result={furtherAssessment(r.risk, r.band)}
         prototype={prototypeFollowUp(r.risk, r.band, r.inputs)}
       />
