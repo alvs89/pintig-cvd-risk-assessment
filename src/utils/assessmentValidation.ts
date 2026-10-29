@@ -10,10 +10,10 @@ export function selectionError(
     return value === "Unknown"
       ? "Current smoking status is not confirmed. Verify it before continuing."
       : "Choose an answer about the patient's current smoking status.";
-  if (name === "bpMeds" && !["Yes", "No"].includes(value))
+  if (name === "bpMeds" && !["Yes", "No", "Past"].includes(value))
     return value === "Unknown"
-      ? "Current blood-pressure medication use is not confirmed. Verify it before continuing."
-      : "Choose an answer about current blood-pressure medication use.";
+      ? "Hypertension-medication status is not confirmed. Verify it before continuing."
+      : "Choose an answer about hypertension-medication use.";
   return value === ""
     ? name === "pid"
       ? "Choose a patient before continuing."

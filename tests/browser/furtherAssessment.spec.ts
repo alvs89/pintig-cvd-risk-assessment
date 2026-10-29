@@ -50,7 +50,6 @@ test("illustrative results show proposed factor-specific rules without clinical 
   for (const [id, value] of [
     ["currentSmoking", "Yes"],
     ["bpMeds", "No"],
-    ["mode", "observed"],
   ])
     await page.locator("#" + id).selectOption(value);
   for (const [id, value] of [
@@ -126,10 +125,8 @@ test("very-high illustration prioritizes review of actual recorded factors and w
   await completePreAssessment(page);
   await page.getByRole("button", { name: "Prefill questionnaire" }).click();
   await completePreAssessment(page);
-  await page.locator("#sbp").fill("175");
-  await page.locator("#weight").fill("105");
-  await page.locator("#alcoholDays").fill("5");
-  await page.locator("#drinksPerDay").fill("4");
+  await page.locator("#sbp").fill("245");
+  await page.locator("#weight").fill("140");
   await page
     .getByRole("button", { name: "Review 10-year risk result →" })
     .click();
@@ -139,7 +136,7 @@ test("very-high illustration prioritizes review of actual recorded factors and w
   await expect(panel).toContainText("Very High risk grouping");
   await expect(panel.locator(".further-assessment-rule").first()).toBeHidden();
   await panel.locator("summary").click();
-  await expect(panel).toContainText("Recorded BP: 175/94 mmHg");
+  await expect(panel).toContainText("Recorded BP: 245/94 mmHg");
   await expect(panel).toContainText("smoking-cessation support");
   await expect(panel).toContainText(
     "comprehensive clinician-led cardiovascular risk review",
@@ -177,6 +174,10 @@ for (const [pid, category, opening] of [
     await page
       .getByRole("button", { name: "Prefill questionnaire", exact: true })
       .click();
+    if (pid === "10") {
+      await page.locator("#sbp").fill("245");
+      await page.locator("#weight").fill("140");
+    }
     await page.locator('#assessmentForm button[type="submit"]').click();
     const panel = page.getByRole("region", {
       name: "Further Assessment Guidance",

@@ -176,7 +176,6 @@ test("existing live and historical assessments omit unavailable CIF panels", asy
   for (const [key, value] of [
     ["currentSmoking", "No"],
     ["bpMeds", "No"],
-    ["mode", "observed"],
   ])
     await page.locator("#" + key).selectOption(value);
   for (const [key, value] of [

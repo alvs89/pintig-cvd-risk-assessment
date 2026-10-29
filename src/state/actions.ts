@@ -58,13 +58,7 @@ function updateQuestionnaire() {
   const form = formById("assessmentForm");
   if (form) {
     const x = deriveInputs({ ...S.draft, ...formValues(form) });
-    for (const key of [
-      "bmi",
-      "alcoholDays",
-      "drinksPerDay",
-      "alcoholDrinks",
-      "activityMinutes",
-    ]) {
+    for (const key of ["bmi"]) {
       const input = field(form, key);
       if (input) input.value = x[key] ?? "";
     }
@@ -678,53 +672,10 @@ export function handleSubmit(e: FormEvent) {
       );
     if (!["Yes", "No"].includes(x.currentSmoking))
       return fail("Confirm whether the patient currently smokes cigarettes.");
-    if (!["Yes", "No"].includes(x.bpMeds))
+    if (!["Yes", "No", "Past"].includes(x.bpMeds))
       return fail(
-        "Confirm whether the patient currently takes blood-pressure medication.",
+        "Confirm the patient's hypertension-medication status.",
       );
-    if (x.mode === "extended") {
-      if (
-        !["Yes", "No"].includes(x.alcoholUse) ||
-        x.alcoholDays === "" ||
-        x.drinksPerDay === ""
-      )
-        return fail(
-          "Complete the alcohol-use questions, entering zero when appropriate.",
-        );
-      if (x.activityDays === "" || x.activityPerDay === "")
-        return fail(
-          "Complete the weekly physical-activity questions, entering zero when appropriate.",
-        );
-      if (
-        +x.alcoholDays < 0 ||
-        +x.alcoholDays > 7 ||
-        +x.activityDays < 0 ||
-        +x.activityDays > 7
-      )
-        return fail(
-          "Weekly activity and drinking days must be between 0 and 7.",
-        );
-    } else {
-      [
-        "alcoholUse",
-        "alcoholDays",
-        "drinksPerDay",
-        "alcoholDrinks",
-        "activityDays",
-        "activityPerDay",
-        "activityMinutes",
-        "walkingPace",
-        "fruitVeg",
-        "wholeGrain",
-        "saltFrequency",
-        "processedFood",
-        "family",
-        "education",
-        "employment",
-      ].forEach((k) => {
-        x[k] = "";
-      });
-    }
     let out = simulate(x, p);
     S.result = {
       ...out,

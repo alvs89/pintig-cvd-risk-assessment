@@ -6,10 +6,11 @@ test("required answers and uncertain medication responses receive specific inlin
   for (const answer of ["", "Unknown"])
     assert.match(
       selectionError("bpMeds", answer, true),
-      /blood-pressure medication/,
+      /hypertension-medication/i,
     );
   assert.equal(selectionError("bpMeds", "No", true), "");
   assert.equal(selectionError("bpMeds", "Yes", true), "");
+  assert.equal(selectionError("bpMeds", "Past", true), "");
   assert.equal(selectionError("education", "", false), "");
   assert.equal(selectionError("prior", "Yes", true), "");
   for (const field of ["bpMeds", "currentSmoking"]) {

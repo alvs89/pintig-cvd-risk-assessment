@@ -63,11 +63,13 @@ test("new saved assessment retains all questionnaire fields in their original se
   await expect(page.getByRole("heading",{name:"Assessment AST-0011"})).toBeVisible();
   const info=page.getByRole("heading",{name:"Recorded assessment information"}).locator("..");
   const groups=info.locator(".history-question-group");
-  await expect(groups).toHaveCount(7);
-  for(const text of ["Patient identification","Eligibility questions","Clinic measurements","Smoking and medication history","Alcohol consumption and physical activity","Diet and nutrition","Family and social history"])
+  await expect(groups).toHaveCount(4);
+  for(const text of ["Patient identification","Eligibility questions","Clinic measurements","Smoking and medication history"])
     await expect(info.getByRole("heading",{name:text,exact:true})).toBeVisible();
+  for(const text of ["Alcohol consumption and physical activity","Diet and nutrition","Family and social history"])
+    await expect(info.getByRole("heading",{name:text,exact:true})).toHaveCount(0);
   await expect(info.locator('.history-question-group').filter({has:page.getByRole("heading",{name:"Eligibility questions"})})).toContainText("Information verified");
-  await expect(info.getByText("Current blood pressure medication",{exact:true})).toHaveCount(1);
+  await expect(info.getByText("Hypertension medication",{exact:true})).toHaveCount(1);
   await expect(info.getByText("156 mmHg",{exact:true})).toHaveCount(1);
   await expect(info.getByText("94 mmHg",{exact:true})).toHaveCount(1);
   await expect(info.getByText(/Some assessment information is unavailable/)).toHaveCount(0);

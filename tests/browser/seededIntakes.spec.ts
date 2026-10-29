@@ -7,10 +7,10 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
   await page.locator('[data-act="workerDemo"]').click();
   await page.locator('button[type="submit"]').click();
   await page.locator('.sidebar [data-act="nav:New Risk Assessment"]').click();
-  for (const [pid, sbp, bmi, alcohol, activity] of [
-    ["1", "156", "29.1", "4.0", "50"],
-    ["2", "138", "26.5", "0.0", "105"],
-    ["3", "118", "23.4", "0.0", "200"],
+  for (const [pid, sbp, bmi] of [
+    ["1", "156", "29.1"],
+    ["2", "138", "26.5"],
+    ["3", "118", "23.4"],
   ]) {
     await page.locator("#pid").selectOption(pid);
   await completePreAssessment(page);
@@ -25,8 +25,10 @@ test("recorded intakes load explicitly, remain editable, protect drafts and pres
   await completePreAssessment(page);
     await expect(page.locator("#sbp")).toHaveValue(sbp);
     await expect(page.locator("#bmi")).toHaveValue(bmi);
-    await expect(page.locator("#alcoholDrinks")).toHaveValue(alcohol);
-    await expect(page.locator("#activityMinutes")).toHaveValue(activity);
+    await expect(page.locator("#currentSmoking")).toHaveValue(/Yes|No/);
+    await expect(page.locator("#bpMeds")).toHaveValue(/Yes|No|Past/);
+    await expect(page.locator("#alcoholDrinks")).toHaveCount(0);
+    await expect(page.locator("#activityMinutes")).toHaveCount(0);
     for (const width of [1440, 820, 390]) {
       await page.setViewportSize({ width, height: 900 });
       await expect(page.locator("#sbp")).toBeVisible();

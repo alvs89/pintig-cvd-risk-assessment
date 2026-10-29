@@ -37,14 +37,13 @@ test("required labels and real-time numeric errors are accessible and clear on c
   await expect(sbp).toHaveValue("140");
   await sbp.fill("141");
   await expect(page.locator("#sbp-error")).toHaveCount(0);
-  await page.locator("#activityDays").fill("8");
-  await expect(page.locator("#activityDays-error")).toContainText(
-    "between 0 and 7",
+  await page.locator("#bpMeds").selectOption("Unknown");
+  await page.locator("#bpMeds").dispatchEvent("pintig:assessment-validation");
+  await expect(page.locator("#bpMeds-error")).toContainText(
+    "Hypertension-medication status is not confirmed",
   );
-  await page.locator("#activityDays").fill("3");
-  await expect(page.locator("#activityDays-error")).toHaveCount(0);
-  await page.locator("#activityPerDay").fill("35");
-  await expect(page.locator("#activityMinutes")).toHaveValue("105");
+  await page.locator("#bpMeds").selectOption("Past");
+  await expect(page.locator("#bpMeds-error")).toHaveCount(0);
   await page.locator("#height").fill("159");
   await page.locator("#weight").fill("67");
   await expect(page.locator("#bmi")).toHaveValue("26.5");

@@ -81,10 +81,11 @@ test("screening is mandatory, immediate, correctable, patient-bound and responsi
   await completePreAssessment(page);
   await expect(page.locator("#sbp")).toHaveValue("156");
   await expect(page.locator("#bmiLabel .required-marker")).toHaveCount(0);
-  await expect(page.locator("label[for=waist] .required-marker")).toHaveCount(
-    0,
-  );
   await expect(page.locator("label[for=sbp] .required-marker")).toHaveCount(1);
+  await expect(
+    page.locator("label[for=currentSmoking] .required-marker"),
+  ).toHaveCount(1);
+  await expect(page.locator("label[for=bpMeds] .required-marker")).toHaveCount(1);
   await expect(page.locator(".assessment-predictors")).toBeVisible();
   // Revoking an answer closes scoring again, retaining measurements for correction.
   await page.locator("#screen-warningSigns").selectOption("Unknown");
@@ -131,14 +132,11 @@ test("patient changes revoke confirmation and required markers follow editable a
   await expect(page.locator("label[for=weight] .required-marker")).toHaveCount(
     0,
   );
-  await expect(
-    page.locator("label[for=activityDays] .required-marker"),
-  ).toHaveCount(1);
-  await page.locator("#mode").selectOption("observed");
-  await expect(page.locator("#extraQuestionnaire")).toBeHidden();
-  await expect(
-    page.locator("label[for=activityDays] .required-marker"),
-  ).toHaveCount(0);
+  await expect(page.locator("#mode")).toHaveCount(0);
+  await expect(page.locator("#extraQuestionnaire")).toHaveCount(0);
+  await expect(page.locator("#waist")).toHaveCount(0);
+  await expect(page.locator("#activityDays")).toHaveCount(0);
+  await expect(page.locator("#alcoholUse")).toHaveCount(0);
   await page.locator("#pid").selectOption("2");
   if (await page.getByRole("alertdialog").count())
     await page

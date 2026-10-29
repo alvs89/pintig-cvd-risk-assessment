@@ -19,37 +19,18 @@ export function AssessmentPage() {
   const v = (k: string, d = "") => x[k] ?? d;
   const ynu = [
     ["", "Choose an answer"],
-    ["Yes", "Yes"],
     ["No", "No"],
-    ["Unknown", "Not sure"],
+    ["Yes", "Yes"],
+    ["Unknown", "Unknown"],
+  ];
+  const bpMedicationOptions = [
+    ["", "Choose an answer"],
+    ["No", "No"],
+    ["Yes", "Yes, now"],
+    ["Past", "Yes, not now"],
+    ["Unknown", "Unknown"],
   ];
   const bmiAuto = Number(x.height) > 0 && Number(x.weight) > 0;
-  const alc = v("alcoholDrinks"),
-    activity = v("activityMinutes"),
-    core = v("mode", "extended") === "observed";
-  const num = (
-    label: string,
-    key: string,
-    max: number,
-    unit = "",
-    required = false,
-    step = "1",
-  ) =>
-    f(
-      label + (unit ? " (" + unit + ")" : ""),
-      key,
-      v(key),
-      "number",
-      required ||
-        (!core &&
-          [
-            "alcoholDays",
-            "drinksPerDay",
-            "activityDays",
-            "activityPerDay",
-          ].includes(key)),
-      'min="0" max="' + max + '" step="' + step + '"',
-    );
   return (
     <>
       {head(
@@ -194,14 +175,7 @@ export function AssessmentPage() {
                 </div>
               </div>
             </div>
-            {f(
-              "Waist circumference (cm, if available)",
-              "waist",
-              v("waist"),
-              "number",
-              false,
-              'min="40" max="190" step="0.1"',
-            )}
+
           </div>
           <p className={"hintline"}>
             {
@@ -211,295 +185,33 @@ export function AssessmentPage() {
           <div className={"intake-section-head"}>
             <span className={"intake-step"}>{"04"}</span>
             <div>
-              <h2>{"Smoking and medication history"}</h2>
+              <h2>{"Framingham-aligned risk questions"}</h2>
               <p>
                 {
-                  "Record current smoking and medication use separately from past use."
+                  "Use the official Framingham question wording and response choices shown below. Unknown responses must be verified before risk calculation."
                 }
               </p>
             </div>
           </div>
           <div className={"gridform"}>
             {sel(
-              "Has the patient smoked cigarettes during the past month? *",
+              "Do you now smoke cigarettes (as of 1 month ago)? *",
               "currentSmoking",
               ynu,
               v("currentSmoking"),
             )}
             {sel(
-              "Is the patient currently taking medication for high blood pressure? *",
+              "Have you ever taken medication for hypertension/high blood pressure? *",
               "bpMeds",
-              ynu,
+              bpMedicationOptions,
               v("bpMeds"),
-            )}
-            {sel(
-              "Has a healthcare professional previously diagnosed the patient with diabetes?",
-              "diabetesHistory",
-              ynu,
-              v("diabetesHistory"),
-            )}
-            {sel(
-              "Has the patient used blood pressure medication in the past, but not currently?",
-              "pastBpMeds",
-              ynu,
-              v("pastBpMeds"),
             )}
           </div>
           <p className={"hintline"}>
             {
-              "Record the patient’s reported history of a professional diabetes diagnosis."
+              "Framingham response choices for hypertension medication are No, Yes—now, Yes—not now, and Unknown. For PINTIG's current-use model input, only Yes—now is treated as current antihypertensive medication use."
             }
           </p>
-          <div className={"intake-section-head"}>
-            <span className={"intake-step"}>{"05"}</span>
-            <div>
-              <h2>{"Lifestyle, diet and family questionnaire"}</h2>
-              <p>
-                {
-                  "Record the patient's usual lifestyle habits and relevant health history."
-                }
-              </p>
-            </div>
-          </div>
-          {sel(
-            "Assessment information *",
-            "mode",
-            [
-              ["observed", "Clinical and history information"],
-              ["extended", "Clinical, lifestyle and social information"],
-            ],
-            v("mode", "extended"),
-          )}
-          <div
-            id={"extraQuestionnaire"}
-            className={"extra-questionnaire"}
-            hidden={core}
-          >
-            <div className={"question-group"}>
-              <div className={"group-title"}>{"Alcohol consumption"}</div>
-              <div className={"gridform"}>
-                {sel(
-                  "Has the patient consumed alcoholic drinks during the past year?" +
-                    (core ? "" : " *"),
-                  "alcoholUse",
-                  ynu,
-                  v("alcoholUse"),
-                )}
-                {num(
-                  "On average, how many days per week does the patient drink alcohol?",
-                  "alcoholDays",
-                  7,
-                  "days/week",
-                  false,
-                )}
-                {num(
-                  "On a drinking day, approximately how many drinks does the patient have?",
-                  "drinksPerDay",
-                  30,
-                  "drinks/day",
-                  false,
-                )}
-                <div className={"field"}>
-                  <label id={"alcoholDrinksLabel"}>
-                    {"Estimated drinks per week"}
-                  </label>
-                  <div
-                    className={"derived-text-value"}
-                    role={"status"}
-                    aria-labelledby={"alcoholDrinksLabel"}
-                    data-state={alc !== "" ? "complete" : "pending"}
-                  >
-                    <span
-                      id={"alcoholDrinksDisplay"}
-                      className={
-                        "derived-main " + (alc === "" ? "placeholder" : "")
-                      }
-                    >
-                      {alc !== ""
-                        ? Number(alc).toFixed(1) + " drinks/week"
-                        : "Not yet calculated"}
-                    </span>
-                    <span
-                      className={"calc-flag"}
-                      id={"alcoholDrinksFlag"}
-                      hidden={alc === ""}
-                    >
-                      {"Calculated"}
-                    </span>
-                    <input
-                      id={"alcoholDrinks"}
-                      name={"alcoholDrinks"}
-                      type={"hidden"}
-                      value={alc}
-                      readOnly
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={"question-group"}>
-              <div className={"group-title"}>{"Physical activity"}</div>
-              <p className={"hintline"}>
-                {
-                  "Record the days active and minutes per active day for a typical week."
-                }
-              </p>
-              <div className={"gridform"}>
-                {num(
-                  "On how many days per week does the patient do moderate physical activity?",
-                  "activityDays",
-                  7,
-                  "days/week",
-                  false,
-                )}
-                {num(
-                  "On those days, about how many minutes are spent being active?",
-                  "activityPerDay",
-                  300,
-                  "minutes/day",
-                  false,
-                )}
-                <div className={"field"}>
-                  <label id={"activityMinutesLabel"}>
-                    {"Estimated activity per week"}
-                  </label>
-                  <div
-                    className={"derived-text-value"}
-                    role={"status"}
-                    aria-labelledby={"activityMinutesLabel"}
-                    data-state={activity !== "" ? "complete" : "pending"}
-                  >
-                    <span
-                      id={"activityMinutesDisplay"}
-                      className={
-                        "derived-main " +
-                        (activity === "" ? "placeholder" : "")
-                      }
-                    >
-                      {activity !== ""
-                        ? activity + " min/week"
-                        : "Not yet calculated"}
-                    </span>
-                    <span
-                      className={"calc-flag"}
-                      id={"activityMinutesFlag"}
-                      hidden={activity === ""}
-                    >
-                      {"Calculated"}
-                    </span>
-                    <input
-                      id={"activityMinutes"}
-                      name={"activityMinutes"}
-                      type={"hidden"}
-                      value={activity}
-                      readOnly
-                    />
-                  </div>
-                </div>
-                {sel(
-                  "Typical walking pace",
-                  "walkingPace",
-                  [
-                    ["", "Not recorded"],
-                    ["Slow", "Slow"],
-                    ["Average", "Average"],
-                    ["Brisk", "Brisk"],
-                    ["Unable", "Unable to walk"],
-                  ],
-                  v("walkingPace"),
-                )}
-              </div>
-            </div>
-            <div className={"question-group"}>
-              <div className={"group-title"}>{"Diet and nutrition"}</div>
-              <p className={"hintline"}>
-                {"Record the patient's usual eating habits."}
-              </p>
-              <div className={"gridform"}>
-                {num(
-                  "How many servings of fruits and vegetables does the patient usually eat daily?",
-                  "fruitVeg",
-                  25,
-                  "servings/day",
-                  false,
-                  "0.5",
-                )}
-                {num(
-                  "How many servings of whole-grain foods does the patient usually eat daily?",
-                  "wholeGrain",
-                  20,
-                  "servings/day",
-                  false,
-                  "0.5",
-                )}
-                {sel(
-                  "How often does the patient add salt or salty condiments to prepared food?",
-                  "saltFrequency",
-                  [
-                    ["", "Not recorded"],
-                    ["Rarely", "Rarely"],
-                    ["Sometimes", "Sometimes"],
-                    ["Often", "Often"],
-                  ],
-                  v("saltFrequency"),
-                )}
-                {sel(
-                  "How often does the patient eat packaged or heavily processed food?",
-                  "processedFood",
-                  [
-                    ["", "Not recorded"],
-                    ["Rarely", "Rarely"],
-                    ["Sometimes", "Sometimes"],
-                    ["Often", "Often"],
-                  ],
-                  v("processedFood"),
-                )}
-              </div>
-            </div>
-            <div className={"question-group"}>
-              <div className={"group-title"}>
-                {"Family and social history"}
-              </div>
-              <div className={"gridform"}>
-                {sel(
-                  "Has a parent or sibling been diagnosed with heart disease or stroke?",
-                  "family",
-                  ynu,
-                  v("family"),
-                )}
-                {sel(
-                  "What is the highest level of schooling the patient has completed?",
-                  "education",
-                  [
-                    ["", "Not recorded"],
-                    ["No formal education", "No formal schooling"],
-                    ["Primary", "Elementary / primary school"],
-                    ["Secondary", "High school / secondary school"],
-                    ["Vocational", "Vocational / technical training"],
-                    ["Tertiary", "College / university"],
-                    ["Postgraduate", "Postgraduate studies"],
-                    ["Prefer not to say", "Prefer not to say"],
-                  ],
-                  v("education"),
-                )}
-                {sel(
-                  "Current employment status",
-                  "employment",
-                  [
-                    ["", "Not recorded"],
-                    ["Employed", "Employed"],
-                    ["Self-employed", "Self-employed"],
-                    ["Unemployed", "Unemployed"],
-                    ["Student", "Student"],
-                    ["Retired", "Retired"],
-                    ["Other", "Other"],
-                    ["Prefer not to say", "Prefer not to say"],
-                  ],
-                  v("employment"),
-                )}
-              </div>
-            </div>
-          </div>
           <div className={"derived-panel"} aria-live={"polite"}>
             <div>
               <b>{"Assessment input summary"}</b>
@@ -517,23 +229,19 @@ export function AssessmentPage() {
                 </strong>
               </div>
               <div>
-                <span>{"Alcohol intake"}</span>
-                <strong id={"previewAlcohol"}>
-                  {core
-                    ? "Not included"
-                    : alc !== ""
-                      ? Number(alc).toFixed(1) + " drinks/week"
-                      : "Not yet calculated"}
+                <span>{"Current cigarette smoking"}</span>
+                <strong id={"previewSmoking"}>
+                  {v("currentSmoking") || "Not yet provided"}
                 </strong>
               </div>
               <div>
-                <span>{"Physical activity"}</span>
-                <strong id={"previewActivity"}>
-                  {core
-                    ? "Not included"
-                    : activity !== ""
-                      ? activity + " min/week"
-                      : "Not yet calculated"}
+                <span>{"Hypertension medication"}</span>
+                <strong id={"previewBpMeds"}>
+                  {v("bpMeds") === "Past"
+                    ? "Yes, not now"
+                    : v("bpMeds") === "Yes"
+                      ? "Yes, now"
+                      : v("bpMeds") || "Not yet provided"}
                 </strong>
               </div>
             </div>

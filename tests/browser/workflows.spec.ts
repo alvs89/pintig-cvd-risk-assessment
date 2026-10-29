@@ -19,7 +19,7 @@ async function signIn(page: Page, role = "admin") {
 async function nav(page: Page, name: string) {
   await page.locator(`.sidebar [data-act="nav:${name}"]`).click();
 }
-async function intake(page: Page, mode = "extended") {
+async function intake(page: Page) {
   await nav(page, "New Risk Assessment");
   await page.locator("#pid").selectOption("1");
   await completePreAssessment(page);
@@ -29,14 +29,6 @@ async function intake(page: Page, mode = "extended") {
   await page.locator("#weight").fill("71.4");
   await page.locator("#currentSmoking").selectOption("No");
   await page.locator("#bpMeds").selectOption("No");
-  await page.locator("#mode").selectOption(mode);
-  if (mode === "extended") {
-    await page.locator("#alcoholUse").selectOption("Yes");
-    await page.locator("#alcoholDays").fill("1");
-    await page.locator("#drinksPerDay").fill("2");
-    await page.locator("#activityDays").fill("3");
-    await page.locator("#activityPerDay").fill("60");
-  }
 }
 
 test("worker registers, edits, assesses and reviews an immutable saved snapshot", async ({
@@ -87,12 +79,8 @@ test("worker registers, edits, assesses and reviews an immutable saved snapshot"
   await expect(page.locator("#patientLiveResults tbody tr")).toHaveCount(12);
   await intake(page);
   await expect(page.locator("#bmiDisplay")).toHaveText("25.3 kg/m²");
-  await expect(page.locator("#alcoholDrinksDisplay")).toHaveText(
-    "2.0 drinks/week",
-  );
-  await expect(page.locator("#activityMinutesDisplay")).toHaveText(
-    "180 min/week",
-  );
+  await expect(page.locator("#previewSmoking")).toHaveText("No");
+  await expect(page.locator("#previewBpMeds")).toHaveText("No");
   await page
     .getByRole("button", { name: "Reveal name for PNT-000001", exact: true })
     .click();
@@ -219,9 +207,11 @@ test("core input mode, eligibility, invalid pressure and clear confirmation", as
   page,
 }) => {
   await signIn(page, "worker");
-  await intake(page, "observed");
-  await expect(page.locator("#extraQuestionnaire")).toBeHidden();
-  await expect(page.locator("#previewActivity")).toHaveText("Not included");
+  await intake(page);
+  await expect(page.locator("#extraQuestionnaire")).toHaveCount(0);
+  await expect(page.locator("#waist")).toHaveCount(0);
+  await expect(page.locator("#alcoholUse")).toHaveCount(0);
+  await expect(page.locator("#activityDays")).toHaveCount(0);
   await page.locator("#screen-cardiovascularHistory").selectOption("Yes");
   await expect(page.getByRole("heading",{name:"First-Event Risk Assessment Not Applicable"})).toBeVisible();
   await expect(page.locator(".assessment-predictors")).toBeHidden();
@@ -246,7 +236,7 @@ test("core input mode, eligibility, invalid pressure and clear confirmation", as
     .click();
   await page.locator("#pintigConfirmAction").click();
   await expect(page.locator("#sbp")).toHaveValue("");
-  await expect(page.locator("#mode")).toHaveValue("extended");
+  await expect(page.locator("#mode")).toHaveCount(0);
 });
 
 test("every route and the v27 reference remain readable on desktop and mobile", async ({
@@ -305,58 +295,76 @@ test("every route and the v27 reference remain readable on desktop and mobile", 
   expect(errors).toEqual([]);
 });
 
-test("questionnaire fields, labels, options and constraints match the original v27", async ({
+test("questionnaire uses the verified Framingham core wording and removes non-core custom items", async ({
   page,
-  context,
 }) => {
   await signIn(page, "worker");
   await nav(page, "New Risk Assessment");
-  const inspect = async (target: Page) =>
-    target.locator("#assessmentForm").evaluate((form) => ({
-      // Only the presentation label for the input-set selector was changed.
-      labels: Array.from(form.querySelectorAll("label:not([for='mode']):not([for='prior']):not([for='verified']):not([for^='screen-'])")).map(
-        (label) => label.textContent?.replace(/\s*\*\s*$/, "").trim(),
-      ),
-      fields: Array.from(form.querySelectorAll("input:not([name=prior]):not([name=verified]),select:not([data-screening-key]):not([name=prior]):not([name=verified])")).map((node) => ({
-        id: node.id,
-        name: node.getAttribute("name"),
-        type: node.getAttribute("type"),
-        min: node.getAttribute("min"),
-        max: node.getAttribute("max"),
-        step: node.getAttribute("step"),
-        // These existing submission-required fields now expose native required state.
-        required: [
-          "alcoholDays",
-          "drinksPerDay",
-          "activityDays",
-          "activityPerDay",
-        ].includes(node.id)
-          ? true
-          : node.hasAttribute("required"),
-        options:
-          node.tagName === "SELECT"
-            ? Array.from(node.querySelectorAll("option")).map((option) => ({
-                value: option.value,
-                text: node.id === "mode" ? option.value : option.textContent,
-              }))
-            : undefined,
-      })),
-    }));
-  await expect(page.locator("[data-screening-key]")).toHaveCount(2);
-  const current = await inspect(page);
-  const patientOptions = current.fields.find(field => field.id === "pid")!.options!;
-  expect(patientOptions.slice(4)).toEqual(Array.from({length:8}, (_, index) => ({
-    value: String(index + 4), text: `PNT-${String(index + 4).padStart(6, "0")}`,
-  })));
-  // The questionnaire is unchanged; only the explicitly added patient choices differ.
-  current.fields.find(field => field.id === "pid")!.options = patientOptions.slice(0, 4);
-  const reference = await context.newPage();
-  await reference.goto("/legacy/PINTIG_Web_Application_v27.html");
-  await reference.locator('[data-act="workerDemo"]').click();
-  await reference
-    .getByRole("button", { name: "Sign in →", exact: true })
-    .click();
-  await nav(reference, "New Risk Assessment");
-  expect(current).toEqual(await inspect(reference));
-  await reference.close();
+  await page.locator("#pid").selectOption("1");
+  await completePreAssessment(page);
+
+  await expect(
+    page.getByRole("heading", { name: "Framingham-aligned risk questions" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Do you now smoke cigarettes (as of 1 month ago)?", {
+      exact: false,
+    }),
+  ).toBeVisible();
+  await expect(page.locator("#currentSmoking option")).toHaveText([
+    "Choose an answer",
+    "No",
+    "Yes",
+    "Unknown",
+  ]);
+
+  await expect(
+    page.getByText(
+      "Have you ever taken medication for hypertension/high blood pressure?",
+      { exact: false },
+    ),
+  ).toBeVisible();
+  await expect(page.locator("#bpMeds option")).toHaveText([
+    "Choose an answer",
+    "No",
+    "Yes, now",
+    "Yes, not now",
+    "Unknown",
+  ]);
+  await page.locator("#bpMeds").selectOption("Past");
+  await expect(page.locator("#previewBpMeds")).toHaveText("Yes, not now");
+  await page.locator("#bpMeds").selectOption("No");
+
+  for (const id of [
+    "waist",
+    "mode",
+    "extraQuestionnaire",
+    "diabetesHistory",
+    "pastBpMeds",
+    "alcoholUse",
+    "alcoholDays",
+    "drinksPerDay",
+    "activityDays",
+    "activityPerDay",
+    "walkingPace",
+    "fruitVeg",
+    "wholeGrain",
+    "saltFrequency",
+    "processedFood",
+    "family",
+    "education",
+    "employment",
+  ])
+    await expect(page.locator("#" + id)).toHaveCount(0);
+
+  for (const id of [
+    "sbp",
+    "dbp",
+    "height",
+    "weight",
+    "bmi",
+    "currentSmoking",
+    "bpMeds",
+  ])
+    await expect(page.locator("#" + id)).toHaveCount(1);
 });

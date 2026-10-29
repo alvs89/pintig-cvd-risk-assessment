@@ -8,26 +8,26 @@ export const assessmentLabels: Record<string, string> = {
   weight: "Weight",
   bmi: "Body mass index",
   waist: "Waist circumference",
-  currentSmoking: "Current smoking",
-  bpMeds: "Current blood pressure medication",
-  diabetesHistory: "History of diabetes",
-  pastBpMeds: "Previous blood pressure medication",
+  currentSmoking: "Current cigarette smoking",
+  bpMeds: "Hypertension medication",
+  diabetesHistory: "Diabetes history (supplemental)",
+  pastBpMeds: "Previous blood pressure medication (supplemental)",
   mode: "Assessment information",
   alcoholUse: "Alcohol use",
   alcoholDays: "Drinking days per week",
   drinksPerDay: "Drinks per drinking day",
   alcoholDrinks: "Alcohol intake per week",
-  activityDays: "Active days per week",
-  activityPerDay: "Activity minutes per day",
-  activityMinutes: "Activity minutes per week",
-  walkingPace: "Walking pace",
-  fruitVeg: "Fruit and vegetable servings per day",
-  wholeGrain: "Whole-grain servings per day",
-  saltFrequency: "Added salt",
-  processedFood: "Processed foods",
-  family: "Family cardiovascular history",
-  education: "Highest education",
-  employment: "Employment status",
+  activityDays: "Moderate activity days per week (supplemental/adapted)",
+  activityPerDay: "Activity minutes per active day (supplemental/adapted)",
+  activityMinutes: "Activity minutes per week (supplemental/adapted)",
+  walkingPace: "Normal walking pace outdoors",
+  fruitVeg: "Fruit and vegetable servings per day (supplemental)",
+  wholeGrain: "Whole-grain servings per day (supplemental)",
+  saltFrequency: "Added salt (supplemental)",
+  processedFood: "Processed foods (supplemental)",
+  family: "Family cardiovascular history (supplemental)",
+  education: "Highest degree or level of school completed",
+  employment: "Current employment status",
   ageAtAssessment: "Age at assessment",
   smoking: "Smoking status",
   diabetes: "History of diabetes",
@@ -39,6 +39,12 @@ export function displayAssessmentValue(
 ): string {
   if (key === "pid") return record;
   if (value === "") return "Not recorded";
+  if (key === "bpMeds")
+    return value === "Yes"
+      ? "Yes, now"
+      : value === "Past"
+        ? "Yes, not now"
+        : value;
   if (key === "mode")
     return value === "extended"
       ? "Clinical and lifestyle information"

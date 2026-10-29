@@ -9,3 +9,13 @@ Thumbs.db
 coverage/
 test-results/
 playwright-report/
+# Research participant-level files and generated model artifacts
+/data/
+/analysis/modeling/
+/analysis/**/*.rds
+/analysis/**/*.log
+/analysis/**/*.err
+/analysis/**/*.txt
+/analysis/results/
+/analysis/reports/*.csv
+/analysis/reports/v3/*.csv

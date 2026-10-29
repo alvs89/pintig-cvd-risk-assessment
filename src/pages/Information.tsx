@@ -134,6 +134,14 @@ export function HelpPage() {
                 Use the eye control next to the patient record number. Hide the
                 name when verification is complete.
               </p>
+              <h3>Where do the assessment questions come from?</h3>
+              <p>
+                The risk-question section uses official Framingham Heart Study
+                wording and response choices for current cigarette smoking and
+                hypertension-medication history. PINTIG-specific eligibility
+                and safety screening is shown separately and is not presented
+                as part of the Framingham questionnaire.
+              </p>
               <h3>What is the PhilHealth PIN used for?</h3>
               <p>
                 It is an optional patient identifier. It does not connect PINTIG
@@ -201,14 +209,24 @@ export function AboutPage() {
         </p>
         <h3>Questionnaire reference</h3>
         <p>
-          Interview wording is adapted from Framingham examination forms for
-          PINTIG; it is not a validated Framingham questionnaire.{" "}
+          The live risk-question section is intentionally limited to directly
+          traceable Framingham items used by the current PINTIG assessment flow:
+          current cigarette smoking and hypertension-medication history. Their
+          displayed wording and response choices follow official Framingham exam
+          materials as closely as the baseline PINTIG workflow permits.
+        </p>
+        <p>
+          Custom alcohol, activity, diet, family-history, education, employment,
+          diabetes-history, previous-medication, and waist-circumference items
+          have been removed from the live New Risk Assessment rather than being
+          presented as supplemental Framingham questions. Framingham forms vary
+          by cohort and examination cycle.{" "}
           <a
-            href="https://www.framinghamheartstudy.org/files/2017/08/Gen-3-Exam-1.pdf"
+            href="https://www.framinghamheartstudy.org/fhs-for-researchers/exam-forms/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            View study examination forms ↗
+            View official Framingham exam forms ↗
           </a>
         </p>
       </section>

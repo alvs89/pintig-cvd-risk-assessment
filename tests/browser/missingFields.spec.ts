@@ -33,7 +33,7 @@ for (const width of [1440, 820, 390])
     await expect(page.locator("#bpMeds")).toBeFocused();
     await expect(page.locator("#bpMeds")).toBeInViewport();
     await expect(page.locator("#bpMeds-error")).toContainText(
-      "blood-pressure medication",
+      "hypertension-medication",
     );
     const box = await page.locator("#bpMeds").boundingBox();
     expect(box!.y).toBeGreaterThan(80);

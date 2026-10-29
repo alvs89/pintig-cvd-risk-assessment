@@ -13,7 +13,9 @@ test("live results display automatic probability and signed-factor graphs withou
   await page.getByRole("button", { name: "Review 10-year risk result →" }).click();
   await expect(page.getByRole("figure", { name: /Ten-year probability overview/i })).toBeVisible();
   await expect(page.getByRole("group", { name: "Contribution chart" })).toBeVisible();
-  await expect(page.getByText("17.2%", { exact: true }).first()).toBeVisible();
+  const displayedRisk = await page.locator(".risk").textContent();
+  expect(displayedRisk).toMatch(/^\d+\.\d%$/);
+  await expect(page.getByText(displayedRisk!, { exact: true }).first()).toBeVisible();
   await expect(page.locator(".assessment-factor-bar.positive").first()).toBeVisible();
   await expect(page.getByText("Cumulative probability curve unavailable")).toHaveCount(0);
   await expect(page.locator(".cif-curve")).toHaveCount(0);

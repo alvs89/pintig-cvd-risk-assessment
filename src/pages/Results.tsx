@@ -165,56 +165,17 @@ export function ResultsPage() {
             [
               ["Age at assessment", r.ageAtAssessment + " years"],
               ["Sex", p.sex],
-              ["Currently smokes", r.inputs.currentSmoking],
-              ["BP medication", r.inputs.bpMeds],
               ["Systolic BP", r.inputs.sbp + " mmHg"],
               ["Diastolic BP", r.inputs.dbp + " mmHg"],
               ["BMI", r.inputs.bmi + " kg/m²"],
+              ["Current cigarette smoking", r.inputs.currentSmoking],
               [
-                "History of diabetes diagnosis",
-                r.inputs.diabetesHistory || "Not recorded",
-              ],
-              [
-                "Activity",
-                r.inputs.mode === "extended" && r.inputs.activityMinutes !== ""
-                  ? r.inputs.activityMinutes + " minutes/week"
-                  : "Not recorded",
-              ],
-              [
-                "Alcohol intake",
-                r.inputs.mode === "extended" && r.inputs.alcoholDrinks !== ""
-                  ? r.inputs.alcoholDrinks + " drinks/week"
-                  : "Not recorded",
-              ],
-              [
-                "Fruit and vegetables",
-                r.inputs.mode === "extended" && r.inputs.fruitVeg !== ""
-                  ? r.inputs.fruitVeg + " servings/day"
-                  : "Not recorded",
-              ],
-              [
-                "Whole grains",
-                r.inputs.mode === "extended" && r.inputs.wholeGrain !== ""
-                  ? r.inputs.wholeGrain + " servings/day"
-                  : "Not recorded",
-              ],
-              [
-                "Added salt",
-                r.inputs.mode === "extended"
-                  ? r.inputs.saltFrequency || "Not recorded"
-                  : "Not recorded",
-              ],
-              [
-                "Family history",
-                r.inputs.mode === "extended"
-                  ? r.inputs.family || "Not recorded"
-                  : "Not recorded",
-              ],
-              [
-                "Education",
-                r.inputs.mode === "extended"
-                  ? r.inputs.education || "Not recorded"
-                  : "Not recorded",
+                "Hypertension medication",
+                r.inputs.bpMeds === "Past"
+                  ? "Yes, not now"
+                  : r.inputs.bpMeds === "Yes"
+                    ? "Yes, now"
+                    : r.inputs.bpMeds,
               ],
             ].map(([k, v], _index) => (
               <Fragment key={_index}>
@@ -245,9 +206,7 @@ export function ResultsPage() {
           </div>
           <div className={"snapshot"}>
             <strong>{"Assessment information"}</strong>
-            {r.inputs.mode === "extended"
-              ? "Clinical and lifestyle information"
-              : "Clinical information"}
+            {"Framingham-aligned core inputs"}
           </div>
           <div className={"snapshot"}>
             <strong>{"Educational guidance"}</strong>

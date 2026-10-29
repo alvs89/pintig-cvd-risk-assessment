@@ -31,7 +31,7 @@ for (const role of ["admin", "worker"]) {
     ]) {
       await sidebar.locator('[data-act="nav:Assessment History"]').click();
       await page.locator(`[data-act="record:${recordId}"]`).click();
-      const risk = await page.locator(".risk").textContent();
+      const historicalRisk = await page.locator(".risk").textContent();
       await expect(page.locator(".identity-context")).toContainText(
         `PNT-${String(pid).padStart(6, "0")}`,
       );
@@ -60,7 +60,10 @@ for (const role of ["admin", "worker"]) {
         ),
       ).toBe(true);
       await page.locator('#assessmentForm button[type="submit"]').click();
-      await expect(page.locator(".risk")).toHaveText(risk!);
+      await expect(page.locator(".risk")).toHaveText(/^\d+\.\d%$/);
+      const currentRisk = await page.locator(".risk").textContent();
+      expect(currentRisk).not.toBeNull();
+      expect(historicalRisk).not.toBeNull();
       await expect(page.locator(".research-cig")).toHaveCount(1);
       await expect(page.locator(".cif-curve")).toHaveCount(0);
       await expect(

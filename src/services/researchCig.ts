@@ -74,7 +74,7 @@ export function researchInputsFor(
     bmi < 12 ||
     bmi > 65 ||
     !["Yes", "No"].includes(x.currentSmoking) ||
-    !["Yes", "No"].includes(x.bpMeds)
+    !["Yes", "No", "Past"].includes(x.bpMeds)
   )
     return null;
   return {
