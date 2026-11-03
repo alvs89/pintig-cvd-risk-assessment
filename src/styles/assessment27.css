@@ -134,6 +134,35 @@
 .assessment27 .gridform > .source-question-stem { grid-column: 1 / -1; margin: 8px 0; }
 .question-context { display: inline; font-weight: 600; }
 
+.assessment-save-toast:empty { display: none; }
+.assessment-save-toast {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  max-width: min(460px, calc(100vw - 32px));
+  padding: 14px 16px;
+  border: 1px solid #0a7474;
+  border-radius: 12px;
+  background: #effafa;
+  color: #17324b;
+  box-shadow: 0 6px 24px #102b3926;
+}
+.assessment-save-toast button {
+  flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 24px;
+}
+
 .assessment27 .question-instruction { grid-column: 1 / -1; }
 .assessment27 .question-help { min-width: 0; }
 /* Adjacent fields share label, control and help rows without fixed heights. */
