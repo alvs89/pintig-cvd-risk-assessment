@@ -1,5 +1,6 @@
 import { BEVERAGES, QUESTIONS27, isApplicable27, sanitizeNumericInput, type Answers27 } from "../services/assessment27";
 import { numericError } from "../utils/numericValidation";
+import { questionnaireOptionLabel } from "../utils/questionnaireOptionLabel";
 
 type Props = {
   section: "Alcohol consumption" | "Active smoking";
@@ -20,7 +21,7 @@ export function FocusedAssessment27({ section, answers, update, features, issues
     const error = !q.options && answers[id] ? numericError(answers[id], { min: q.min, max: q.max, step: q.integer ? 1 : "any" }) : "";
     const options = q.options;
     const label = <>{q.text}{q.unit && <span className="question-unit"> ({q.unit})</span>}</>;
-    const choiceLabel = (option: string) => option.replace(/^\d+ = /, "");
+    const choiceLabel = questionnaireOptionLabel;
     return <div className="focused-field" key={id}>
       {options && id !== "alcoholHistory" && id.endsWith("_frequency") ? <>
         <label htmlFor={inputId}>{label}</label>

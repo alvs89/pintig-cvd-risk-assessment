@@ -66,6 +66,10 @@ for (const viewport of [
       page.getByRole("combobox", { name: /Hypertension\/high blood pressure/ }),
     ).toBeVisible();
     await expect(page.locator(".source-question-stem").filter({ hasText: "Health History:" })).toHaveCount(1);
+    await expect(page.locator("#q27-siblings")).toHaveCount(0);
+    await expect(page.locator("#q27-bpMed option")).toHaveText(["Choose an answer", "No", "Yes, now", "Yes, not now", "Unknown"]);
+    await page.locator("#q27-bpMed").selectOption({ label: "Yes, now" });
+    await expect(page.locator("#q27-bpMed")).toHaveValue("1 = yes, now");
     const familyLabel = page.locator('label[for="q27-family_Coronary Heart Disease_Father"]');
     const labelLayout = await familyLabel.evaluate(label => {
       const hidden = label.querySelector(".pintig-sr-only")!;
@@ -143,6 +147,21 @@ for (const viewport of [
         await expect(page.locator('label[for="q27-ipaq11_hours"]')).not.toHaveCSS("color", "rgb(8, 126, 131)");
         await page.getByRole("group", { name: "Cycling for transportation", exact: true }).screenshot({ path: "test-results/activity-" + viewport.width + ".png" });
         await page.getByRole("button", { name: "Sitting", exact: true }).click();
+      }
+      if (step === 7) {
+        const diet = page.getByRole("region", { name: "Dietary questionnaire", exact: true });
+        await expect(diet.locator("select")).toHaveCount(8);
+        await diet.screenshot({ path: "test-results/diet-" + viewport.width + ".png" });
+        const firstId = await diet.locator("select").first().getAttribute("id");
+        await diet.locator("select").first().selectOption({ index: 2 });
+        const value = await diet.locator("select").first().inputValue();
+        await page.getByRole("button", { name: "Continue", exact: true }).click();
+        await expect(page.locator("#" + firstId)).toHaveCount(0);
+        await page.getByRole("button", { name: "Back", exact: true }).click();
+        await expect(page.locator("#" + firstId)).toHaveValue(value);
+        const pages = page.getByRole("navigation", { name: "Dietary questionnaire pages" }).getByRole("button");
+        await pages.last().click();
+        await expect(diet.locator("select")).toHaveCount(3);
       }
       if (step === 8) {
         await page.locator("#q27-sleep").fill("14");

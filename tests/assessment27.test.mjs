@@ -370,12 +370,12 @@ test("SES remains unavailable without reference parameters; bracket bounds are n
 });
 
 test("only approved fields are retired; stale retired answers cannot affect features or validation", () => {
-  assert.equal(REMOVED_QUESTION_IDS27.length, 32);
+  assert.equal(REMOVED_QUESTION_IDS27.length, 33);
   for (const id of REMOVED_QUESTION_IDS27) {
     assert.ok(!QUESTIONS27.some(q => q.id === id), id);
     assert.ok(RETIRED_QUESTIONS27.some(q => q.id === id), id);
   }
-  for (const id of ["smokeLastYear", "siblings", "passiveChild", "heavyAlcohol", "alc_beer_quantity", "alc_beer_frequency", "ipaq26_hours", "ipaq27_hours", "sleep", "gen3Education", "familyIncomePH"])
+  for (const id of ["smokeLastYear", "passiveChild", "heavyAlcohol", "alc_beer_quantity", "alc_beer_frequency", "ipaq26_hours", "ipaq27_hours", "sleep", "gen3Education", "familyIncomePH"])
     assert.ok(QUESTIONS27.some(q => q.id === id), id);
   const a = { sleep: "14", passiveChild: "1 = Yes" };
   const clean = derive27(a, p);

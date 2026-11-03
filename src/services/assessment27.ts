@@ -175,7 +175,6 @@ for (const condition of ["Coronary Heart Disease", "Stroke"])
       sharedPrompt: "Health History: Complete for all parents and siblings, alive or dead",
       source: pure(33, "Q40(b)"),
       options: ["Unknown", "No", "Yes"],
-      when: (a) => relative !== "Siblings" || a.siblings !== "0",
     });
     if (relative === "Siblings")
       add({
@@ -556,6 +555,7 @@ for (const [id, text] of [
 questions.push(...PROTOCOL_QUESTIONS);
 // Retain source metadata for saved historical answers; omit only the approved items from new intake.
 export const REMOVED_QUESTION_IDS27 = [
+  "siblings",
   "longestOccupation",
   "hypertensionYears", "diabetesYears",
   "bpMedStartAge", "lipidMedStartAge", "diabetesMedStartAge",

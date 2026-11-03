@@ -18,11 +18,13 @@ import { P, patients, S, render, msg, log } from "../state/store";
 import { openPintigConfirm } from "../state/actions";
 import { age } from "../utils/format";
 import { numericError } from "../utils/numericValidation";
+import { questionnaireOptionLabel } from "../utils/questionnaireOptionLabel";
 import "../styles/assessment27.css";
 
 export function Assessment27Page() {
   const [stepIndex, setStepIndex] = useState(0);
   const [activityIndex, setActivityIndex] = useState(0);
+  const [dietIndex, setDietIndex] = useState(0);
   const [saveNotice, setSaveNotice] = useState(0);
   useEffect(() => {
     if (!saveNotice) return;
@@ -49,11 +51,16 @@ export function Assessment27Page() {
   };
   const update = (id: string, value: string) => updateMany({ [id]: value });
   const isActivityStep = !finalStep && currentStep.title === "Physical activity and sitting";
+  const isDietStep = !finalStep && currentStep.title === "Diet";
+  const dietQuestions = QUESTIONS27.filter(q => q.section === "Dietary questionnaire");
+  const dietPageSize = 8;
+  const dietPages = Math.ceil(dietQuestions.length / dietPageSize);
   const visibleSections = isActivityStep ? [currentStep.sections[activityIndex]] : currentStep.sections;
   const changePatient = (value: string) => {
     const change = () => {
       setStepIndex(0);
       setActivityIndex(0);
+      setDietIndex(0);
       S.patientId = P(value)?.id ?? null;
       S.preAssessment = null;
       S.draft = { schema: INTAKE27_SCHEMA, pid: value };
@@ -101,6 +108,7 @@ export function Assessment27Page() {
         );
         if (page >= 0) {
           setStepIndex(page);
+          if (firstQuestion.section === "Dietary questionnaire") setDietIndex(Math.floor(dietQuestions.indexOf(firstQuestion) / dietPageSize));
           if (steps[page].title === "Physical activity and sitting") setActivityIndex(steps[page].sections.indexOf(firstQuestion.section));
         }
       }
@@ -206,6 +214,10 @@ export function Assessment27Page() {
                 )}</div>
               </nav>
             )}
+            {isDietStep && <nav className="activity-navigation" aria-label="Dietary questionnaire pages">
+              <p aria-live="polite">Food items {dietIndex * dietPageSize + 1}–{Math.min((dietIndex + 1) * dietPageSize, dietQuestions.length)} of {dietQuestions.length}</p>
+              <div>{Array.from({ length: dietPages }, (_, index) => <button type="button" key={index} className={dietIndex === index ? "active" : ""} aria-current={dietIndex === index ? "page" : undefined} onClick={() => setDietIndex(index)}>Page {index + 1}</button>)}</div>
+            </nav>}
             {!finalStep &&
               visibleSections.map((section) => (
                 <section
@@ -302,7 +314,7 @@ export function Assessment27Page() {
                   <div className="gridform">
                     {QUESTIONS27.filter(
                       (q) =>
-                        q.section === section && isApplicable27(q, answers),
+                        q.section === section && isApplicable27(q, answers) && (section !== "Dietary questionnaire" || dietQuestions.slice(dietIndex * dietPageSize, (dietIndex + 1) * dietPageSize).includes(q)),
                     ).map((q, index, visible) => {
                       const id = "q27-" + q.id;
                       const problem = result?.issues.find((issue) =>
@@ -363,7 +375,7 @@ export function Assessment27Page() {
                               <option value="">Choose an answer</option>
                               {q.options.map((o) => (
                                 <option key={o} value={o}>
-                                  {o}
+                                  {questionnaireOptionLabel(o)}
                                 </option>
                               ))}
                             </select>
@@ -590,7 +602,7 @@ export function Assessment27Page() {
               <button
                 type="button"
                 className="btn"
-                onClick={() => { if (isActivityStep && activityIndex > 0) setActivityIndex(activityIndex - 1); else { setStepIndex(Math.max(0, stepIndex - 1)); setActivityIndex(0); } }}
+                onClick={() => { if (isDietStep && dietIndex > 0) setDietIndex(dietIndex - 1); else if (isActivityStep && activityIndex > 0) setActivityIndex(activityIndex - 1); else { setStepIndex(Math.max(0, stepIndex - 1)); setActivityIndex(0); } }}
                 disabled={stepIndex === 0}
               >
                 Back
@@ -600,7 +612,8 @@ export function Assessment27Page() {
                   type="button"
                   className="btn primary"
                   onClick={() => {
-                    if (isActivityStep && activityIndex < currentStep.sections.length - 1) setActivityIndex(activityIndex + 1);
+                    if (isDietStep && dietIndex < dietPages - 1) setDietIndex(dietIndex + 1);
+                    else if (isActivityStep && activityIndex < currentStep.sections.length - 1) setActivityIndex(activityIndex + 1);
                     else { setStepIndex(Math.min(steps.length, stepIndex + 1)); setActivityIndex(0); }
                   }}
                 >
