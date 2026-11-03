@@ -10,6 +10,15 @@ for (const viewport of [
     page,
   }) => {
     await page.setViewportSize(viewport);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const expectQuestionnaireStart = async () => {
+      const heading = page.locator(".assessment27 h2:focus");
+      await expect(heading).toHaveCount(1);
+      const bounds = await heading.boundingBox();
+      const header = await page.locator(".topbar").boundingBox();
+      expect(bounds!.y).toBeGreaterThanOrEqual(header!.y + header!.height);
+      expect(bounds!.y).toBeLessThan(viewport.height / 2);
+    };
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto("/");
@@ -43,6 +52,7 @@ for (const viewport of [
 
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(page.getByText("Step 2 of 9")).toBeVisible();
+    await expectQuestionnaireStart();
     for (const measurement of ["waist", "hip"]) {
       const group = page.getByRole("group", { name: measurement === "waist" ? "Waist measurements" : "Hip measurements", exact: true });
       await expect(group.locator("input")).toHaveCount(2);
@@ -66,6 +76,7 @@ for (const viewport of [
 
     await page.getByRole("button", { name: "Back", exact: true }).click();
     await expect(page.getByText("Step 1 of 9")).toBeVisible();
+    await expectQuestionnaireStart();
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(
@@ -147,12 +158,14 @@ for (const viewport of [
         await expect(page.getByRole("navigation", { name: "Physical activity sections" })).toBeVisible();
         await page.getByRole("button", { name: "Continue", exact: true }).click();
         await expect(page.getByRole("button", { name: "Travel", exact: true })).toHaveAttribute("aria-current", "step");
+        await expectQuestionnaireStart();
         await page.locator("#q27-ipaq10").selectOption("2");
         await page.locator("#q27-ipaq11_hours").fill("0");
         await page.locator("#q27-ipaq11_minutes").fill("30");
         await page.getByRole("button", { name: "Back", exact: true }).click();
         await expect(page.getByRole("button", { name: "Work", exact: true })).toHaveAttribute("aria-current", "step");
         await page.getByRole("button", { name: "Travel", exact: true }).click();
+        await expectQuestionnaireStart();
         await expect(page.locator("#q27-ipaq11_minutes")).toHaveValue("30");
         await expect(page.getByRole("group", { name: "Cycling for transportation", exact: true })).toContainText("Hours per day");
         await expect(page.getByRole("group", { name: "Cycling for transportation", exact: true }).locator(":scope > legend")).toHaveCSS("color", "rgb(8, 126, 131)");
@@ -168,11 +181,14 @@ for (const viewport of [
         await diet.locator("select").first().selectOption({ index: 2 });
         const value = await diet.locator("select").first().inputValue();
         await page.getByRole("button", { name: "Continue", exact: true }).click();
+        await expectQuestionnaireStart();
         await expect(page.locator("#" + firstId)).toHaveCount(0);
         await page.getByRole("button", { name: "Back", exact: true }).click();
+        await expectQuestionnaireStart();
         await expect(page.locator("#" + firstId)).toHaveValue(value);
         const pages = page.getByRole("navigation", { name: "Dietary questionnaire pages" }).getByRole("button");
         await pages.last().click();
+        await expectQuestionnaireStart();
         await expect(diet.locator("select")).toHaveCount(3);
       }
       if (step === 8) {

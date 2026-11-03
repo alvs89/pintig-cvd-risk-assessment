@@ -1,5 +1,5 @@
 import { FocusedAssessment27 } from "../components/FocusedAssessment27";
-import { Fragment, useState } from "react";
+import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { PreAssessmentCheck } from "../components/PreAssessmentCheck";
 import { b, head, patientIdent } from "../components/shared";
 import {
@@ -25,6 +25,18 @@ export function Assessment27Page() {
   const [stepIndex, setStepIndex] = useState(0);
   const [activityIndex, setActivityIndex] = useState(0);
   const [dietIndex, setDietIndex] = useState(0);
+  const [navigation, setNavigation] = useState(0);
+  const destinationHeading = useRef<HTMLHeadingElement>(null);
+  useLayoutEffect(() => {
+    if (!navigation) return;
+    const heading = destinationHeading.current;
+    if (!heading) return;
+    const header = document.querySelector<HTMLElement>(".topbar");
+    heading.style.scrollMarginTop = `${(header?.getBoundingClientRect().height ?? 0) + 16}px`;
+    heading.focus({ preventScroll: true });
+    heading.scrollIntoView({ block: "start", behavior: "instant" });
+  }, [navigation]);
+  const announceNavigation = () => setNavigation(value => value + 1);
   const p = P(S.patientId);
   const answers = S.draft?.schema === INTAKE27_SCHEMA ? S.draft : {};
   const unlocked = !!p && !!screeningForPatient(S.preAssessment, p);
@@ -185,7 +197,7 @@ export function Assessment27Page() {
                 max={steps.length + 1}
                 aria-label="Questionnaire progress"
               />
-              <h2>{finalStep ? "Review and save" : currentStep.title}</h2>
+              <h2 ref={finalStep ? destinationHeading : undefined} tabIndex={finalStep ? -1 : undefined}>{finalStep ? "Review and save" : currentStep.title}</h2>
               <p>
                 Move between steps at any time. Unanswered items can be saved as
                 missing; invalid numeric entries must be corrected.
@@ -195,13 +207,13 @@ export function Assessment27Page() {
               <nav className="activity-navigation" aria-label="Physical activity sections">
                 <p>Activity section {activityIndex + 1} of {currentStep.sections.length}</p>
                 <div>{["Work", "Travel", "Home", "Leisure", "Sitting"].map((label, index) =>
-                  <button key={label} type="button" className={index === activityIndex ? "active" : ""} aria-current={index === activityIndex ? "step" : undefined} onClick={() => setActivityIndex(index)}>{label}</button>
+                  <button key={label} type="button" className={index === activityIndex ? "active" : ""} aria-current={index === activityIndex ? "step" : undefined} onClick={() => { setActivityIndex(index); announceNavigation(); }}>{label}</button>
                 )}</div>
               </nav>
             )}
             {isDietStep && <nav className="activity-navigation" aria-label="Dietary questionnaire pages">
               <p aria-live="polite">Food items {dietIndex * dietPageSize + 1}–{Math.min((dietIndex + 1) * dietPageSize, dietQuestions.length)} of {dietQuestions.length}</p>
-              <div>{Array.from({ length: dietPages }, (_, index) => <button type="button" key={index} className={dietIndex === index ? "active" : ""} aria-current={dietIndex === index ? "page" : undefined} onClick={() => setDietIndex(index)}>Page {index + 1}</button>)}</div>
+              <div>{Array.from({ length: dietPages }, (_, index) => <button type="button" key={index} className={dietIndex === index ? "active" : ""} aria-current={dietIndex === index ? "page" : undefined} onClick={() => { setDietIndex(index); announceNavigation(); }}>Page {index + 1}</button>)}</div>
             </nav>}
             {!finalStep &&
               visibleSections.map((section) => (
@@ -211,7 +223,7 @@ export function Assessment27Page() {
                   aria-label={section}
                 >
                   <div className="intake-section-head">
-                    <h2>{section}</h2>
+                    <h2 ref={section === visibleSections[0] ? destinationHeading : undefined} tabIndex={-1}>{section}{isDietStep && <span className="pintig-sr-only"> — Page {dietIndex + 1} of {dietPages}</span>}</h2>
                   </div>
                   {(section === "Alcohol consumption" || section === "Active smoking") ? (
                     <FocusedAssessment27 section={section} answers={answers} update={updateMany} features={result?.features ?? {}} issues={result?.issues ?? []} patientAge={p ? age(p.dob) : 0} />
@@ -590,7 +602,7 @@ export function Assessment27Page() {
               <button
                 type="button"
                 className="btn"
-                onClick={() => { if (isDietStep && dietIndex > 0) setDietIndex(dietIndex - 1); else if (isActivityStep && activityIndex > 0) setActivityIndex(activityIndex - 1); else { setStepIndex(Math.max(0, stepIndex - 1)); setActivityIndex(0); } }}
+                onClick={() => { if (isDietStep && dietIndex > 0) setDietIndex(dietIndex - 1); else if (isActivityStep && activityIndex > 0) setActivityIndex(activityIndex - 1); else { setStepIndex(Math.max(0, stepIndex - 1)); setActivityIndex(0); } announceNavigation(); }}
                 disabled={stepIndex === 0}
               >
                 Back
@@ -600,6 +612,7 @@ export function Assessment27Page() {
                   type="button"
                   className="btn primary"
                   onClick={() => {
+                    announceNavigation();
                     if (isDietStep && dietIndex < dietPages - 1) setDietIndex(dietIndex + 1);
                     else if (isActivityStep && activityIndex < currentStep.sections.length - 1) setActivityIndex(activityIndex + 1);
                     else { setStepIndex(Math.min(steps.length, stepIndex + 1)); setActivityIndex(0); }
