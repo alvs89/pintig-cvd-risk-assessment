@@ -1,7 +1,7 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { b } from "../components/shared";
 import { allowedPages } from "../state/permissions";
-import { S } from "../state/store";
+import { render, S } from "../state/store";
 import type { Page } from "../types/domain";
 const icons: Record<Page, string> = {
   Dashboard: "▦",
@@ -18,6 +18,15 @@ const icons: Record<Page, string> = {
 };
 export function Workspace({ children }: { children: ReactNode }) {
   const user = S.user!;
+  const notice = S.assessmentSavedNotice;
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => {
+      S.assessmentSavedNotice = 0;
+      render();
+    }, 6000);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
   return (
     <div className="app">
       <aside className="sidebar">
@@ -53,6 +62,14 @@ export function Workspace({ children }: { children: ReactNode }) {
         </div>
       </aside>
       <div className="appmain">
+        <div className="assessment-save-toast" role="status" aria-live="polite" aria-atomic="true">
+          {!!notice && (
+            <>
+              <span>Assessment saved. View it in Assessment History.</span>
+              <button type="button" aria-label="Dismiss save notification" onClick={() => { S.assessmentSavedNotice = 0; render(); }}>×</button>
+            </>
+          )}
+        </div>
         <header className="topbar">
           <div className="muted tiny">PINTIG / {S.page}</div>
           <div className="actions top-actions" style={{ margin: 0 }}>

@@ -5,6 +5,11 @@
 .assessment27 .gridform {
   align-items: stretch;
 }
+.assessment27 .education-row,
+.assessment27 .household-income-row {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
 .assessment27 .field {
   min-width: 0;
 }

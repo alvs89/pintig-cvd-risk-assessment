@@ -1,5 +1,5 @@
 import { FocusedAssessment27 } from "../components/FocusedAssessment27";
-import { Fragment, useState, type FormEvent } from "react";
+import { Fragment, useState } from "react";
 import { PreAssessmentCheck } from "../components/PreAssessmentCheck";
 import { b, head, patientIdent } from "../components/shared";
 import {
@@ -71,9 +71,9 @@ export function Assessment27Page() {
       });
     else change();
   };
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const saveResponses = () => {
+    if (!finalStep) return;
+    S.assessmentSavedNotice = 0;
     if (!p) {
       msg("Choose a patient before saving.", true);
       render();
@@ -82,6 +82,7 @@ export function Assessment27Page() {
     try {
       const record = createIntake27(S.user, p, S.preAssessment, answers);
       intakes27.push({ ...record, id: intakes27.length + 1 });
+      S.assessmentSavedNotice = Date.now();
       S.result = null;
       log("Saved questionnaire responses for " + p.record);
       msg(
@@ -118,7 +119,7 @@ export function Assessment27Page() {
         b("← Dashboard", "nav:Dashboard"),
       )}
       <section className="panel assessment27">
-        <form id="assessment27Form" noValidate onSubmit={submit}>
+        <form id="assessment27Form" noValidate onSubmit={e => e.preventDefault()}>
           <h2>Patient identification</h2>
           <div className="field">
             <label htmlFor="pid">Patient profile *</label>
@@ -427,6 +428,9 @@ export function Assessment27Page() {
                       );
                     }).flatMap((field, index, fields) => {
                       const key = String(field.key);
+                      if (key === "gen3Education") return [<div className="education-row gridform" key={key + "-row"}>{field}</div>];
+                      if (key === "familyIncomePH") return [<div className="household-income-row gridform" key={key + "-row"}>{field}{fields.find(item => String(item.key) === "incomeSupportedPeople")}</div>];
+                      if (key === "incomeSupportedPeople") return [];
                       const activityNames: Record<number, string> = {
                         2: "Vigorous activity at work", 4: "Moderate activity at work", 6: "Walking at work",
                         10: "Cycling for transportation", 12: "Walking for transportation",
@@ -604,7 +608,7 @@ export function Assessment27Page() {
                   Continue
                 </button>
               ) : (
-                <button type="submit" className="btn primary">
+                <button type="button" className="btn primary" onClick={saveResponses}>
                   Save questionnaire responses
                 </button>
               )}

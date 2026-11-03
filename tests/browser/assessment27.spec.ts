@@ -24,6 +24,18 @@ for (const viewport of [
     await page.locator("#q27-gen3Education").selectOption({ index: 8 });
     await page.locator("#q27-familyIncomePH").selectOption({ index: 4 });
     await page.locator("#q27-incomeSupportedPeople").fill("5");
+    await page.locator("#q27-incomeSupportedPeople").press("Enter");
+    await expect(page.locator(".assessment-save-toast")).toBeHidden();
+    await expect(page.locator(".feedback").filter({ hasText: "Questionnaire responses saved" })).toHaveCount(0);
+    const income = await page.locator("#q27-familyIncomePH").boundingBox();
+    const supported = await page.locator("#q27-incomeSupportedPeople").boundingBox();
+    if (viewport.width > 680) {
+      expect(Math.abs(income!.y - supported!.y)).toBeLessThanOrEqual(1);
+      expect(supported!.x).toBeGreaterThan(income!.x);
+    } else {
+      expect(supported!.y).toBeGreaterThan(income!.y);
+    }
+    await page.getByRole("region", { name: "Demographics and socioeconomic information", exact: true }).screenshot({ path: "test-results/income-" + viewport.width + ".png" });
     await expect(page.locator("#q27-employmentStatus")).toBeVisible();
     await expect(page.locator("#q27-currentOccupation")).toBeVisible();
     await expect(page.locator("#q27-longestOccupation")).toHaveCount(0);
@@ -217,7 +229,14 @@ for (const viewport of [
     await expect(page.getByRole("button", { name: "Calculate risk", exact: true })).toBeDisabled();
     await page.getByRole("button", { name: "Save questionnaire responses", exact: true }).click();
     const toast = page.locator(".assessment-save-toast");
+    await expect(toast).toBeVisible();
+    await expect(toast).toContainText("Assessment saved. View it in Assessment History.");
+    expect((await toast.boundingBox())!.y).toBe(20);
+    await page.getByRole("button", { name: "Dismiss save notification" }).click();
     await expect(toast).toBeHidden();
+    await page.getByRole("button", { name: "Save questionnaire responses", exact: true }).click();
+    await expect(toast).toBeVisible();
+    await expect(toast).toBeHidden({ timeout: 8000 });
     expect(errors).toEqual([]);
     expect(
       await page.evaluate(
