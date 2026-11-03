@@ -48,3 +48,38 @@ have not been model-evaluated; earlier v4 performance does not apply to this
 reconstruction. The PURE source is the South African questionnaire, not a verified
 Philippine edition. No deployed model, clinical thresholds or frontend questionnaire
 was changed.
+
+## 27-predictor engineered proxy experiment (2026-11-03)
+
+The separate `analysis/scripts/rsf27_v1/` runner completed 30 inner fits, five
+outer fits and one full-cohort research refit on the preserved 4,191-person,
+27-feature dataset. It reused frozen 5-by-3 participant folds and corrected
+ten-year IPCW evaluation. The offline model is **not approved for deployment**.
+
+Outputs are local in `analysis/results/rsf27_proxy_20261103_v1/`: `REPORT.md`,
+`performance_with_ci.csv`, `calibration.png`, `compatibility.csv`,
+`model_RESEARCH_ONLY.rds`, `verification.json`, and `COMMANDS.md`, plus individual
+fold predictions, tuning/imputer records, bootstrap draws and R-reference results.
+
+| Held-out metric | Estimate | Conditional 95% bootstrap CI |
+|---|---:|---|
+| Ten-year AUC | 0.75808 | 0.73556–0.78252 |
+| Ten-year Brier | 0.07384 | 0.06779–0.07981 |
+| IBS, 0–10 years | 0.03638 | 0.03292–0.04071 |
+| Calibration slope | 1.01988 | 0.90545–1.16856 |
+| Calibration-in-the-large, logit | -0.05904 | -0.16523–0.05302 |
+
+All 40 nonzero-horizon AUC/Brier values matched riskRegression within 1e-8;
+calibration matched R within 1e-5. All 500 bootstrap replicates were usable.
+These intervals condition on fitted OOF models and this synthetic draw, and do
+not cover full model-development or simulation uncertainty. No new synthetic-seed
+sensitivity or external validation was performed. No superiority claim follows.
+
+The 27-feature questionnaire remains unable to produce a compatible validated
+patient risk estimate: SES reference parameters are unavailable, Food6 diet and
+passive-exposure calculations differ from synthetic definitions, and six inherited
+synthetic generation recipes have unresolved historical leakage provenance.
+Recorded CVD and death before recorded CVD are proxy outcomes, not the intended
+adjudicated clinical endpoint. A fitted research forest does not remove these
+limitations. No questionnaire prediction route, clinical thresholds, source
+datasets, prior models or previous experiments were modified by this run.

@@ -1,0 +1,32 @@
+.libPaths(c('C:/Users/Alvin Guillermo/Documents/R/win-library/4.6',.libPaths()))
+suppressPackageStartupMessages(library(riskRegression))
+suppressPackageStartupMessages(library(prodlim))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(survival))
+out<-'analysis/results/rsf27_proxy_20261103_v1'
+stopifnot(!file.exists(file.path(out,'riskRegression_auc.csv')))
+d<-rbindlist(lapply(1:5,function(k)fread(file.path(out,paste0('fold',k,'_oof.csv')))));setorder(d,participant_id)
+view<-fread(file.path(out,'evaluation_followup_view.csv'))
+stopifnot(identical(d$participant_id,view$participant_id))
+d[,evaluation_time_days:=view$evaluation_time_days]
+grid<-seq(3652.5/40,3652.5,length.out=40)
+p<-as.matrix(d[,paste0('risk_',1:40),with=FALSE])
+sc<-Score(list(n27=p),Hist(evaluation_time_days,event_type)~1,data=d,cause=1,times=grid,
+ metrics=c('auc','brier'),null.model=FALSE,cens.model='KaplanMeier',se.fit=FALSE,contrasts=FALSE,verbose=0)
+fwrite(as.data.table(sc$AUC$score),file.path(out,'riskRegression_auc.csv'))
+fwrite(as.data.table(sc$Brier$score),file.path(out,'riskRegression_brier.csv'))
+grp<-pmin(10L,ceiling(rank(p[,40],ties.method='first')/(nrow(d)/10)))
+cal<-rbindlist(lapply(1:10,function(g){
+ sg<-d[grp==g];m<-prodlim(Hist(evaluation_time_days,event_type)~1,data=sg)
+ data.table(decile=g,n=nrow(sg),mean_predicted=mean(p[grp==g,40]),observed_AJ=as.numeric(predictRisk(m,newdata=sg[1],times=3652.5,cause=1)))
+}))
+fwrite(cal,file.path(out,'calibration_AJ_deciles.csv'))
+d[,row_index:=.I];setorder(d,evaluation_time_days,-event_type)
+wg<-ipcw(Hist(evaluation_time_days,event_type)~1,data=d,method='marginal',times=3652.5,subject.times=d$evaluation_time_days,lag=1,keep=NULL)
+tt<-d$evaluation_time_days;ee<-d$event_type;w<-numeric(nrow(d));ev<-ee!=0&tt<=3652.5;free<-tt>3652.5
+w[ev]<-1/as.numeric(wg$IPCW.subject.times)[ev];w[free]<-1/as.numeric(wg$IPCW.times)[1]
+zz<-qlogis(pmin(pmax(p[d$row_index,40],1e-7),1-1e-7));yy<-as.integer(ee==1&tt<=3652.5)
+fit<-glm(yy~zz,weights=w,family=quasibinomial());citl<-glm(yy~1+offset(zz),weights=w,family=quasibinomial())
+stopifnot(fit$converged,citl$converged)
+fwrite(data.table(slope_R=coef(fit)[2],citl_R=coef(citl)[1]),file.path(out,'calibration_R_reference.csv'))
+cat('REFERENCE_COMPLETE\n')
