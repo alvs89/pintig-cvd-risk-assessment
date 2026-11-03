@@ -5,6 +5,8 @@ import fs from "node:fs";
 import {
   derive27,
   QUESTIONS27,
+  REMOVED_QUESTION_IDS27,
+  RETIRED_QUESTIONS27,
   FEATURE_NAMES27,
   INTAKE27_SCHEMA,
   isApplicable27,
@@ -276,17 +278,11 @@ test("IPAQ scope excludes age 70 and the urban code requires recorded provenance
     1,
   );
 });
-test("invalid codes, BP ordering and inconsistent24-hour totals block saving", () => {
+test("invalid codes, BP ordering and out-of-range sleep block saving", () => {
   for (const a of [
     { sbp1: "120", dbp1: "130" },
     { bpMed: "Yes" },
-    {
-      sleep: "10",
-      sleepSedentary: "10",
-      sleepSlight: "10",
-      sleepModerate: "0",
-      sleepHeavy: "0",
-    },
+    { sleep: "25" },
   ]) {
     assert.ok(derive27(a, p).issues.length);
     assert.throws(() => createIntake27(users[0], p, check(), a));
@@ -300,7 +296,7 @@ test("saving requires current eligibility and active role; raw snapshots do not 
   assert.throws(() => createIntake27(users[0], p, null, {}));
   const a = { smokeEver: "9 = Unknown" };
   const r = createIntake27(users[1], p, check(), a);
-  assert.equal(r.featureProtocol, "PINTIG-FE-1.1");
+  assert.equal(r.featureProtocol, "PINTIG-FE-1.2");
   assert.equal(r.featureProvenance.ses_index_0_100.state, "unavailable");
   a.smokeEver = "0 = No";
   assert.equal(r.rawResponses.smokeEver, "9 = Unknown");
@@ -333,17 +329,10 @@ test("shared prompts retain row identity and independent response fields across 
   assert.equal(find("ipaq3_hours").sharedPrompt, find("ipaq3_minutes").sharedPrompt);
   assert.equal(find("ipaq3_hours").text, "Hours per day");
   assert.ok(find("ffq_apple").sharedPrompt);
-  assert.equal(find("sleep").sharedPrompt, find("sleepHeavy").sharedPrompt);
+  assert.equal(find("sleep").sharedPrompt, undefined);
   assert.equal(find("passive_work_years").context, "At Work?");
 });
 
-test("daily total errors belong to the activity group rather than the sleep measurement", () => {
-  const answers = { sleep: "14", sleepSedentary: "8", sleepSlight: "2", sleepModerate: "1", sleepHeavy: "1" };
-  const issues = derive27(answers, p).issues;
-  assert.ok(issues.some(issue => issue.startsWith("typicalDay:")));
-  assert.ok(!issues.some(issue => issue.startsWith("sleep:")));
-  assert.ok(!derive27({ ...answers, sleepSedentary: "6" }, p).issues.some(issue => issue.startsWith("typicalDay:")));
-});
 
 test("SES requires education, Philippine income and a valid supported-person count", () => {
   const a = { gen3Education: EDUCATION_OPTIONS[7], familyIncomePH: INCOME_OPTIONS[3], incomeSupportedPeople: "5" };
@@ -357,4 +346,23 @@ test("SES requires education, Philippine income and a valid supported-person cou
   assert.deepEqual([...scores].sort((x,y) => x-y), scores);
   assert.ok(!QUESTIONS27.some(q => q.id === "education"));
   assert.equal(EMPLOYMENT_OPTIONS.length, 11);
+});
+
+test("only approved fields are retired; stale retired answers cannot affect features or validation", () => {
+  assert.equal(REMOVED_QUESTION_IDS27.length, 31);
+  for (const id of REMOVED_QUESTION_IDS27) {
+    assert.ok(!QUESTIONS27.some(q => q.id === id), id);
+    assert.ok(RETIRED_QUESTIONS27.some(q => q.id === id), id);
+  }
+  for (const id of ["smokeLastYear", "siblings", "passiveChild", "heavyAlcohol", "alc_beer_quantity", "alc_beer_frequency", "ipaq26_hours", "ipaq27_hours", "sleep", "gen3Education", "familyIncomePH"])
+    assert.ok(QUESTIONS27.some(q => q.id === id), id);
+  const a = { sleep: "14", passiveChild: "1 = Yes" };
+  const clean = derive27(a, p);
+  const stale = derive27({ ...a, ...Object.fromEntries(REMOVED_QUESTION_IDS27.map(id => [id, "9999"])) }, p);
+  assert.deepEqual(stale.features, clean.features);
+  assert.deepEqual(stale.issues, clean.issues);
+  assert.equal(clean.features.sleep_duration_hours, 14);
+  assert.equal(clean.features.passive_smoking_childhood, 1);
+  const saved = createIntake27(users[0], p, check(), { ...a, hypertensionYears: "999" });
+  assert.ok(!Object.hasOwn(saved.rawResponses, "hypertensionYears"));
 });

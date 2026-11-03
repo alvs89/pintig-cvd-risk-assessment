@@ -30,10 +30,6 @@ export function Assessment27Page() {
   const answers = S.draft?.schema === INTAKE27_SCHEMA ? S.draft : {};
   const unlocked = !!p && !!screeningForPatient(S.preAssessment, p);
   const result = p ? derive27(answers, p) : null;
-  const dayKeys = ["sleep", "sleepSedentary", "sleepSlight", "sleepModerate", "sleepHeavy"];
-  const dayEntered = dayKeys.filter((key) => answers[key]?.trim() && Number.isFinite(Number(answers[key])));
-  const dayTotal = dayEntered.reduce((sum, key) => sum + Number(answers[key]), 0);
-  const dayIssue = result?.issues.find((issue) => issue.startsWith("typicalDay:"));
   const sections = [...new Set(QUESTIONS27.map((q) => q.section))];
   const steps = assessment27Steps(sections);
   const finalStep = stepIndex === steps.length;
@@ -98,14 +94,9 @@ export function Assessment27Page() {
         );
         if (page >= 0) setStepIndex(page);
       }
-      if (firstIssue?.startsWith("typicalDay:")) {
-        setStepIndex(steps.findIndex((step) => step.sections.includes("Sleep and typical-day activity")));
-      }
       render();
       requestAnimationFrame(() =>
-        (firstIssue?.startsWith("typicalDay:")
-          ? document.getElementById("typical-day-total")
-          : document.querySelector<HTMLElement>('[aria-invalid="true"]'))?.focus(),
+        document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(),
       );
     }
   };
@@ -207,16 +198,6 @@ export function Assessment27Page() {
                   <div className="intake-section-head">
                     <h2>{section}</h2>
                   </div>
-                  {section === "Sleep and typical-day activity" && (
-                    <div id="typical-day-total" tabIndex={-1} role="status" aria-live="polite" className={dayIssue ? "notice field-error" : "notice"}>
-                      <strong>Combined daily total: {Number(dayTotal.toFixed(2))} / 24 hours</strong>
-                      <p>{dayIssue
-                        ? "The five activities must add up to 24 hours. Review all five entries without counting the same time twice."
-                        : dayEntered.length < 5
-                          ? `${dayEntered.length} of 5 activities entered. Complete the remaining entries to check the total.`
-                          : "The five activities total 24 hours."}</p>
-                    </div>
-                  )}
                   {section ===
                     "Anthropometric and cardiovascular measurements" && (
                     <p>

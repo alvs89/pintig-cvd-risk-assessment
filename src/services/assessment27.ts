@@ -552,7 +552,24 @@ for (const [id, text] of [
     sharedPrompt: "Rest and Activity for a Typical Day (Activities must equal 24 hours)",
   });
 questions.push(...PROTOCOL_QUESTIONS);
-export const QUESTIONS27 = questions;
+// Retain source metadata for saved historical answers; omit only the approved items from new intake.
+export const REMOVED_QUESTION_IDS27 = [
+  "hypertensionYears", "diabetesYears",
+  "bpMedStartAge", "lipidMedStartAge", "diabetesMedStartAge",
+  "diabetesMedInsulin", "diabetesMedPregnancy",
+  "family_Coronary Heart Disease_Siblings_count", "family_Stroke_Siblings_count",
+  "alcoholStart", "heavyTimes", "heavyQuantity",
+  ...BEVERAGES.flatMap(([id]) => [`alc_${id}_duration`, `alc_${id}_stopped`]),
+  "childMother", "childFather", "childOther", "childOtherCount",
+  "sleepSedentary", "sleepSlight", "sleepModerate", "sleepHeavy",
+  "ipaq8", "ipaq9_hours", "ipaq9_minutes",
+];
+const removedIds = new Set(REMOVED_QUESTION_IDS27);
+RETIRED_QUESTIONS27.push(...questions.filter(q => removedIds.has(q.id)));
+export const QUESTIONS27 = questions.filter(q => !removedIds.has(q.id)).map(q =>
+  q.id === "sleep" ? { ...q, section: "Sleep", sharedPrompt: undefined,
+    note: "Report sleep during a typical day. This is an extracted source item; other daily activities are not collected here." } : q
+);
 export const FEATURE_NAMES27 = [
   "age_years",
   "sex_male",
@@ -666,21 +683,15 @@ export function derive27(a: Answers27, p: Patient) {
   features.age_years = years;
   features.sex_male = p.sex === "Male" ? 1 : p.sex === "Female" ? 0 : null;
   for (const key of [
-    "hypertensionYears",
-    "diabetesYears",
-    "alcoholStart",
     "smokeStart",
     "smokeStop",
-    "bpMedStartAge",
-    "diabetesMedStartAge",
-    "lipidMedStartAge",
   ]) {
     const q = QUESTIONS27.find((q) => q.id === key)!;
     const n = validAge(num(a, key));
     if (isApplicable27(q, a) && n !== null && n > years)
       issues.push(`${key}: this value cannot exceed age at assessment.`);
   }
-  for (const n of [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 26, 27]) {
+  for (const n of [3, 5, 7, 11, 13, 15, 17, 19, 21, 23, 25, 26, 27]) {
     const q = QUESTIONS27.find((q) => q.id === `ipaq${n}_hours`)!;
     if (
       isApplicable27(q, a) &&
@@ -691,11 +702,6 @@ export function derive27(a: Answers27, p: Patient) {
       issues.push(`ipaq${n}_hours: daily duration cannot exceed 24 hours.`);
   }
   if (
-    yes(a, "passiveChild") &&
-    ["childMother", "childFather", "childOther"].every((k) => no(a, k))
-  )
-    issues.push("passiveChild: clarify the reported household exposure.");
-  if (
     yes(a, "smokeEver") &&
     yes(a, "smokeCurrent") &&
     num(a, "smokeStop") !== null &&
@@ -705,16 +711,6 @@ export function derive27(a: Answers27, p: Patient) {
     issues.push(
       "smokeStop: clarify current smoking and the reported stopping age.",
     );
-  for (const q of QUESTIONS27.filter(
-    (q) => q.id.endsWith("_count") && isApplicable27(q, a),
-  )) {
-    if (
-      num(a, q.id) !== null &&
-      num(a, "siblings") !== null &&
-      Number(a[q.id]) > Number(a.siblings)
-    )
-      issues.push(`${q.id}: count cannot exceed the total number of siblings.`);
-  }
   const mean = (k: string) => {
     const x = num(a, k + "1"),
       y = num(a, k + "2");
@@ -880,19 +876,6 @@ export function derive27(a: Answers27, p: Patient) {
     : st.every((v) => stress.slice(1, 3).includes(v))
       ? 0
       : null;
-  const sleepKeys = [
-    "sleep",
-    "sleepSedentary",
-    "sleepSlight",
-    "sleepModerate",
-    "sleepHeavy",
-  ];
-  const sleepValues = sleepKeys.map((k) => num(a, k));
-  if (
-    sleepValues.every((v) => v !== null) &&
-    Math.abs((sleepValues as number[]).reduce((s, v) => s + v, 0) - 24) > 0.01
-  )
-    issues.push("typicalDay: the five typical-day activities must total 24 hours. Review all five entries.");
   features.sleep_duration_hours = num(a, "sleep");
   const protocol = additionalFeatures(a, years);
   Object.assign(features, protocol.features);

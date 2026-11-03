@@ -1,6 +1,6 @@
 {
   "schema": "PINTIG-INTAKE-27-20261103",
-  "featureProtocol": "PINTIG-FE-1.1",
+  "featureProtocol": "PINTIG-FE-1.2",
   "retiredQuestions": [
     {
       "id": "education",
@@ -15,6 +15,325 @@
         "College/University",
         "Unknown"
       ]
+    },
+    {
+      "id": "hypertensionYears",
+      "section": "Medical history",
+      "text": "# of yrs since diagnosis",
+      "context": "Hypertension/high blood pressure",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 9, Q17, printed page 4, “# of yrs since diagnosis” column",
+      "unit": "years",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "diabetesYears",
+      "section": "Medical history",
+      "text": "# of yrs since diagnosis",
+      "context": "Diabetes",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 9, Q17, printed page 4, “# of yrs since diagnosis” column",
+      "unit": "years",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "bpMedStartAge",
+      "section": "Medications",
+      "text": "At what age did you begin taking medicine for this (99=unk)",
+      "context": "hypertension/high blood pressure",
+      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
+      "unit": "years",
+      "min": 0,
+      "max": 99,
+      "integer": true
+    },
+    {
+      "id": "lipidMedStartAge",
+      "section": "Medications",
+      "text": "At what age did you begin taking medicine for this (99=unk)",
+      "context": "high blood cholesterol",
+      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
+      "unit": "years",
+      "min": 0,
+      "max": 99,
+      "integer": true
+    },
+    {
+      "id": "diabetesMedStartAge",
+      "section": "Medications",
+      "text": "At what age did you begin taking medicine for this (99=unk)",
+      "context": "high blood sugar or diabetes",
+      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
+      "unit": "years",
+      "min": 0,
+      "max": 99,
+      "integer": true
+    },
+    {
+      "id": "diabetesMedInsulin",
+      "section": "Medications",
+      "text": "Was insulin your first diabetes medication?",
+      "options": [
+        "0 = No",
+        "1 = Yes",
+        "9 = Unknown"
+      ],
+      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02"
+    },
+    {
+      "id": "diabetesMedPregnancy",
+      "section": "Medications",
+      "text": "Did diabetes occur in pregnancy only",
+      "options": [
+        "0 = No",
+        "1 = Yes",
+        "9 = Unknown"
+      ],
+      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02"
+    },
+    {
+      "id": "family_Coronary Heart Disease_Siblings_count",
+      "section": "Family history",
+      "text": "# of siblings with the condition",
+      "context": "Coronary Heart Disease",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 33, Q40(b)",
+      "unit": "siblings",
+      "min": 1,
+      "max": 99,
+      "integer": true
+    },
+    {
+      "id": "family_Stroke_Siblings_count",
+      "section": "Family history",
+      "text": "# of siblings with the condition",
+      "context": "Stroke",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 33, Q40(b)",
+      "unit": "siblings",
+      "min": 1,
+      "max": 99,
+      "integer": true
+    },
+    {
+      "id": "alcoholStart",
+      "section": "Alcohol consumption",
+      "text": "At what age did you start?",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(b)",
+      "unit": "yrs",
+      "min": 0,
+      "max": 99,
+      "integer": true
+    },
+    {
+      "id": "alc_spirits_duration",
+      "section": "Alcohol consumption",
+      "text": "Duration (years)",
+      "context": "Spirits(rum,whisky, gin,vodka etc)",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
+      "unit": "years",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "alc_spirits_stopped",
+      "section": "Alcohol consumption",
+      "text": "Past users only When Stopped (years ago)",
+      "context": "Spirits(rum,whisky, gin,vodka etc)",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
+      "unit": "years ago",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "alc_wine_duration",
+      "section": "Alcohol consumption",
+      "text": "Duration (years)",
+      "context": "Wine",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
+      "unit": "years",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "alc_wine_stopped",
+      "section": "Alcohol consumption",
+      "text": "Past users only When Stopped (years ago)",
+      "context": "Wine",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
+      "unit": "years ago",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "alc_beer_duration",
+      "section": "Alcohol consumption",
+      "text": "Duration (years)",
+      "context": "Beer",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
+      "unit": "years",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "alc_beer_stopped",
+      "section": "Alcohol consumption",
+      "text": "Past users only When Stopped (years ago)",
+      "context": "Beer",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
+      "unit": "years ago",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "alc_country_duration",
+      "section": "Alcohol consumption",
+      "text": "Duration (years)",
+      "context": "Country liquor/arrack/ sugar cane spirit",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
+      "unit": "years",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "alc_country_stopped",
+      "section": "Alcohol consumption",
+      "text": "Past users only When Stopped (years ago)",
+      "context": "Country liquor/arrack/ sugar cane spirit",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
+      "unit": "years ago",
+      "min": 0,
+      "max": 70
+    },
+    {
+      "id": "heavyTimes",
+      "section": "Alcohol consumption",
+      "text": "How many times per month do you consume >5 alcoholic drinks in a day?",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(d)(i,ii)",
+      "unit": "times/month",
+      "min": 0,
+      "max": 99
+    },
+    {
+      "id": "heavyQuantity",
+      "section": "Alcohol consumption",
+      "text": "What is the average number of drinks that you consume each time?",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(d)(i,ii)",
+      "unit": "drinks",
+      "min": 0,
+      "max": 99
+    },
+    {
+      "id": "childMother",
+      "section": "Passive smoking",
+      "text": "Mother smoked?",
+      "source": "Gen-3-Exam-1.pdf, PDF 29, MD08",
+      "options": [
+        "0 = No",
+        "1 = Yes",
+        "9 = Unknown"
+      ]
+    },
+    {
+      "id": "childFather",
+      "section": "Passive smoking",
+      "text": "Father smoked?",
+      "source": "Gen-3-Exam-1.pdf, PDF 29, MD08",
+      "options": [
+        "0 = No",
+        "1 = Yes",
+        "9 = Unknown"
+      ]
+    },
+    {
+      "id": "childOther",
+      "section": "Passive smoking",
+      "text": "Others in Household smoked?",
+      "source": "Gen-3-Exam-1.pdf, PDF 29, MD08",
+      "options": [
+        "0 = No",
+        "1 = Yes",
+        "9 = Unknown"
+      ]
+    },
+    {
+      "id": "childOtherCount",
+      "section": "Passive smoking",
+      "text": "How many others?",
+      "source": "Gen-3-Exam-1.pdf, PDF 29, MD08",
+      "unit": "people",
+      "min": 1,
+      "max": 99,
+      "integer": true
+    },
+    {
+      "id": "ipaq8",
+      "section": "Physical activity — transportation",
+      "text": "During the last 7 days, on how many days did you travel in a motor vehicle like a train, bus, car, or tram?",
+      "source": "IPAQ_English_self-admin_long.pdf, PDF 3, Q8",
+      "unit": "days per week",
+      "min": 0,
+      "max": 7,
+      "integer": true,
+      "note": "No activity: enter 0 and skip the following time question."
+    },
+    {
+      "id": "ipaq9_hours",
+      "section": "Physical activity — transportation",
+      "text": "Hours per day",
+      "sharedPrompt": "How much time did you usually spend on one of those days traveling in a train, bus, car, tram, or other kind of motor vehicle?",
+      "source": "IPAQ_English_self-admin_long.pdf, PDF 3, Q9",
+      "min": 0,
+      "max": 24,
+      "integer": true
+    },
+    {
+      "id": "ipaq9_minutes",
+      "section": "Physical activity — transportation",
+      "text": "Minutes per day",
+      "sharedPrompt": "How much time did you usually spend on one of those days traveling in a train, bus, car, tram, or other kind of motor vehicle?",
+      "source": "IPAQ_English_self-admin_long.pdf, PDF 3, Q9",
+      "min": 0,
+      "max": 59,
+      "integer": true
+    },
+    {
+      "id": "sleepSedentary",
+      "section": "Sleep and typical-day activity",
+      "text": "Sedentary--Number of hours typically sitting?",
+      "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
+      "unit": "hours",
+      "min": 0,
+      "max": 24,
+      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)"
+    },
+    {
+      "id": "sleepSlight",
+      "section": "Sleep and typical-day activity",
+      "text": "Slight Activity--Number of hours with activities such as standing, walking?",
+      "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
+      "unit": "hours",
+      "min": 0,
+      "max": 24,
+      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)"
+    },
+    {
+      "id": "sleepModerate",
+      "section": "Sleep and typical-day activity",
+      "text": "Moderate Activity--Number of hours with activities such as housework (vacuum, dust, yard chores, climbing stairs; light sports such as bowling, golf)?",
+      "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
+      "unit": "hours",
+      "min": 0,
+      "max": 24,
+      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)"
+    },
+    {
+      "id": "sleepHeavy",
+      "section": "Sleep and typical-day activity",
+      "text": "Heavy Activity--Number of hours with activities such as heavy household work, heavy yard work such as stacking or chopping wood, exercise such as intensive sports--jogging, swimming etc.?",
+      "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
+      "unit": "hours",
+      "min": 0,
+      "max": 24,
+      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)"
     }
   ],
   "predictors": [
@@ -218,19 +537,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "hypertensionYears",
-      "section": "Medical history",
-      "text": "# of yrs since diagnosis",
-      "context": "Hypertension/high blood pressure",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 9, Q17, printed page 4, “# of yrs since diagnosis” column",
-      "unit": "years",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>yes(a,id)",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "diabetes",
       "section": "Medical history",
       "text": "Diabetes",
@@ -241,19 +547,6 @@
         "Yes"
       ],
       "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "diabetesYears",
-      "section": "Medical history",
-      "text": "# of yrs since diagnosis",
-      "context": "Diabetes",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 9, Q17, printed page 4, “# of yrs since diagnosis” column",
-      "unit": "years",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>yes(a,id)",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
@@ -273,20 +566,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "bpMedStartAge",
-      "section": "Medications",
-      "text": "At what age did you begin taking medicine for this (99=unk)",
-      "context": "hypertension/high blood pressure",
-      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
-      "unit": "years",
-      "min": 0,
-      "max": 99,
-      "integer": true,
-      "applicability": "a=>yes(a,id)||a[id]?.startsWith(\"2 =\")",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "lipidMed",
       "section": "Medications",
       "text": "Have you ever taken medication for high blood cholesterol?",
@@ -302,20 +581,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "lipidMedStartAge",
-      "section": "Medications",
-      "text": "At what age did you begin taking medicine for this (99=unk)",
-      "context": "high blood cholesterol",
-      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
-      "unit": "years",
-      "min": 0,
-      "max": 99,
-      "integer": true,
-      "applicability": "a=>yes(a,id)||a[id]?.startsWith(\"2 =\")",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "diabetesMed",
       "section": "Medications",
       "text": "Have you ever taken medication for high blood sugar or diabetes?",
@@ -327,48 +592,6 @@
       ],
       "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
       "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "diabetesMedStartAge",
-      "section": "Medications",
-      "text": "At what age did you begin taking medicine for this (99=unk)",
-      "context": "high blood sugar or diabetes",
-      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
-      "unit": "years",
-      "min": 0,
-      "max": 99,
-      "integer": true,
-      "applicability": "a=>yes(a,id)||a[id]?.startsWith(\"2 =\")",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "diabetesMedInsulin",
-      "section": "Medications",
-      "text": "Was insulin your first diabetes medication?",
-      "options": [
-        "0 = No",
-        "1 = Yes",
-        "9 = Unknown"
-      ],
-      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
-      "applicability": "a=>yes(a,id)||a[id]?.startsWith(\"2 =\")",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "diabetesMedPregnancy",
-      "section": "Medications",
-      "text": "Did diabetes occur in pregnancy only",
-      "options": [
-        "0 = No",
-        "1 = Yes",
-        "9 = Unknown"
-      ],
-      "source": "Gen-3-Exam-1.pdf, PDF 23, MD02",
-      "applicability": "a=>yes(a,id)||a[id]?.startsWith(\"2 =\")",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
@@ -434,20 +657,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "family_Coronary Heart Disease_Siblings_count",
-      "section": "Family history",
-      "text": "# of siblings with the condition",
-      "context": "Coronary Heart Disease",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 33, Q40(b)",
-      "unit": "siblings",
-      "min": 1,
-      "max": 99,
-      "integer": true,
-      "applicability": "a=>a.siblings!==\"0\"&&a[id]===\"Yes\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "family_Stroke_Father",
       "section": "Family history",
       "text": "Father",
@@ -496,20 +705,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "family_Stroke_Siblings_count",
-      "section": "Family history",
-      "text": "# of siblings with the condition",
-      "context": "Stroke",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 33, Q40(b)",
-      "unit": "siblings",
-      "min": 1,
-      "max": 99,
-      "integer": true,
-      "applicability": "a=>a.siblings!==\"0\"&&a[id]===\"Yes\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "alcoholHistory",
       "section": "Alcohol consumption",
       "text": "Which best describes your history of alcohol use?",
@@ -520,19 +715,6 @@
         "Never used alcohol products"
       ],
       "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "alcoholStart",
-      "section": "Alcohol consumption",
-      "text": "At what age did you start?",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(b)",
-      "unit": "yrs",
-      "min": 0,
-      "max": 99,
-      "integer": true,
-      "applicability": "a=>[\"Formerly used alcohol products\",\"Currently use alcohol products\"].includes(a.alcoholHistory)",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
@@ -580,32 +762,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "alc_spirits_duration",
-      "section": "Alcohol consumption",
-      "text": "Duration (years)",
-      "context": "Spirits(rum,whisky, gin,vodka etc)",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
-      "unit": "years",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>alcoholAsked(a)&&a[`alc_${id}`]===\"Selected\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "alc_spirits_stopped",
-      "section": "Alcohol consumption",
-      "text": "Past users only When Stopped (years ago)",
-      "context": "Spirits(rum,whisky, gin,vodka etc)",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
-      "unit": "years ago",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>selected(a)&&a.alcoholHistory===\"Formerly used alcohol products\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "alc_wine",
       "section": "Alcohol consumption",
       "text": "Wine",
@@ -645,32 +801,6 @@
       "min": 0,
       "max": 999,
       "applicability": "a=>alcoholAsked(a)&&a[`alc_${id}`]===\"Selected\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "alc_wine_duration",
-      "section": "Alcohol consumption",
-      "text": "Duration (years)",
-      "context": "Wine",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
-      "unit": "years",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>alcoholAsked(a)&&a[`alc_${id}`]===\"Selected\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "alc_wine_stopped",
-      "section": "Alcohol consumption",
-      "text": "Past users only When Stopped (years ago)",
-      "context": "Wine",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
-      "unit": "years ago",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>selected(a)&&a.alcoholHistory===\"Formerly used alcohol products\"",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
@@ -718,32 +848,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "alc_beer_duration",
-      "section": "Alcohol consumption",
-      "text": "Duration (years)",
-      "context": "Beer",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
-      "unit": "years",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>alcoholAsked(a)&&a[`alc_${id}`]===\"Selected\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "alc_beer_stopped",
-      "section": "Alcohol consumption",
-      "text": "Past users only When Stopped (years ago)",
-      "context": "Beer",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
-      "unit": "years ago",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>selected(a)&&a.alcoholHistory===\"Formerly used alcohol products\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "alc_country",
       "section": "Alcohol consumption",
       "text": "Country liquor/arrack/ sugar cane spirit",
@@ -787,32 +891,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "alc_country_duration",
-      "section": "Alcohol consumption",
-      "text": "Duration (years)",
-      "context": "Country liquor/arrack/ sugar cane spirit",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
-      "unit": "years",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>alcoholAsked(a)&&a[`alc_${id}`]===\"Selected\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "alc_country_stopped",
-      "section": "Alcohol consumption",
-      "text": "Past users only When Stopped (years ago)",
-      "context": "Country liquor/arrack/ sugar cane spirit",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(c)",
-      "unit": "years ago",
-      "min": 0,
-      "max": 70,
-      "applicability": "a=>selected(a)&&a.alcoholHistory===\"Formerly used alcohol products\"",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "heavyAlcohol",
       "section": "Alcohol consumption",
       "text": "At least once a month, do you consume >5 alcoholic drinks/day?",
@@ -822,30 +900,6 @@
         "Yes"
       ],
       "applicability": "a=>[\"Formerly used alcohol products\",\"Currently use alcohol products\"].includes(a.alcoholHistory)",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "heavyTimes",
-      "section": "Alcohol consumption",
-      "text": "How many times per month do you consume >5 alcoholic drinks in a day?",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(d)(i,ii)",
-      "unit": "times/month",
-      "min": 0,
-      "max": 99,
-      "applicability": "a=>alcoholAsked(a)&&yes(a,\"heavyAlcohol\")",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "heavyQuantity",
-      "section": "Alcohol consumption",
-      "text": "What is the average number of drinks that you consume each time?",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 19, Q28(d)(i,ii)",
-      "unit": "drinks",
-      "min": 0,
-      "max": 99,
-      "applicability": "a=>alcoholAsked(a)&&yes(a,\"heavyAlcohol\")",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
@@ -982,61 +1036,6 @@
         "9 = Unknown"
       ],
       "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "childMother",
-      "section": "Passive smoking",
-      "text": "Mother smoked?",
-      "source": "Gen-3-Exam-1.pdf, PDF 29, MD08",
-      "options": [
-        "0 = No",
-        "1 = Yes",
-        "9 = Unknown"
-      ],
-      "applicability": "a=>yes(a,\"passiveChild\")",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "childFather",
-      "section": "Passive smoking",
-      "text": "Father smoked?",
-      "source": "Gen-3-Exam-1.pdf, PDF 29, MD08",
-      "options": [
-        "0 = No",
-        "1 = Yes",
-        "9 = Unknown"
-      ],
-      "applicability": "a=>yes(a,\"passiveChild\")",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "childOther",
-      "section": "Passive smoking",
-      "text": "Others in Household smoked?",
-      "source": "Gen-3-Exam-1.pdf, PDF 29, MD08",
-      "options": [
-        "0 = No",
-        "1 = Yes",
-        "9 = Unknown"
-      ],
-      "applicability": "a=>yes(a,\"passiveChild\")",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "childOtherCount",
-      "section": "Passive smoking",
-      "text": "How many others?",
-      "source": "Gen-3-Exam-1.pdf, PDF 29, MD08",
-      "unit": "people",
-      "min": 1,
-      "max": 99,
-      "integer": true,
-      "applicability": "a=>yes(a,\"passiveChild\")&&yes(a,\"childOther\")",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
@@ -1303,46 +1302,6 @@
       "text": "Minutes per day",
       "sharedPrompt": "How much time did you usually spend on one of those days walking as part of your work?",
       "source": "IPAQ_English_self-admin_long.pdf, PDF 3, Q7",
-      "min": 0,
-      "max": 59,
-      "integer": true,
-      "applicability": "a=>q.number<=7&&q.number>1?a.ipaq1===\"Yes\"&&(![3,5,7].includes(q.number)||Number(a[\"ipaq\"+(q.number-1)])>0):[9,11,13,15,17,19,21,23,25].includes(q.number)?Number(a[\"ipaq\"+(q.number-1)])>0:true",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "ipaq8",
-      "section": "Physical activity — transportation",
-      "text": "During the last 7 days, on how many days did you travel in a motor vehicle like a train, bus, car, or tram?",
-      "source": "IPAQ_English_self-admin_long.pdf, PDF 3, Q8",
-      "unit": "days per week",
-      "min": 0,
-      "max": 7,
-      "integer": true,
-      "note": "No activity: enter 0 and skip the following time question.",
-      "applicability": "a=>q.number<=7&&q.number>1?a.ipaq1===\"Yes\"&&(![3,5,7].includes(q.number)||Number(a[\"ipaq\"+(q.number-1)])>0):[9,11,13,15,17,19,21,23,25].includes(q.number)?Number(a[\"ipaq\"+(q.number-1)])>0:true",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "ipaq9_hours",
-      "section": "Physical activity — transportation",
-      "text": "Hours per day",
-      "sharedPrompt": "How much time did you usually spend on one of those days traveling in a train, bus, car, tram, or other kind of motor vehicle?",
-      "source": "IPAQ_English_self-admin_long.pdf, PDF 3, Q9",
-      "min": 0,
-      "max": 24,
-      "integer": true,
-      "applicability": "a=>q.number<=7&&q.number>1?a.ipaq1===\"Yes\"&&(![3,5,7].includes(q.number)||Number(a[\"ipaq\"+(q.number-1)])>0):[9,11,13,15,17,19,21,23,25].includes(q.number)?Number(a[\"ipaq\"+(q.number-1)])>0:true",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "ipaq9_minutes",
-      "section": "Physical activity — transportation",
-      "text": "Minutes per day",
-      "sharedPrompt": "How much time did you usually spend on one of those days traveling in a train, bus, car, tram, or other kind of motor vehicle?",
-      "source": "IPAQ_English_self-admin_long.pdf, PDF 3, Q9",
       "min": 0,
       "max": 59,
       "integer": true,
@@ -1771,65 +1730,13 @@
     },
     {
       "id": "sleep",
-      "section": "Sleep and typical-day activity",
+      "section": "Sleep",
       "text": "Sleep--Number of hours that you typically sleep?",
       "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
       "unit": "hours",
       "min": 0,
       "max": 24,
-      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)",
-      "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "sleepSedentary",
-      "section": "Sleep and typical-day activity",
-      "text": "Sedentary--Number of hours typically sitting?",
-      "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
-      "unit": "hours",
-      "min": 0,
-      "max": 24,
-      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)",
-      "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "sleepSlight",
-      "section": "Sleep and typical-day activity",
-      "text": "Slight Activity--Number of hours with activities such as standing, walking?",
-      "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
-      "unit": "hours",
-      "min": 0,
-      "max": 24,
-      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)",
-      "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "sleepModerate",
-      "section": "Sleep and typical-day activity",
-      "text": "Moderate Activity--Number of hours with activities such as housework (vacuum, dust, yard chores, climbing stairs; light sports such as bowling, golf)?",
-      "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
-      "unit": "hours",
-      "min": 0,
-      "max": 24,
-      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)",
-      "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "sleepHeavy",
-      "section": "Sleep and typical-day activity",
-      "text": "Heavy Activity--Number of hours with activities such as heavy household work, heavy yard work such as stacking or chopping wood, exercise such as intensive sports--jogging, swimming etc.?",
-      "source": "Gen-3-Exam-1.pdf, PDF 10, TECH05",
-      "unit": "hours",
-      "min": 0,
-      "max": 24,
-      "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)",
+      "note": "Report sleep during a typical day. This is an extracted source item; other daily activities are not collected here.",
       "applicability": "Always applicable",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."

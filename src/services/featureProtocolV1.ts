@@ -1,7 +1,7 @@
 import { householdSes, SES_QUESTIONS } from "./sesProtocol";
 import type { Answers27, Question27 } from "./assessment27";
 
-export const FEATURE_PROTOCOL_VERSION = "PINTIG-FE-1.1";
+export const FEATURE_PROTOCOL_VERSION = "PINTIG-FE-1.2";
 export const EDUCATION_OPTIONS = [
   "0 = no schooling",
   "1 = grades 1-8",

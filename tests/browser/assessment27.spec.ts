@@ -81,20 +81,18 @@ for (const viewport of [
     for (let step = 1; step < 9; step++) {
       if (step === 5) {
         await page.locator("#q27-passiveChild").selectOption("1 = Yes");
-        await page.locator("#q27-childOther").selectOption("1 = Yes");
+        await expect(page.locator("#q27-childOther")).toHaveCount(0);
         await page.locator("#q27-passiveHome").selectOption("1 = Yes");
         await page.locator("#q27-passiveOutside").selectOption("1 = Yes");
       }
       if (step === 8) {
-        for (const [id, value] of Object.entries({ sleep: "14", sleepSedentary: "8", sleepSlight: "2", sleepModerate: "1", sleepHeavy: "1" }))
-          await page.locator("#q27-" + id).fill(value);
-        await expect(page.locator("#typical-day-total")).toContainText("26 / 24 hours");
-        await expect(page.locator("#typical-day-total")).toContainText("Review all five entries");
+        await page.locator("#q27-sleep").fill("14");
         await expect(page.locator("#q27-sleep")).toHaveAttribute("aria-invalid", "false");
-        await page.locator("#q27-sleepSedentary").fill("6");
-        await expect(page.locator("#typical-day-total")).toContainText("The five activities total 24 hours.");
-        await page.locator("#q27-sleepHeavy").fill("");
-        await expect(page.locator("#typical-day-total")).toContainText("4 of 5 activities entered");
+        await expect(page.locator("#typical-day-total")).toHaveCount(0);
+        await expect(page.locator("#q27-sleepSedentary")).toHaveCount(0);
+      }
+      for (const id of ["hypertensionYears", "diabetesYears", "bpMedStartAge", "diabetesMedStartAge", "lipidMedStartAge", "diabetesMedInsulin", "diabetesMedPregnancy", "alcoholStart", "heavyTimes", "heavyQuantity", "ipaq8", "ipaq9_hours", "ipaq9_minutes"]) {
+        await expect(page.locator("#q27-" + id)).toHaveCount(0);
       }
       const alignment = await page.locator(".assessment27 .gridform").evaluateAll(grids =>
         grids.flatMap(grid => {
