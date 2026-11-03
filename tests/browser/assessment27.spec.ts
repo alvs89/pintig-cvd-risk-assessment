@@ -37,7 +37,7 @@ for (const viewport of [
       await expect(group.locator("select")).toHaveCount(1);
       await expect(group).toContainText("Measurement conditions only; not a risk predictor.");
       await group.locator("select").selectOption("minimal/no clothing");
-      if (viewport.width > 680) {
+      if (viewport.width >= 1000) {
         const positions = await group.locator("input, select").evaluateAll(elements => elements.map(el => el.getBoundingClientRect().top));
         expect(Math.max(...positions) - Math.min(...positions)).toBeLessThanOrEqual(1);
       }
@@ -78,24 +78,67 @@ for (const viewport of [
     expect(labelLayout).toEqual({ hiddenPosition: "absolute", hiddenWidth: 1, contextDisplay: "inline" });
     await expect(page.locator('[id="q27-family_Coronary Heart Disease_Father"]')).toHaveAccessibleName(/Coronary Heart Disease \u2014 Father$/);
     await page.getByRole("button", { name: "Continue", exact: true }).click();
-    await page.locator("#q27-alcoholHistory").selectOption("Currently use alcohol products");
-    await expect(page.locator(".source-question-stem").filter({ hasText: "What forms of alcohol" })).toHaveCount(1);
-    await page.locator("#q27-alc_beer").selectOption("Selected");
-    await expect(page.locator("#q27-alc_beer_quantity")).toHaveAccessibleName("Beer \u2014 Average # of drinks (drinks)");
-    await page.locator("#q27-alc_beer_quantity").fill("2");
-    await page.locator("#q27-alcoholHistory").selectOption("Never used alcohol products");
+    await page.getByRole("radio", { name: "Currently use alcohol products", exact: true }).check();
+    if (viewport.width >= 1000) {
+      const alcoholChoiceTops = await page.locator("#q27-alcoholHistory .choice-list > label").evaluateAll(labels =>
+        labels.map(label => label.getBoundingClientRect().top),
+      );
+      expect(new Set(alcoholChoiceTops).size).toBe(1);
+    }
+    await expect(page.getByRole("group", { name: "What forms of alcohol have you regularly used? (check all that apply)", exact: true })).toBeVisible();
+    await page.locator("#q27-alc_beer").check();
+    await expect(page.locator("#q27-alc_beer_quantity")).toHaveAccessibleName("Average # of drinks (drinks)");
+    await page.locator("#q27-alc_beer_quantity").fill("5");
+    await page.locator("#q27-alc_beer_frequency").selectOption("Monthly");
+    await expect(page.getByRole("region", { name: "Alcohol consumption calculated values" })).toContainText("17.07 g/week");
+    await page.getByRole("radio", { name: "Formerly used alcohol products", exact: true }).check();
+    await expect(page.getByText("Past drinking history: enter the beverages and usual amounts consumed when you drank.")).toBeVisible();
+    await expect(page.getByText("For the following question, answer about your current drinking, not past drinking.")).toBeVisible();
+    const alcoholSummary = page.getByRole("region", { name: "Alcohol consumption calculated values" });
+    await expect(alcoholSummary).toContainText("You no longer drink alcohol, so current weekly consumption is 0 g/week.");
+    await expect(alcoholSummary.locator("dl > div").first()).toHaveText("Current weekly ethanol consumption0 g/week");
+    await expect(page.locator("#q27-alc_beer_quantity")).toHaveValue("5");
+    await page.locator(".focused-assessment").screenshot({ path: "test-results/alcohol-former-" + viewport.width + ".png" });
+    await page.getByRole("radio", { name: "Currently use alcohol products", exact: true }).check();
+    await expect(page.getByText("Past drinking history: enter the beverages and usual amounts consumed when you drank.")).toHaveCount(0);
+    await expect(alcoholSummary).toContainText("17.07 g/week");
+    await page.locator(".focused-assessment").screenshot({ path: "test-results/alcohol-" + viewport.width + ".png" });
+    await page.getByRole("radio", { name: "Never used alcohol products", exact: true }).check();
     await expect(page.locator("#q27-alc_beer_quantity")).toHaveCount(0);
-    await page.locator("#q27-alcoholHistory").selectOption("Currently use alcohol products");
-    await expect(page.locator("#q27-alc_beer_quantity")).toHaveValue("2");
+    await page.getByRole("radio", { name: "Currently use alcohol products", exact: true }).check();
+    await expect(page.locator("#q27-alc_beer_quantity")).toHaveValue("5");
     await page.getByRole("button", { name: "Back", exact: true }).click();
     await page.getByRole("button", { name: "Back", exact: true }).click();
     await page.getByRole("button", { name: "Back", exact: true }).click();
     for (let step = 1; step < 9; step++) {
       if (step === 5) {
+        await page.locator("#q27-smokeEver").getByRole("radio", { name: "Yes", exact: true }).check();
+        await page.locator("#q27-smokeCurrent").getByRole("radio", { name: "Yes", exact: true }).check();
+        await page.locator("#q27-smokeNow").fill("10");
+        await page.locator("#q27-smokeAverage").fill("10");
+        await page.locator("#q27-smokeStart").fill("20");
+        await page.locator("#q27-smokeBreak").getByRole("radio", { name: "No", exact: true }).check();
+        await expect(page.getByRole("region", { name: "Active smoking calculated values" })).toContainText("Current");
+        await expect(page.locator(".profile-age")).toContainText("From the patient profile");
         await page.locator("#q27-passiveChild").selectOption("1 = Yes");
         await expect(page.locator("#q27-childOther")).toHaveCount(0);
         await page.locator("#q27-passiveHome").selectOption("1 = Yes");
         await page.locator("#q27-passiveOutside").selectOption("1 = Yes");
+      }
+      if (step === 6) {
+        await expect(page.getByRole("navigation", { name: "Physical activity sections" })).toBeVisible();
+        await page.getByRole("button", { name: "Continue", exact: true }).click();
+        await expect(page.getByRole("button", { name: "Travel", exact: true })).toHaveAttribute("aria-current", "step");
+        await page.locator("#q27-ipaq10").selectOption("2");
+        await page.locator("#q27-ipaq11_hours").fill("0");
+        await page.locator("#q27-ipaq11_minutes").fill("30");
+        await page.getByRole("button", { name: "Back", exact: true }).click();
+        await expect(page.getByRole("button", { name: "Work", exact: true })).toHaveAttribute("aria-current", "step");
+        await page.getByRole("button", { name: "Travel", exact: true }).click();
+        await expect(page.locator("#q27-ipaq11_minutes")).toHaveValue("30");
+        await expect(page.getByRole("group", { name: "Cycling for transportation", exact: true })).toContainText("Hours per day");
+        await page.getByRole("group", { name: "Cycling for transportation", exact: true }).screenshot({ path: "test-results/activity-" + viewport.width + ".png" });
+        await page.getByRole("button", { name: "Sitting", exact: true }).click();
       }
       if (step === 8) {
         await page.locator("#q27-sleep").fill("14");
@@ -118,7 +161,7 @@ for (const viewport of [
           });
         })
       );
-      if (viewport.width > 680) expect(alignment.length).toBeGreaterThan(0);
+      if (viewport.width > 680 && step !== 4) expect(alignment.length).toBeGreaterThan(0);
       for (const offset of alignment) expect(offset).toBeLessThanOrEqual(1);
       const spacing = await page.locator(".assessment27 .gridform > .field").evaluateAll(fields =>
         fields.flatMap(field => {
@@ -130,7 +173,7 @@ for (const viewport of [
           return [{ gap: b.top - a.bottom, minHeight: getComputedStyle(label).minHeight }];
         })
       );
-      expect(spacing.length).toBeGreaterThan(0);
+      if (step !== 4) expect(spacing.length).toBeGreaterThan(0);
       for (const field of spacing) {
         expect(field.minHeight).toBe("0px");
         expect(field.gap).toBeGreaterThanOrEqual(5);

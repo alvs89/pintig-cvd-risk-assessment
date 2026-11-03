@@ -201,3 +201,37 @@
 }
 
 .ses-availability { display: block; margin-top: 6px; font-weight: normal; }
+
+.focused-assessment { max-width: 960px; }
+.focused-field { min-width: 0; margin: 18px 0; }
+.focused-field > label, .response-choices legend { display: block; font-weight: 650; margin-bottom: 6px; line-height: 1.5; }
+.focused-field input[type="text"], .focused-field select { width: 100%; min-height: 48px; padding: 11px 13px; border: 1px solid #cddce5; border-radius: 10px; background: white; color: #17324b; }
+.focused-field small, .focused-assessment small { display: block; margin-top: 6px; color: #40566a; line-height: 1.5; }
+.focused-assessment .field-error { color: #a11b1b; }
+.response-choices, .beverage-selection { border: 0; padding: 0; min-width: 0; margin: 0; }
+.beverage-selection { border-top: 1px solid #d3e0e7; padding-top: 20px; margin-top: 20px; }
+.beverage-selection > legend { font-weight: 650; padding: 0; }
+.choice-row, .choice-list { display: flex; gap: 8px 20px; flex-wrap: wrap; }
+.choice-list { align-items: center; }
+.choice-row > label, .choice-list > label { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; line-height: 1.5; }
+.choice-row input, .choice-list input { width: 20px; height: 20px; flex: 0 0 20px; accent-color: #087f80; }
+.clear-response { border: 0; background: transparent; padding: 8px 0; min-height: 40px; color: #096b72; text-decoration: underline; font-size: 13px; }
+.beverage-card { min-width: 0; margin: 16px 0; padding: 12px 16px; border: 1px solid #d3e0e7; border-radius: 12px; background: #f8fbfc; }
+.beverage-card legend { padding: 0 6px; font-weight: 650; }
+.serving-reference { margin: 0; color: #40566a; }
+.focused-columns { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 20px; align-items: end; }
+.profile-age { display: grid; gap: 6px; margin: 18px 0; padding: 12px; background: #f1f7f8; border-radius: 10px; }
+.focused-summary { border-top: 1px solid #d3e0e7; padding-top: 16px; margin-top: 20px; }
+.focused-summary dl { margin: 0; }
+.focused-summary dl > div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #e5ecef; }
+.focused-summary dd { margin: 0; font-weight: 650; text-align: right; }
+.questionnaire-sources { margin-top: 20px; color: #40566a; font-size: 13px; overflow-wrap: anywhere; }
+.activity-navigation { margin: 16px 0; }
+.activity-navigation > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.activity-navigation button { flex: 1; min-height: 44px; padding: 8px 12px; border: 1px solid #cddce5; border-radius: 8px; color: #17324b; background: #fff; }
+.activity-navigation button.active { color: #fff; background: #087f80; border-color: #087f80; }
+@media (max-width: 680px) { .focused-columns { grid-template-columns: minmax(0,1fr); } .focused-summary dl > div { flex-wrap: wrap; } }
+
+.assessment27 .activity-card { grid-column: 1 / -1; min-width: 0; margin: 12px 0; padding: 14px 18px; border: 1px solid #d3e0e7; border-radius: 12px; }
+.assessment27 .activity-card legend { padding: 0 6px; font-weight: 650; }
+.assessment27 .activity-card > .gridform > .field:first-child { grid-column: 1 / -1; }

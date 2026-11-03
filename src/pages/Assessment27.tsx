@@ -1,3 +1,4 @@
+import { FocusedAssessment27 } from "../components/FocusedAssessment27";
 import { Fragment, useEffect, useState, type FormEvent } from "react";
 import { PreAssessmentCheck } from "../components/PreAssessmentCheck";
 import { b, head, patientIdent } from "../components/shared";
@@ -9,6 +10,7 @@ import {
   isApplicable27,
   assessment27Steps,
   sanitizeNumericInput,
+  IPAQ_DAYS,
 } from "../services/assessment27";
 import { screeningForPatient } from "../services/preAssessment";
 import { createIntake27, intakes27 } from "../state/intakes27";
@@ -20,6 +22,7 @@ import "../styles/assessment27.css";
 
 export function Assessment27Page() {
   const [stepIndex, setStepIndex] = useState(0);
+  const [activityIndex, setActivityIndex] = useState(0);
   const [saveNotice, setSaveNotice] = useState(0);
   useEffect(() => {
     if (!saveNotice) return;
@@ -34,19 +37,23 @@ export function Assessment27Page() {
   const steps = assessment27Steps(sections);
   const finalStep = stepIndex === steps.length;
   const currentStep = steps[Math.min(stepIndex, steps.length - 1)];
-  const update = (id: string, value: string) => {
+  const updateMany = (values: Record<string, string>) => {
     S.draft = {
       ...answers,
       schema: INTAKE27_SCHEMA,
       pid: String(S.patientId ?? ""),
-      [id]: value,
+      ...values,
     };
     S.result = null;
     render();
   };
+  const update = (id: string, value: string) => updateMany({ [id]: value });
+  const isActivityStep = !finalStep && currentStep.title === "Physical activity and sitting";
+  const visibleSections = isActivityStep ? [currentStep.sections[activityIndex]] : currentStep.sections;
   const changePatient = (value: string) => {
     const change = () => {
       setStepIndex(0);
+      setActivityIndex(0);
       S.patientId = P(value)?.id ?? null;
       S.preAssessment = null;
       S.draft = { schema: INTAKE27_SCHEMA, pid: value };
@@ -92,7 +99,10 @@ export function Assessment27Page() {
         const page = steps.findIndex((step) =>
           step.sections.includes(firstQuestion.section),
         );
-        if (page >= 0) setStepIndex(page);
+        if (page >= 0) {
+          setStepIndex(page);
+          if (steps[page].title === "Physical activity and sitting") setActivityIndex(steps[page].sections.indexOf(firstQuestion.section));
+        }
       }
       render();
       requestAnimationFrame(() =>
@@ -188,8 +198,16 @@ export function Assessment27Page() {
                 missing; invalid numeric entries must be corrected.
               </p>
             </div>
+            {isActivityStep && (
+              <nav className="activity-navigation" aria-label="Physical activity sections">
+                <p>Activity section {activityIndex + 1} of {currentStep.sections.length}</p>
+                <div>{["Work", "Travel", "Home", "Leisure", "Sitting"].map((label, index) =>
+                  <button key={label} type="button" className={index === activityIndex ? "active" : ""} aria-current={index === activityIndex ? "step" : undefined} onClick={() => setActivityIndex(index)}>{label}</button>
+                )}</div>
+              </nav>
+            )}
             {!finalStep &&
-              currentStep.sections.map((section) => (
+              visibleSections.map((section) => (
                 <section
                   className="intake27-section"
                   key={section}
@@ -198,6 +216,9 @@ export function Assessment27Page() {
                   <div className="intake-section-head">
                     <h2>{section}</h2>
                   </div>
+                  {(section === "Alcohol consumption" || section === "Active smoking") ? (
+                    <FocusedAssessment27 section={section} answers={answers} update={updateMany} features={result?.features ?? {}} issues={result?.issues ?? []} patientAge={p ? age(p.dob) : 0} />
+                  ) : <>
                   {section ===
                     "Anthropometric and cardiovascular measurements" && (
                     <p>
@@ -325,7 +346,12 @@ export function Assessment27Page() {
                               <span className="question-unit"> ({q.unit})</span>
                             )}
                           </label>
-                          {q.options ? (
+                          {/^ipaq\d+$/.test(q.id) && IPAQ_DAYS.includes(Number(q.id.slice(4))) ? (
+                            <select id={id} value={answers[q.id] ?? ""} aria-invalid={!!problem} aria-describedby={id + "-source"} onChange={e => update(q.id, e.target.value)}>
+                              <option value="">Select days</option>
+                              {Array.from({ length: 8 }, (_, days) => <option key={days} value={days}>{days === 0 ? "0 days (none)" : days + (days === 1 ? " day" : " days")}</option>)}
+                            </select>
+                          ) : q.options ? (
                             <select
                               id={id}
                               name={q.id}
@@ -405,6 +431,22 @@ export function Assessment27Page() {
                       );
                     }).flatMap((field, index, fields) => {
                       const key = String(field.key);
+                      const activityNames: Record<number, string> = {
+                        2: "Vigorous activity at work", 4: "Moderate activity at work", 6: "Walking at work",
+                        10: "Cycling for transportation", 12: "Walking for transportation",
+                        14: "Vigorous activity in the garden or yard", 16: "Moderate activity in the garden or yard", 18: "Moderate activity inside the home",
+                        20: "Walking for recreation", 22: "Vigorous recreation", 24: "Moderate recreation",
+                      };
+                      const activityNumber = /^ipaq\d+$/.test(key) ? Number(key.slice(4)) : 0;
+                      if (activityNames[activityNumber]) {
+                        const timeFields = fields.filter(item => ["ipaq" + (activityNumber + 1) + "_hours", "ipaq" + (activityNumber + 1) + "_minutes"].includes(String(item.key)));
+                        return [<fieldset className="activity-card" key={key + "-activity"}>
+                          <legend>{activityNames[activityNumber]}</legend>
+                          <div className="gridform">{field}{timeFields}</div>
+                        </fieldset>];
+                      }
+                      const durationMatch = /^ipaq(\d+)_(hours|minutes)$/.exec(key);
+                      if (durationMatch && activityNames[Number(durationMatch[1]) - 1]) return [];
                       if (["waist1", "hip1"].includes(key)) {
                         const measurement = key === "waist1" ? "Waist" : "Hip";
                         return [
@@ -420,6 +462,7 @@ export function Assessment27Page() {
                       return [field];
                     })}
                   </div>
+                  </>}
                 </section>
               ))}
             {finalStep && (
@@ -547,7 +590,7 @@ export function Assessment27Page() {
               <button
                 type="button"
                 className="btn"
-                onClick={() => setStepIndex(Math.max(0, stepIndex - 1))}
+                onClick={() => { if (isActivityStep && activityIndex > 0) setActivityIndex(activityIndex - 1); else { setStepIndex(Math.max(0, stepIndex - 1)); setActivityIndex(0); } }}
                 disabled={stepIndex === 0}
               >
                 Back
@@ -556,9 +599,10 @@ export function Assessment27Page() {
                 <button
                   type="button"
                   className="btn primary"
-                  onClick={() =>
-                    setStepIndex(Math.min(steps.length, stepIndex + 1))
-                  }
+                  onClick={() => {
+                    if (isActivityStep && activityIndex < currentStep.sections.length - 1) setActivityIndex(activityIndex + 1);
+                    else { setStepIndex(Math.min(steps.length, stepIndex + 1)); setActivityIndex(0); }
+                  }}
                 >
                   Continue
                 </button>
