@@ -2,6 +2,7 @@ import type { AssessmentInputs, Patient, Result } from "../types/domain";
 import { isAdditionalFictionalPatient } from "../state/additionalPatients";
 import { originalPatients } from "../state/originalPatients";
 import { age as profileAge } from "../utils/format";
+import { assertLegacyCompatible } from "./assessment27";
 
 /** Private research-only model: NOT the intended PURE outcome. */
 export const RESEARCH_MODEL_VERSION = "FRAMINGHAM-7P-RSF-RESEARCH-20261015";
@@ -47,6 +48,7 @@ export function researchInputsFor(
 ): ResearchInput | null {
   if (!isFictionalIntakePatient(p)) return null;
   const x: AssessmentInputs = assessment.inputs;
+  try { assertLegacyCompatible(x); } catch { return null; }
   if (
     x.pid !== String(p.id) ||
     ("pid" in assessment && assessment.pid !== p.id)

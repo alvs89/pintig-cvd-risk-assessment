@@ -1,0 +1,80 @@
+[
+  {
+    "filename": "pone.0271169.s001.pdf",
+    "pages": 41,
+    "sha256": "23d7ef366a343a7014f1bdb436307de7f4f01616345f19091f318075f037e530",
+    "review": "South African adult instrument; demographics PDF3, diagnoses9, alcohol19, stress25, family33, measurements35; scanned pages visually reviewed. No verified Philippine edition."
+  },
+  {
+    "filename": "IPAQ_English_self-admin_long.pdf",
+    "pages": 6,
+    "sha256": "939872e8269caed5999609db0e546ad964fc872f3e767fede513d8e4ef0ef470",
+    "review": "Original long last7days self-administered instrument; questions1-27 on PDF2-6. Preserve wording, sequence, instructions and skips. Intended15-69; age70 outside stated range."
+  },
+  {
+    "filename": "scoring_protocol.pdf",
+    "pages": 15,
+    "sha256": "2af2a72900f0162b1dd21c529065c699a6084eb8d8b46f62f694c6a64f01c95a",
+    "review": "November2005 IPAQ scoring guide; long-form scores PDF7-9, sitting PDF9, cleaning/truncation PDF10-11. Not a source of the legacy arbitrary activity variable."
+  },
+  {
+    "filename": "Gen-3-Exam-1.pdf",
+    "pages": 47,
+    "sha256": "098f019b55d2ee95e57fc1e3c02c7839af86d54e73454985665373d0d799bbd8",
+    "review": "Generation3 Exam1 instrument: sleep PDF10 TECH05, medication PDF23 MD02, smoking PDF28 MD07, passive smoking PDF29 MD08, alcohol PDF30 MD09. Available name lacks requested (1). Not source cohort equivalence."
+  },
+  {
+    "filename": "Annotated-Form-Offspring-Exam-10-Omni-1-Exam-5.pdf",
+    "pages": 125,
+    "sha256": "729ddea7abc7d23b6e4df25ce59e37a4d4c575c72f2959aeed6b1297b7356875",
+    "review": "125-page annotated alternate examination. Anthropometry PDF73 T01 uses quarter-inch units, sleep PDF79 T04 uses typicalday pastyear and99 unknown. Do not mix these units/codes into PURE cm or Gen3 questions."
+  },
+  {
+    "filename": "Annotated-Form-Original-Cohort-Exam-32.pdf",
+    "pages": 66,
+    "sha256": "a824652f667604e4b737799451d5377f9d49afc051869f606dc51e36e88d88af",
+    "review": "66-page alternate examination. Alcohol PDF6 MD06 /48 MD08 uses ounce-based servings and weekly/monthly intake; different from PURE sizes. Not interchangeable timepoint/cohort."
+  },
+  {
+    "filename": "Exam-7-Food-Frequency-Questionnaire.pdf",
+    "pages": 4,
+    "sha256": "315112c360b901dfba2399cdc61557dae298550c8ff92ba49683948dbfdb74c3",
+    "review": "4-page original Willett FFQ, food portions/frequencies and supplements. Scanned text has OCR artifacts. No validated0-100 legacy diet score. Do not invent a reduced food questionnaire."
+  },
+  {
+    "filename": "Gen-3-Exam-3-Onsite-Sec-19.pdf",
+    "pages": 6,
+    "sha256": "ad5dd71f853ec0470342e7e5ec87ebf1d629314df24e42dd91b562bea4949d29",
+    "review": "6-page FFQ administration manual; PDF4-6 requires original pastyear portions, review/completeness and supported administration; no0-100 score."
+  },
+  {
+    "filename": "GetPdf.pdf",
+    "pages": 130,
+    "sha256": "01a38103df7a6964ac978efccf82e92624e69e890a57d069250c67d8ca1a9d06",
+    "review": "130-page Offspring Exam8 FFQ coding manual; PDF1 distinguishes participant answers from derived nutrients and defines valid FFQ. Nutrient derivation requires external nutrient conversion inputs. Not the Exam7 response form or a0-100 score."
+  },
+  {
+    "filename": "JAH3-10-e021245.pdf",
+    "pages": 39,
+    "sha256": "321c291f1b6ca9ebb1a039a1ffddd93a90435366ef46a173ddd79168b6989f89",
+    "review": "39-page research article plus supplements: AHEI0-110 and modified DASH/MDS, not legacy0-100. Nutrient/group intake and population-based scoring inputs required. No arbitrary score substitution."
+  },
+  {
+    "filename": "socioeconomic.pdf",
+    "pages": 11,
+    "sha256": "3779e2f0cb7a5cf65c368aabaa990fd9d68034606440c5fe440c5332449e055b",
+    "review": "11-page PURE Turkey study report (2018), not household questionnaire/codebook or a0-100 SES algorithm. Context supports domains only; no Philippine classification verified."
+  },
+  {
+    "filename": "PURE.pdf",
+    "pages": 41,
+    "sha256": "23d7ef366a343a7014f1bdb436307de7f4f01616345f19091f318075f037e530",
+    "review": "Byte-identical copy of pone.0271169.s001.pdf; same41-page South African instrument, not another population."
+  },
+  {
+    "filename": "Physical Activity.pdf",
+    "pages": 15,
+    "sha256": "2af2a72900f0162b1dd21c529065c699a6084eb8d8b46f62f694c6a64f01c95a",
+    "review": "Byte-identical copy of scoring_protocol.pdf;15 pages, not an additional activity instrument."
+  }
+]

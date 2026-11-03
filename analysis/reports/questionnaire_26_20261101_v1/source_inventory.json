@@ -1,0 +1,68 @@
+[
+  {
+    "filename": "pone.0271169.s001.pdf",
+    "sha256": "23d7ef366a343a7014f1bdb436307de7f4f01616345f19091f318075f037e530",
+    "pages": 41,
+    "role": "primary item source"
+  },
+  {
+    "filename": "IPAQ_English_self-admin_long.pdf",
+    "sha256": "939872e8269caed5999609db0e546ad964fc872f3e767fede513d8e4ef0ef470",
+    "pages": 6,
+    "role": "supporting document reviewed; not used to invent a score"
+  },
+  {
+    "filename": "scoring_protocol.pdf",
+    "sha256": "2af2a72900f0162b1dd21c529065c699a6084eb8d8b46f62f694c6a64f01c95a",
+    "pages": 15,
+    "role": "supporting document reviewed; not used to invent a score"
+  },
+  {
+    "filename": "Gen-3-Exam-1.pdf",
+    "sha256": "098f019b55d2ee95e57fc1e3c02c7839af86d54e73454985665373d0d799bbd8",
+    "pages": 47,
+    "role": "primary item source"
+  },
+  {
+    "filename": "Annotated-Form-Offspring-Exam-10-Omni-1-Exam-5.pdf",
+    "sha256": "729ddea7abc7d23b6e4df25ce59e37a4d4c575c72f2959aeed6b1297b7356875",
+    "pages": 125,
+    "role": "supporting document reviewed; not used to invent a score"
+  },
+  {
+    "filename": "Annotated-Form-Original-Cohort-Exam-32.pdf",
+    "sha256": "a824652f667604e4b737799451d5377f9d49afc051869f606dc51e36e88d88af",
+    "pages": 66,
+    "role": "supporting document reviewed; not used to invent a score"
+  },
+  {
+    "filename": "Exam-7-Food-Frequency-Questionnaire.pdf",
+    "sha256": "315112c360b901dfba2399cdc61557dae298550c8ff92ba49683948dbfdb74c3",
+    "pages": 4,
+    "role": "supporting document reviewed; not used to invent a score"
+  },
+  {
+    "filename": "Gen-3-Exam-3-Onsite-Sec-19.pdf",
+    "sha256": "ad5dd71f853ec0470342e7e5ec87ebf1d629314df24e42dd91b562bea4949d29",
+    "pages": 6,
+    "role": "supporting document reviewed; not used to invent a score"
+  },
+  {
+    "filename": "GetPdf.pdf",
+    "sha256": "01a38103df7a6964ac978efccf82e92624e69e890a57d069250c67d8ca1a9d06",
+    "pages": 130,
+    "role": "supporting document reviewed; not used to invent a score"
+  },
+  {
+    "filename": "JAH3-10-e021245.pdf",
+    "sha256": "321c291f1b6ca9ebb1a039a1ffddd93a90435366ef46a173ddd79168b6989f89",
+    "pages": 39,
+    "role": "supporting document reviewed; not used to invent a score"
+  },
+  {
+    "filename": "socioeconomic.pdf",
+    "sha256": "3779e2f0cb7a5cf65c368aabaa990fd9d68034606440c5fe440c5332449e055b",
+    "pages": 11,
+    "role": "supporting document reviewed; not used to invent a score"
+  }
+]

@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { IntakeHistory27 } from "../components/IntakeHistory27";
 import { TenYearProbabilityChart } from "../components/TenYearProbabilityChart";
 import { FurtherAssessmentPanel } from "../components/FurtherAssessmentPanel";
 import { storedFurtherAssessment } from "../services/furtherAssessment";
@@ -42,6 +43,7 @@ export function HistoryPage() {
         "Assessment History",
         "Review preserved previous assessment records.",
       )}
+      <IntakeHistory27 />
       <section className={"panel"}>
         <div
           className={"toolbar pintig-table-filters"}

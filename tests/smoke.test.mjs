@@ -83,23 +83,16 @@ test("React runtime has no HTML replacement or global event handlers", () => {
             : [],
       );
   const runtime = visit("../src").join("\n");
-  // Check TypeScript tokens so clinical copy containing "any" is not a false positive.
-  const scanner = ts.createScanner(
-    ts.ScriptTarget.Latest,
-    true,
-    ts.LanguageVariant.JSX,
-    runtime,
-  );
-  for (
-    let token = scanner.scan();
-    token !== ts.SyntaxKind.EndOfFileToken;
-    token = scanner.scan()
-  )
-    assert.notEqual(
-      token,
-      ts.SyntaxKind.AnyKeyword,
-      "Avoid explicit any types in runtime code",
-    );
+  // Parse JSX rather than lexing its prose as TypeScript keywords.
+  // Exact questionnaire text legitimately contains the word "any".
+  for (const source of visit("../src")) {
+    const tree = ts.createSourceFile("runtime.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    const check = (node) => {
+      assert.notEqual(node.kind, ts.SyntaxKind.AnyKeyword, "Avoid explicit any types in runtime code");
+      ts.forEachChild(node, check);
+    };
+    check(tree);
+  }
   assert.doesNotMatch(
     runtime,
     /innerHTML|dangerouslySetInnerHTML|document\.addEventListener/,

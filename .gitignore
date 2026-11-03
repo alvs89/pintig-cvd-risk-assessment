@@ -19,3 +19,6 @@ playwright-report/
 /analysis/results/
 /analysis/reports/*.csv
 /analysis/reports/v3/*.csv
+/analysis/scripts/v4_corrected/__pycache__/
+/analysis/scripts/reconstruction_26/__pycache__/
+/tmp/

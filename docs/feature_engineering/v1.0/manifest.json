@@ -1,0 +1,12 @@
+{
+  "protocol": "PINTIG Feature Engineering Protocol",
+  "version": "1.0",
+  "identifier": "PINTIG-FE-1.0",
+  "predictor_count": 27,
+  "mapping_rows": 27,
+  "items": 186,
+  "dataset_review": "dataset_review.json",
+  "source_review": "source_review.json",
+  "prediction_enabled": false,
+  "synthetic_dataset_modified": false
+}

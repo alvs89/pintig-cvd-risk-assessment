@@ -1,0 +1,40 @@
+{
+  "readback_scenarios": 9,
+  "all_checks": "PASS",
+  "preserved_prior_files": 1189,
+  "baseline_raw_sidecar": "All 39 original columns equal eligible raw PERIOD=1 records; identifier linkage exact",
+  "proxy_sidecar": "All original proxy values and folds equal existing v4; labels explicitly distinguish unclassified death",
+  "nonfinite_or_invalid_domain_values": "None under the stated logical checks; no observed outliers deleted",
+  "observed_extreme_values_retained": {
+    "maximum_sbp_mmhg": 295.0,
+    "maximum_heart_rate_bpm": 143.0
+  },
+  "exact_endpoint": "All four fields unavailable; cannot validate event histories that source does not supply",
+  "sensitivity_mean_ranges": {
+    "diabetes_medication": {
+      "min": 0.008828441899308,
+      "max": 0.0169410641851586
+    },
+    "hip_circumference_cm": {
+      "min": 98.5783822476736,
+      "max": 101.60839895013125
+    },
+    "psychosocial_stress": {
+      "min": 0.5099021713194941,
+      "max": 0.6828919112383679
+    },
+    "sleep_duration_hours": {
+      "min": 6.40011930326891,
+      "max": 7.057361011691721
+    }
+  },
+  "unit_tests": {
+    "passed": 7
+  },
+  "npm_check": {
+    "passed": 66,
+    "initial_attempt": "Sandbox spawn EPERM; permitted rerun passed"
+  },
+  "npm_build": "PASS",
+  "clinical_model_or_questionnaire_changes": "None"
+}

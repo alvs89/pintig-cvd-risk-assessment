@@ -1,0 +1,25 @@
+.libPaths(c('C:/Users/Alvin Guillermo/Documents/R/win-library/4.6',.libPaths()))
+suppressPackageStartupMessages(library(riskRegression))
+suppressPackageStartupMessages(library(prodlim))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(survival))
+out<-'analysis/results/v4_corrected_20261031_v1'
+toy<-data.table(t=rep(c(9,10,11),each=3),e=rep(0:2,3),p=c(.2,.7,.1,.2,.7,.1,.2,.2,.2))
+toy[e==0&t==10,t:=10.5]
+sc<-Score(list(toy=matrix(toy$p,ncol=1)),Hist(t,e)~1,data=toy,cause=1,times=10,metrics=c('auc','brier'),null.model=FALSE,cens.model='KaplanMeier',se.fit=FALSE,contrasts=FALSE,verbose=0)
+fwrite(data.table(AUC=sc$AUC$score$AUC,Brier=sc$Brier$score$Brier),file.path(out,'early_boundary_reference.csv'))
+# Exercise actual production R tuning-weight functions without launching training.
+expr<-parse('analysis/scripts/v4_corrected/run_nested.R')
+for(x in expr) if(is.call(x)&&as.character(x[[1]])=='<-'&&as.character(x[[2]])%in%c('gfit','ipcw_brier'))eval(x)
+tr<-data.table(analysis_time_days=rep(20,4),event_type=rep(0,4))
+va<-data.table(analysis_time_days=rep(c(9,10,11),each=3),event_type=rep(0:2,3))
+expected<-mean(c(0,.3^2,.1^2,.2^2,.3^2,.1^2,.2^2,.2^2,.2^2))
+stopifnot(abs(ipcw_brier(tr,va,toy$p,10)-expected)<1e-12)
+source('scripts/pintig_v3_modeling_config.R')
+d<-fread('data/processed/pintig_frozen_clean_analysis_v3_16predictors.csv')
+train<-copy(d[outer_fold!=1]);validation<-copy(d[outer_fold==1])
+validation[,heart_rate_bpm:=9999]
+z<-pintig_impute_train_validation_v3(train,validation)
+stopifnot(z$imputer$heart_rate_bpm_median==median(train$heart_rate_bpm,na.rm=TRUE),all(z$validation$heart_rate_bpm==9999),anyNA(d$heart_rate_bpm))
+cat('PASS: nine R tuning boundary cases; validation cannot alter training imputer; inputs unchanged\n')
+print(data.table(package=c('riskRegression','randomForestSRC','prodlim'),version=sapply(c('riskRegression','randomForestSRC','prodlim'),function(p)as.character(packageVersion(p)))))

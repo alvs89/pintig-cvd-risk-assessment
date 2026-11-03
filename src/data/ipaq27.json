@@ -1,0 +1,137 @@
+[
+  {
+    "number": 1,
+    "text": "Do you currently have a job or do any unpaid work outside your home?",
+    "page": 2
+  },
+  {
+    "number": 2,
+    "text": "During the last 7 days, on how many days did you do vigorous physical activities like heavy lifting, digging, heavy construction, or climbing up stairs as part of your work? Think about only those physical activities that you did for at least 10 minutes at a time.",
+    "page": 2
+  },
+  {
+    "number": 3,
+    "text": "How much time did you usually spend on one of those days doing vigorous physical activities as part of your work?",
+    "page": 2
+  },
+  {
+    "number": 4,
+    "text": "Again, think about only those physical activities that you did for at least 10 minutes at a time. During the last 7 days, on how many days did you do moderate physical activities like carrying light loads as part of your work? Please do not include walking.",
+    "page": 2
+  },
+  {
+    "number": 5,
+    "text": "How much time did you usually spend on one of those days doing moderate physical activities as part of your work?",
+    "page": 3
+  },
+  {
+    "number": 6,
+    "text": "During the last 7 days, on how many days did you walk for at least 10 minutes at a time as part of your work? Please do not count any walking you did to travel to or from work.",
+    "page": 3
+  },
+  {
+    "number": 7,
+    "text": "How much time did you usually spend on one of those days walking as part of your work?",
+    "page": 3
+  },
+  {
+    "number": 8,
+    "text": "During the last 7 days, on how many days did you travel in a motor vehicle like a train, bus, car, or tram?",
+    "page": 3
+  },
+  {
+    "number": 9,
+    "text": "How much time did you usually spend on one of those days traveling in a train, bus, car, tram, or other kind of motor vehicle?",
+    "page": 3
+  },
+  {
+    "number": 10,
+    "text": "During the last 7 days, on how many days did you bicycle for at least 10 minutes at a time to go from place to place?",
+    "page": 3
+  },
+  {
+    "number": 11,
+    "text": "How much time did you usually spend on one of those days to bicycle from place to place?",
+    "page": 4
+  },
+  {
+    "number": 12,
+    "text": "During the last 7 days, on how many days did you walk for at least 10 minutes at a time to go from place to place?",
+    "page": 4
+  },
+  {
+    "number": 13,
+    "text": "How much time did you usually spend on one of those days walking from place to place?",
+    "page": 4
+  },
+  {
+    "number": 14,
+    "text": "Think about only those physical activities that you did for at least 10 minutes at a time. During the last 7 days, on how many days did you do vigorous physical activities like heavy lifting, chopping wood, shoveling snow, or digging in the garden or yard?",
+    "page": 4
+  },
+  {
+    "number": 15,
+    "text": "How much time did you usually spend on one of those days doing vigorous physical activities in the garden or yard?",
+    "page": 4
+  },
+  {
+    "number": 16,
+    "text": "Again, think about only those physical activities that you did for at least 10 minutes at a time. During the last 7 days, on how many days did you do moderate activities like carrying light loads, sweeping, washing windows, and raking in the garden or yard?",
+    "page": 4
+  },
+  {
+    "number": 17,
+    "text": "How much time did you usually spend on one of those days doing moderate physical activities in the garden or yard?",
+    "page": 5
+  },
+  {
+    "number": 18,
+    "text": "Once again, think about only those physical activities that you did for at least 10 minutes at a time. During the last 7 days, on how many days did you do moderate activities like carrying light loads, washing windows, scrubbing floors and sweeping inside your home?",
+    "page": 5
+  },
+  {
+    "number": 19,
+    "text": "How much time did you usually spend on one of those days doing moderate physical activities inside your home?",
+    "page": 5
+  },
+  {
+    "number": 20,
+    "text": "Not counting any walking you have already mentioned, during the last 7 days, on how many days did you walk for at least 10 minutes at a time in your leisure time?",
+    "page": 5
+  },
+  {
+    "number": 21,
+    "text": "How much time did you usually spend on one of those days walking in your leisure time?",
+    "page": 5
+  },
+  {
+    "number": 22,
+    "text": "Think about only those physical activities that you did for at least 10 minutes at a time. During the last 7 days, on how many days did you do vigorous physical activities like aerobics, running, fast bicycling, or fast swimming in your leisure time?",
+    "page": 5
+  },
+  {
+    "number": 23,
+    "text": "How much time did you usually spend on one of those days doing vigorous physical activities in your leisure time?",
+    "page": 6
+  },
+  {
+    "number": 24,
+    "text": "Again, think about only those physical activities that you did for at least 10 minutes at a time. During the last 7 days, on how many days did you do moderate physical activities like bicycling at a regular pace, swimming at a regular pace, and doubles tennis in your leisure time?",
+    "page": 6
+  },
+  {
+    "number": 25,
+    "text": "How much time did you usually spend on one of those days doing moderate physical activities in your leisure time?",
+    "page": 6
+  },
+  {
+    "number": 26,
+    "text": "During the last 7 days, how much time did you usually spend sitting on a weekday?",
+    "page": 6
+  },
+  {
+    "number": 27,
+    "text": "During the last 7 days, how much time did you usually spend sitting on a weekend day?",
+    "page": 6
+  }
+]

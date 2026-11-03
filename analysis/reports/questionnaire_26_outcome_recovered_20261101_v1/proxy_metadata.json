@@ -1,0 +1,19 @@
+{
+  "source": "data\\processed\\pintig_frozen_clean_analysis_v3_16predictors.csv",
+  "source_proxy": "data\\processed\\questionnaire_26_20261101_v1\\recorded_cvd_proxy_DO_NOT_RELABEL.csv",
+  "source_reconstruction": "data\\processed\\questionnaire_26_20261101_v1\\pintig_framingham_26predictors_provisional.csv",
+  "proxy_event_definition": "1=recorded Framingham CVD first by day 3652.5; 2=recorded ALL-CAUSE death before CVD by day 3652.5, cause unknown; 0=censored",
+  "does_not_establish": "MI/stroke/HF/CVD-death exact composite or adjudicated non-CVD competing death",
+  "counts": {
+    "0": 3604,
+    "1": 369,
+    "2": 218
+  },
+  "n": 4191,
+  "all_records_match": true,
+  "num_admin_censored_day3652_5": 3588,
+  "sha256": {
+    "pintig_framingham_26predictors_exact_endpoint.csv": "7ca0eb0b673be50326bf74ed153f57f06fa36ea8701bcb2a023464d1208c35ee",
+    "pintig_framingham_26predictors_PROXY_EXPERIMENTAL.csv": "3faf615c4dbabb14fd6789ab75f86b39aeeb239b2f8cb259d783f3a7e712d225"
+  }
+}

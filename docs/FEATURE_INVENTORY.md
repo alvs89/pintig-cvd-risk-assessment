@@ -37,3 +37,7 @@ The React + TypeScript frontend preserves these v27 workflows. Nothing is deploy
 - React owns the role-specific layout, all pages, confirmation dialog and live updates. No runtime HTML replacement or global document event handlers remain.
 - Prediction, classification, calculation explanation and educational guidance have separate versions; newly saved snapshots retain them.
 - Browser tests compare clinical questionnaire fields, labels, response values and constraints against the original v27. The input-set selector has professional presentation labels while retaining its original values and behavior.
+
+## Current questionnaire intake (27 proposed predictors)
+
+New Risk Assessment collects source-referenced questionnaire responses and saves them for the session without risk calculation. Historical illustrative results remain available. The proposed schema is blocked from both existing calculators. See [assessment documentation](assessment27/IMPLEMENTATION.md) for the 13-source review, 27-feature mapping, storage contract and unresolved scoring definitions. See [Feature Engineering Protocol v1.0](feature_engineering/v1.0/PROTOCOL.md) and its generated [data dictionary](feature_engineering/v1.0/data_dictionary.csv) for the equations, provenance, source review and dataset comparison. Earlier descriptions of live illustrative assessment calculation refer to the retained historical workflow.

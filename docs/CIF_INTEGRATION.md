@@ -2,10 +2,12 @@
 
 ## Current model availability
 
-The repository has no FastAPI endpoint, R prediction script, trained competing-risk
-RSF artifact, verified event-code mapping or `cif`/`time.interest` output. The
-existing illustrative ten-year calculation is unchanged and generates no curve.
-Live and historical results therefore show a neutral unavailable state.
+The primary illustrative calculation generates no model-derived curve. A separate
+local fictional-patient research harness can provide provisional Framingham curves;
+see `LOCAL_RESEARCH_CIG.md`. Local research scripts and fitted artifacts also exist
+under `analysis/`, but do not constitute an approved clinical integration. No
+production FastAPI prediction endpoint or validated PURE model is implemented.
+The normal clinical curve contract still requires compatible verified output.
 
 The graph and marker operate only on supplied, compatible model output. All example
 curves are isolated in tests; none are added to application records or the predictor.

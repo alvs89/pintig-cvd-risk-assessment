@@ -1,0 +1,10 @@
+alcohol_beverage_type,alcohol_serving_size_ml,heavy_episodic_alcohol,participants,weekly_drinks_min,weekly_drinks_mean,weekly_drinks_max
+beer,375,0,1173,0.5,5.662574595055413,26.8
+beer,375,1,264,0.5,14.979545454545454,37.4
+country_liquor,30,0,114,0.5,5.0131578947368425,23.5
+country_liquor,30,1,26,3.3,20.173076923076923,42.0
+none,0,0,1545,0.0,0.0,0.0
+spirits,30,0,452,0.5,5.578761061946903,30.6
+spirits,30,1,103,0.8,15.968932038834952,40.5
+wine,125,0,411,0.5,5.662773722627738,25.8
+wine,125,1,103,0.5,14.819417475728157,34.0

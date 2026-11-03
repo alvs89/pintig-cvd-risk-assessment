@@ -133,6 +133,14 @@ cardiovascular event within 10 years, ages 35–70 at baseline, with non-CVD dea
 the intended competing event. Display categories use the unrounded probability:
 Low <5%, Moderate 5–<10%, High 10–<20%, Very High ≥20%.
 
-No Python/FastAPI backend, PostgreSQL database, R model or actual patient dataset
-has been implemented. Future integration must follow the approved manuscript and
-verified dataset definitions. See [known limitations](docs/KNOWN_LIMITATIONS.md).
+No production Python/FastAPI backend or PostgreSQL database has been implemented.
+Local research datasets, R modeling scripts, and fitted research artifacts exist
+under `data/` and `analysis/`; participant data and generated model artifacts are
+excluded from Git. They do not power the primary illustrative frontend estimate.
+See [research analysis status](docs/RESEARCH_ANALYSIS_STATUS.md) for endpoint,
+synthetic-data, and evaluation limitations, and
+[known limitations](docs/KNOWN_LIMITATIONS.md) for application scope.
+
+## Current questionnaire intake (27 proposed predictors)
+
+New Risk Assessment collects source-referenced questionnaire responses and saves them for the session without risk calculation. Historical illustrative results remain available. The proposed schema is blocked from both existing calculators. See [assessment documentation](docs/assessment27/IMPLEMENTATION.md) for the 13-source review, 27-feature mapping, storage contract and unresolved scoring definitions. See [Feature Engineering Protocol v1.0](docs/feature_engineering/v1.0/PROTOCOL.md) and its generated [data dictionary](docs/feature_engineering/v1.0/data_dictionary.csv) for the equations, provenance, source review and dataset comparison. Earlier descriptions of live illustrative assessment calculation refer to the retained historical workflow.

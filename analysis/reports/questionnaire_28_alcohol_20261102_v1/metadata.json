@@ -1,0 +1,67 @@
+{
+  "seed": 20261102,
+  "rng": "NumPy default_rng PCG64",
+  "numpy_version": "2.5.4",
+  "source": "data\\processed\\questionnaire_26_outcome_recovered_20261101_v1\\pintig_framingham_26predictors_PROXY_EXPERIMENTAL.csv",
+  "source_sha256": "3faf615c4dbabb14fd6789ab75f86b39aeeb239b2f8cb259d783f3a7e712d225",
+  "questionnaire": "pone.0271169.s001.pdf",
+  "questionnaire_sha256": "23d7ef366a343a7014f1bdb436307de7f4f01616345f19091f318075f037e530",
+  "predictors": [
+    "age_years",
+    "sex_male",
+    "sbp_mmhg",
+    "dbp_mmhg",
+    "waist_cm",
+    "current_smoker",
+    "hypertension_history",
+    "bp_medication",
+    "alcohol_drinks_week",
+    "activity_min_week",
+    "diet_score_0_100",
+    "ses_index_0_100",
+    "family_history_cvd",
+    "diabetes",
+    "cigarettes_per_day",
+    "heart_rate_bpm",
+    "smoking_pack_years",
+    "urban_rural_residence",
+    "sitting_minutes_day",
+    "heavy_episodic_alcohol",
+    "former_smoker",
+    "lipid_lowering_medication",
+    "hip_circumference_cm",
+    "diabetes_medication",
+    "psychosocial_stress",
+    "sleep_duration_hours",
+    "alcohol_beverage_type",
+    "alcohol_serving_size_ml"
+  ],
+  "excluded_metadata": [
+    "participant_id",
+    "analysis_time_days",
+    "event_type",
+    "event_major_cvd_10y",
+    "event_competing_death_10y",
+    "outer_fold"
+  ],
+  "probabilities_among_positive_weekly_drinkers": {
+    "beer": 0.55,
+    "wine": 0.2,
+    "spirits": 0.2,
+    "country_liquor": 0.05
+  },
+  "serving_sizes_ml": {
+    "none": 0,
+    "beer": 375,
+    "wine": 125,
+    "spirits": 30,
+    "country_liquor": 30
+  },
+  "generation_inputs": [
+    "alcohol_drinks_week",
+    "heavy_episodic_alcohol"
+  ],
+  "participant_order": "ascending participant_id; ID only orders RNG draws",
+  "script": "analysis/scripts/reconstruction_26/expand_alcohol_28.py",
+  "synthetic_predictors_total": 18
+}

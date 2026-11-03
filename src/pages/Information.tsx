@@ -108,12 +108,11 @@ export function HelpPage() {
                   Open New Risk Assessment, confirm eligibility, and complete
                   the measurements and interview questions.
                 </li>
+                <li>Review the responses and resolve any inconsistencies.</li>
                 <li>
-                  Review the estimate, risk category, contributing factors, and
-                  educational guidance.
-                </li>
-                <li>
-                  Save the assessment and retrieve it from Assessment History.
+                  Save questionnaire responses for this session and retrieve
+                  them from Assessment History. Risk calculation is unavailable
+                  until a compatible model has been validated.
                 </li>
                 <li>
                   Administrators can manage accounts and export filtered
@@ -136,11 +135,11 @@ export function HelpPage() {
               </p>
               <h3>Where do the assessment questions come from?</h3>
               <p>
-                The risk-question section uses official Framingham Heart Study
-                wording and response choices for current cigarette smoking and
-                hypertension-medication history. PINTIG-specific eligibility
-                and safety screening is shown separately and is not presented
-                as part of the Framingham questionnaire.
+                Questions are referenced to the Framingham Heart Study, the
+                South African PURE adult questionnaire, and IPAQ Long Form.
+                Source references accompany each item. PINTIG-specific
+                eligibility and safety screening is shown separately and is not
+                presented as part of the Framingham questionnaire.
               </p>
               <h3>What is the PhilHealth PIN used for?</h3>
               <p>
@@ -187,7 +186,8 @@ export function AboutPage() {
         <h3>Research scope and model status</h3>
         <p>
           The scope below describes the intended PURE Philippines model. Current
-          assessment results use an illustrative calculation, not a clinically
+          questionnaire supports response collection without risk calculation.
+          Historical results use an illustrative calculation, not a clinically
           validated prediction. The separate provisional Framingham research
           graph has a different outcome and must not replace the assessment
           estimate. Neither output should guide clinical decisions.
@@ -202,25 +202,22 @@ export function AboutPage() {
         </div>
         <h3>Assessment workflow</h3>
         <p>
-          Record clinical measurements and interview responses, review the risk
-          estimate and contributing factors, and consider educational guidance
-          based on the recorded health information. Model status is provided
-          with each result.
+          Record clinical measurements and interview responses, review missing
+          or inconsistent answers, and save the questionnaire for this session.
+          A compatible validated model is required before these responses can
+          produce a risk estimate.
         </p>
         <h3>Questionnaire reference</h3>
         <p>
-          The live risk-question section is intentionally limited to directly
-          traceable Framingham items used by the current PINTIG assessment flow:
-          current cigarette smoking and hypertension-medication history. Their
-          displayed wording and response choices follow official Framingham exam
-          materials as closely as the baseline PINTIG workflow permits.
+          The assessment references Framingham examination forms, the South
+          African PURE adult questionnaire, and IPAQ Long Form. Questionnaire
+          responses are retained separately from calculated features. These
+          sources do not establish a validated Philippine risk model.
         </p>
         <p>
-          Custom alcohol, activity, diet, family-history, education, employment,
-          diabetes-history, previous-medication, and waist-circumference items
-          have been removed from the live New Risk Assessment rather than being
-          presented as supplemental Framingham questions. Framingham forms vary
-          by cohort and examination cycle.{" "}
+          Some proposed scores lack a verified calculation or measurement
+          specification and remain unavailable. Framingham forms vary by cohort
+          and examination cycle.{" "}
           <a
             href="https://www.framinghamheartstudy.org/fhs-for-researchers/exam-forms/"
             target="_blank"

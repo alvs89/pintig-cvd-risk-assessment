@@ -1,0 +1,28 @@
+column,origin_or_basis,unit_or_encoding,provenance,missing_strategy,limitation
+participant_id,Original RANDID,integer identifier,derived,Not imputed,
+analysis_time_days,Existing frozen v3 outcome derivation; raw indicators not independently sufficient for target 4-component event,days capped at 3652.5,provisional_proxy,Not imputed,Not validated as CHF/MI/stroke/CVD-death composite; death cause unclassified
+event_type,Existing frozen v3 outcome derivation; raw indicators not independently sufficient for target 4-component event,0/1/2,provisional_proxy,Not imputed,Not validated as CHF/MI/stroke/CVD-death composite; death cause unclassified
+event_major_cvd_10y,Existing frozen v3 outcome derivation; raw indicators not independently sufficient for target 4-component event,0/1 or 1..5,provisional_proxy,Not imputed,Not validated as CHF/MI/stroke/CVD-death composite; death cause unclassified
+event_competing_death_10y,Existing frozen v3 outcome derivation; raw indicators not independently sufficient for target 4-component event,0/1 or 1..5,provisional_proxy,Not imputed,Not validated as CHF/MI/stroke/CVD-death composite; death cause unclassified
+outer_fold,Existing frozen v3 outcome derivation; raw indicators not independently sufficient for target 4-component event,0/1 or 1..5,derived,Not imputed,
+age_years,AGE,years,observed,Preserve measured values,
+sex_male,SEX,"0 female, 1 male",derived,Preserve measured values,
+sbp_mmhg,SYSBP,mmHg,observed,Preserve measured values,
+dbp_mmhg,DIABP,mmHg,observed,Preserve measured values,
+waist_cm,no raw Framingham column,cm,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+current_smoker,CURSMOKE,0/1,observed,Preserve measured values,
+hypertension_history,PREVHYP,0/1,observed,Preserve measured values,
+bp_medication,BPMEDS,0/1,observed with missing,"Preserve missing in CSV; fit fold-specific mode for BP meds, smoker-group median for cigarettes/day, overall training median for heart rate",
+alcohol_drinks_week,no raw Framingham column,standard drinks/week,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+activity_min_week,no raw Framingham column,min/week,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+diet_score_0_100,no raw Framingham column,0-100 arbitrary exploratory score,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+ses_index_0_100,no raw Framingham column,0-100 arbitrary exploratory score,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+family_history_cvd,no raw Framingham column,0/1,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+diabetes,DIABETES,0/1,observed,Preserve measured values,
+cigarettes_per_day,CIGPDAY,cigarettes/day,observed with missing,"Preserve missing in CSV; fit fold-specific mode for BP meds, smoker-group median for cigarettes/day, overall training median for heart rate",
+heart_rate_bpm,HEARTRTE,beats/min,observed with missing,"Preserve missing in CSV; fit fold-specific mode for BP meds, smoker-group median for cigarettes/day, overall training median for heart rate",
+smoking_pack_years,no raw smoking duration,pack-years,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+urban_rural_residence,no raw community identifier,0 rural / 1 urban,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+sitting_minutes_day,no raw IPAQ sitting,min/day,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+heavy_episodic_alcohol,no raw heavy episode data,"0/1 simulated proxy, no validated threshold",simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured
+former_smoker,CURSMOKE insufficient,0/1 simulated former smoker,simulated,Do not impute; simulator-generated values are complete,Generated assumption only; must not treat as measured

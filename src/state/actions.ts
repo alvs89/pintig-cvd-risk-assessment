@@ -7,6 +7,8 @@ import {
   SCREENING_VERSION,
 } from "../services/preAssessmentRules.mjs";
 import { download } from "../services/export";
+import { intakes27 } from "./intakes27";
+import { INTAKE27_SCHEMA } from "../services/assessment27";
 import { flushSync } from "react-dom";
 import { generateGuidance } from "../services/guidance";
 import { deriveInputs } from "../services/intake";
@@ -488,6 +490,7 @@ export function handleClick(e: ActionEvent) {
               rest,
           ),
           records,
+          questionnaireRecords: intakes27,
           logs,
         },
         null,
@@ -619,6 +622,11 @@ export function handleSubmit(e: FormEvent) {
     return render();
   }
   if (form.id === "assessmentForm") {
+    if (S.draft?.schema === INTAKE27_SCHEMA) {
+      S.result = null;
+      msg("This questionnaire requires a compatible validated model. Risk calculation is unavailable.", true);
+      return render();
+    }
     if (!S.user) return;
     const patient = P(S.patientId);
     if (!patient) return promptPatientSelection();

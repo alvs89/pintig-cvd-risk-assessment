@@ -1,0 +1,66 @@
+{
+  "version": "questionnaire_26_20261101_v1",
+  "command": [
+    "analysis/scripts/reconstruction_26/build.py"
+  ],
+  "python": "3.12.5 (tags/v3.12.5:ff3bc82, Aug  6 2024, 20:45:27) [MSC v.1940 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "numpy": "2.5.4",
+  "pandas": "2.3.3",
+  "seed_values": [
+    20261101,
+    20261102,
+    20261103
+  ],
+  "regimes": [
+    "reference",
+    "weak_dependence",
+    "alternative_prevalence"
+  ],
+  "predictor_columns": [
+    "age_years",
+    "sex_male",
+    "sbp_mmhg",
+    "dbp_mmhg",
+    "waist_cm",
+    "current_smoker",
+    "hypertension_history",
+    "bp_medication",
+    "alcohol_drinks_week",
+    "activity_min_week",
+    "diet_score_0_100",
+    "ses_index_0_100",
+    "family_history_cvd",
+    "diabetes",
+    "cigarettes_per_day",
+    "heart_rate_bpm",
+    "smoking_pack_years",
+    "urban_rural_residence",
+    "sitting_minutes_day",
+    "heavy_episodic_alcohol",
+    "former_smoker",
+    "lipid_lowering_medication",
+    "hip_circumference_cm",
+    "diabetes_medication",
+    "psychosocial_stress",
+    "sleep_duration_hours"
+  ],
+  "excluded_columns": [
+    "participant_id",
+    "analysis_time_days",
+    "event_type",
+    "event_major_cvd_10y",
+    "event_competing_death_10y",
+    "outer_fold"
+  ],
+  "inputs": {
+    "data\\raw\\framingham.csv": "90fd9887e1d52108c563d87e36cdb15ced88b14c338f467731edc5e384ff9dda",
+    "data\\processed\\pintig_frozen_clean_analysis_v3_16predictors.csv": "ab99d521ed85e2d022bee51c3e645ccb3976dea4ef3afd13acc972371bf9fd32",
+    "data\\processed\\pintig_experimental_v4_26predictors_SIMULATED_DO_NOT_DEPLOY.csv": "1477ebf50d603f16b706adfd81d2241c4e480307cca03f2fc1c87bc16140ac19",
+    "analysis\\results\\v4_corrected_20261031_v1\\configurations.json": "a3f198a488fbac2a6172f5bd0d181d451ce6aa23921375a85282d79c139b373b",
+    "analysis\\scripts\\reconstruction_26\\build.py": "9dd79a784e2c2de1646587765f1b32d8f4454dc6704430f5b7688b7fc9842033",
+    "analysis\\scripts\\reconstruction_26\\questionnaire_spec.json": "84627614d05b9cc57f288790ed65cb80dbd059551f7a13163384b2ab9ca17659"
+  },
+  "dataset_directory": "data/processed/questionnaire_26_20261101_v1",
+  "report_directory": "analysis/reports/questionnaire_26_20261101_v1"
+}

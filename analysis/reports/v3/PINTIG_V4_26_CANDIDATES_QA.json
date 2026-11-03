@@ -1,0 +1,19 @@
+{
+  "created_utc": "2026-10-30T00:59:04.412344+00:00",
+  "source": "C:\\Users\\Alvin Guillermo\\Downloads\\PINTIG System\\data\\processed\\pintig_frozen_clean_analysis_v3_16predictors.csv",
+  "source_sha256": "ab99d521ed85e2d022bee51c3e645ccb3976dea4ef3afd13acc972371bf9fd32",
+  "output": "C:\\Users\\Alvin Guillermo\\Downloads\\PINTIG System\\data\\processed\\pintig_experimental_v4_26candidate_STAGING_NOT_FOR_TRAINING.csv",
+  "output_sha256": "3538d9b72204b48ae1e9e43a2376605f9095da4e265875a4a48fddaadde28673",
+  "participants": 4191,
+  "existing_predictors": 16,
+  "new_candidate_columns": 10,
+  "new_candidate_nonmissing_values": 0,
+  "event_type_counts": {
+    "0": 3604,
+    "1": 369,
+    "2": 218
+  },
+  "row_values_preserved_for_existing_fields": true,
+  "new_features_training_eligible": false,
+  "note": "Staging schema only. Blank values are unknown, not healthy, negative, or imputed. No clinical or predictive validation."
+}

@@ -1,0 +1,75 @@
+{
+  "seed": 20261103,
+  "rng": "numpy default_rng PCG64",
+  "numpy": "2.5.4",
+  "predictors": [
+    "age_years",
+    "sex_male",
+    "ses_index_0_100",
+    "urban_rural_residence",
+    "waist_cm",
+    "hip_circumference_cm",
+    "sbp_mmhg",
+    "dbp_mmhg",
+    "heart_rate_bpm",
+    "hypertension_history",
+    "bp_medication",
+    "diabetes",
+    "diabetes_medication",
+    "lipid_lowering_medication",
+    "family_history_cvd",
+    "alcohol_ethanol_g_week",
+    "heavy_episodic_alcohol",
+    "smoking_status",
+    "smoking_pack_years",
+    "current_smoking_intensity_cigs_day",
+    "passive_smoking_childhood",
+    "passive_smoking_adult_years",
+    "activity_min_week",
+    "sitting_minutes_day",
+    "diet_score_0_100",
+    "psychosocial_stress",
+    "sleep_duration_hours"
+  ],
+  "excluded_columns": [
+    "participant_id",
+    "analysis_time_days",
+    "event_type",
+    "event_major_cvd_10y",
+    "event_competing_death_10y",
+    "outer_fold"
+  ],
+  "generation_inputs": [
+    "age_years",
+    "current_smoker",
+    "former_smoker",
+    "cigarettes_per_day",
+    "alcohol_drinks_week",
+    "alcohol_beverage_type",
+    "alcohol_serving_size_ml"
+  ],
+  "source_sha256": "55fcd76962a0562e6cc5230be04098839d2b202e19853dd0d90108054b9e751e",
+  "abv_assumptions": {
+    "none": 0.0,
+    "beer": 0.05,
+    "wine": 0.12,
+    "spirits": 0.4,
+    "country_liquor": 0.4
+  },
+  "ethanol_density_g_ml": 0.789,
+  "removed_from_matrix_but_preserved_in_source": [
+    "current_smoker",
+    "cigarettes_per_day",
+    "former_smoker",
+    "alcohol_drinks_week",
+    "alcohol_beverage_type",
+    "alcohol_serving_size_ml"
+  ],
+  "source_documents": {
+    "Gen-3-Exam-1.pdf": "098f019b55d2ee95e57fc1e3c02c7839af86d54e73454985665373d0d799bbd8",
+    "pone.0271169.s001.pdf": "23d7ef366a343a7014f1bdb436307de7f4f01616345f19091f318075f037e530"
+  },
+  "source_urls": [
+    "https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink"
+  ]
+}

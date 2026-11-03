@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "rows": 4191,
+  "columns": 34,
+  "predictors": 28,
+  "event_counts": {
+    "0": 3604,
+    "1": 369,
+    "2": 218
+  },
+  "fold_counts": {
+    "1": 839,
+    "2": 838,
+    "3": 838,
+    "4": 838,
+    "5": 838
+  },
+  "beverage_counts": {
+    "none": 1545,
+    "beer": 1437,
+    "spirits": 555,
+    "wine": 514,
+    "country_liquor": 140
+  },
+  "missing_new_predictors": {
+    "alcohol_beverage_type": 0,
+    "alcohol_serving_size_ml": 0
+  },
+  "original_32_columns": "Exact serialized values preserved, including all 26 predictors, missingness, outcomes and folds",
+  "raw_measurements_and_proxy_reconstruction": "PASS",
+  "protected_existing_files_unchanged": 1295,
+  "new_feature_generation": "Reproduced exactly from fixed seed and two permitted alcohol inputs",
+  "sha256": "55fcd76962a0562e6cc5230be04098839d2b202e19853dd0d90108054b9e751e"
+}

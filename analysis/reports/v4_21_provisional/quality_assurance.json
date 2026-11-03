@@ -1,0 +1,124 @@
+{
+  "participants": 4191,
+  "predictor_count": 21,
+  "additional_column_count": 6,
+  "total_columns": 27,
+  "source_exam_records": 11627,
+  "source_unique_participants": 4434,
+  "age_range": [
+    35.0,
+    70.0
+  ],
+  "event_types": {
+    "0": 3604,
+    "1": 369,
+    "2": 218
+  },
+  "missing_by_predictor": {
+    "age_years": 0,
+    "sex_male": 0,
+    "sbp_mmhg": 0,
+    "dbp_mmhg": 0,
+    "waist_cm": 0,
+    "current_smoker": 0,
+    "hypertension_history": 0,
+    "bp_medication": 52,
+    "alcohol_drinks_week": 0,
+    "activity_min_week": 0,
+    "diet_score_0_100": 0,
+    "ses_index_0_100": 0,
+    "family_history_cvd": 0,
+    "diabetes": 0,
+    "cigarettes_per_day": 29,
+    "heart_rate_bpm": 1,
+    "smoking_pack_years": 0,
+    "urban_rural_residence": 0,
+    "sitting_minutes_day": 0,
+    "heavy_episodic_alcohol": 0,
+    "former_smoker": 0
+  },
+  "fold_counts": {
+    "1": 839,
+    "2": 838,
+    "3": 838,
+    "4": 838,
+    "5": 838
+  },
+  "followup_days": {
+    "min": 26.0,
+    "median": 3652.5,
+    "mean": 3413.402290622763,
+    "max": 3652.5
+  },
+  "observed_value_checks": {
+    "age_years": {
+      "raw_column": "AGE",
+      "compared_both_observed": 4191,
+      "mismatches": 0,
+      "raw_missing": 0,
+      "processed_missing": 0
+    },
+    "sbp_mmhg": {
+      "raw_column": "SYSBP",
+      "compared_both_observed": 4191,
+      "mismatches": 0,
+      "raw_missing": 0,
+      "processed_missing": 0
+    },
+    "dbp_mmhg": {
+      "raw_column": "DIABP",
+      "compared_both_observed": 4191,
+      "mismatches": 0,
+      "raw_missing": 0,
+      "processed_missing": 0
+    },
+    "current_smoker": {
+      "raw_column": "CURSMOKE",
+      "compared_both_observed": 4191,
+      "mismatches": 0,
+      "raw_missing": 0,
+      "processed_missing": 0
+    },
+    "hypertension_history": {
+      "raw_column": "PREVHYP",
+      "compared_both_observed": 4191,
+      "mismatches": 0,
+      "raw_missing": 0,
+      "processed_missing": 0
+    },
+    "diabetes": {
+      "raw_column": "DIABETES",
+      "compared_both_observed": 4191,
+      "mismatches": 0,
+      "raw_missing": 0,
+      "processed_missing": 0
+    },
+    "heart_rate_bpm": {
+      "raw_column": "HEARTRTE",
+      "compared_both_observed": 4190,
+      "mismatches": 0,
+      "raw_missing": 1,
+      "processed_missing": 1
+    },
+    "cigarettes_per_day": {
+      "raw_column": "CIGPDAY",
+      "compared_both_observed": 4162,
+      "mismatches": 0,
+      "raw_missing": 29,
+      "processed_missing": 29
+    },
+    "bp_medication": {
+      "raw_column": "BPMEDS",
+      "compared_both_observed": 4139,
+      "mismatches": 0,
+      "raw_missing": 52,
+      "processed_missing": 52
+    }
+  },
+  "new_fields": "all five simulated, not clinically observed",
+  "original_six_fields": "synthetic augmentations carried over from v3",
+  "outcomes": "existing v3 provisional CVD/death proxy unchanged; CHF and CV-specific death not verifiable; type2 cannot confirm non-CVD death",
+  "raw_file_sha256": "90fd9887e1d52108c563d87e36cdb15ced88b14c338f467731edc5e384ff9dda",
+  "v3_file_sha256": "ab99d521ed85e2d022bee51c3e645ccb3976dea4ef3afd13acc972371bf9fd32",
+  "output_file_sha256": "52efc642abe77ab751868d16287052f6f1a3b33ddce8efdf6f977f8bb310a14d"
+}

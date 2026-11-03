@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { ConfirmationDialog } from "./components/ConfirmationDialog";
 import { Workspace } from "./layouts/Workspace";
-import { AssessmentPage } from "./pages/Assessment";
+import { Assessment27Page as AssessmentPage } from "./pages/Assessment27";
 import { AuditPage } from "./pages/Audit";
 import { DashboardPage } from "./pages/Dashboard";
 import { HistoryPage, RecordPage } from "./pages/History";

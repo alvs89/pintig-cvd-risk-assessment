@@ -6,8 +6,10 @@ import type {
   PredictionService,
 } from "../types/domain";
 import { age } from "../utils/format";
+import { assertLegacyCompatible } from "./assessment27";
 export const PREDICTION_VERSION = "ILLUSTRATIVE-0.2";
 export function simulate(x: AssessmentInputs, p: Patient): Prediction {
+  assertLegacyCompatible(x);
   let bmi = +x.bmi,
     years = age(p.dob),
     parts: Factor[] = [

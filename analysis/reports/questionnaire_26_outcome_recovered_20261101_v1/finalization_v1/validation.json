@@ -1,0 +1,88 @@
+{
+  "status": "PASS",
+  "csv_paths": [
+    "C:\\Users\\Alvin Guillermo\\Downloads\\PINTIG System\\data\\processed\\questionnaire_26_outcome_recovered_20261101_v1\\pintig_framingham_26predictors_PROXY_EXPERIMENTAL.csv",
+    "C:\\Users\\Alvin Guillermo\\Downloads\\PINTIG System\\data\\processed\\questionnaire_26_outcome_recovered_20261101_v1\\pintig_framingham_26predictors_exact_endpoint.csv"
+  ],
+  "participants": 4191,
+  "columns": 32,
+  "event_counts": {
+    "recorded_cvd_proxy": 369,
+    "death_before_cvd_cause_unknown": 218,
+    "censored": 3604
+  },
+  "missing_proxy_survival_values": 0,
+  "duplicate_participants": 0,
+  "outcome_discrepancies": 0,
+  "all_26_predictors_and_folds_preserved": true,
+  "raw_observed_predictors_unchanged": true,
+  "exact_endpoint_all_four_fields_missing": true,
+  "existing_validator": {
+    "participants": 4191,
+    "columns": 32,
+    "predictors": 26,
+    "linkage_observed_values_first22_folds_response_derivations": "PASS",
+    "exact_endpoint": "UNAVAILABLE: four outcome fields intentionally missing for all participants",
+    "predictor_missing": {
+      "age_years": 0,
+      "sex_male": 0,
+      "sbp_mmhg": 0,
+      "dbp_mmhg": 0,
+      "waist_cm": 0,
+      "current_smoker": 0,
+      "hypertension_history": 0,
+      "bp_medication": 52,
+      "alcohol_drinks_week": 0,
+      "activity_min_week": 0,
+      "diet_score_0_100": 0,
+      "ses_index_0_100": 0,
+      "family_history_cvd": 0,
+      "diabetes": 0,
+      "cigarettes_per_day": 29,
+      "heart_rate_bpm": 1,
+      "smoking_pack_years": 0,
+      "urban_rural_residence": 0,
+      "sitting_minutes_day": 0,
+      "heavy_episodic_alcohol": 0,
+      "former_smoker": 0,
+      "lipid_lowering_medication": 0,
+      "hip_circumference_cm": 0,
+      "diabetes_medication": 0,
+      "psychosocial_stress": 0,
+      "sleep_duration_hours": 0
+    },
+    "fold_counts": {
+      "1": 839,
+      "2": 838,
+      "3": 838,
+      "4": 838,
+      "5": 838
+    }
+  },
+  "questionnaire_tests": "7 passed",
+  "RSF_smoke_test": "PASS; 650 training records, 40 trees, 20 held-out predictions",
+  "leakage": "No new predictor construction or outcome-conditioned imputation; recovery only restores outcomes by verified ID. Six inherited synthetic recipes remain unresolved, so their original leakage status cannot be certified.",
+  "protected_files_unchanged": 1231,
+  "commands_executed": [
+    [
+      "C:\\Users\\Alvin Guillermo\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "analysis/scripts/reconstruction_26",
+      "-p",
+      "test_build.py",
+      "-v"
+    ],
+    [
+      "C:/Program Files/R/R-4.6.1/bin/Rscript.exe",
+      "C:\\Users\\Alvin Guillermo\\Downloads\\PINTIG System\\analysis\\scripts\\reconstruction_26\\smoke_test_proxy.R"
+    ]
+  ],
+  "sha256": {
+    "pintig_framingham_26predictors_PROXY_EXPERIMENTAL.csv": "3faf615c4dbabb14fd6789ab75f86b39aeeb239b2f8cb259d783f3a7e712d225",
+    "pintig_framingham_26predictors_exact_endpoint.csv": "7ca0eb0b673be50326bf74ed153f57f06fa36ea8701bcb2a023464d1208c35ee"
+  },
+  "full_model_evaluation": "Not performed"
+}
