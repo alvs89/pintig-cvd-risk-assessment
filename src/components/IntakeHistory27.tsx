@@ -1,4 +1,4 @@
-import { FEATURE_NAMES27, QUESTIONS27 } from "../services/assessment27";
+import { FEATURE_NAMES27, QUESTIONS27, RETIRED_QUESTIONS27 } from "../services/assessment27";
 import { intakes27 } from "../state/intakes27";
 import { P, S } from "../state/store";
 
@@ -25,7 +25,7 @@ export function IntakeHistory27() {
             calculated
           </summary>
           <dl>
-            {QUESTIONS27.filter((q) => Object.hasOwn(r.rawResponses, q.id)).map(
+            {[...QUESTIONS27, ...RETIRED_QUESTIONS27].filter((q) => Object.hasOwn(r.rawResponses, q.id)).map(
               (q) => (
                 <div key={q.id} className="intake27-saved">
                   <dt>

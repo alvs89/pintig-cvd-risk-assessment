@@ -39,7 +39,7 @@ const add = (q: Question27) => questions.push(q);
 const pure = (p: number, q: string) =>
   `pone.0271169.s001.pdf / PURE.pdf, PDF ${p}, ${q}`;
 const gen = (p: number, q: string) => `Gen-3-Exam-1.pdf, PDF ${p}, ${q}`;
-add({
+export const RETIRED_QUESTIONS27: Question27[] = [{
   id: "education",
   section: "Demographics and socioeconomic information",
   text: "What level of formal education have you completed? (check highest level only):",
@@ -52,7 +52,7 @@ add({
     "College/University",
     "Unknown",
   ],
-});
+}];
 for (const [id, text, unit, min, max] of [
   ["sbp", "Systolic", "mmHg", 50, 320],
   ["dbp", "Diastolic", "mmHg", 20, 200],
@@ -906,7 +906,7 @@ export function derive27(a: Answers27, p: Patient) {
   const kinds: Record<string, "observed" | "derived" | "assumption-derived"> = {
     age_years: "observed",
     sex_male: "observed",
-    ses_index_0_100: "derived",
+    ses_index_0_100: "assumption-derived",
     urban_rural_residence: "observed",
     waist_cm: "derived",
     hip_circumference_cm: "derived",
@@ -933,7 +933,7 @@ export function derive27(a: Answers27, p: Patient) {
     sleep_duration_hours: "observed",
   };
   const methods: Record<string, string> = {
-    ses_index_0_100: "Gen3 completed-education ordinal proxy",
+    ses_index_0_100: "PINTIG-SES-1.1: 50% education + 50% per-person income; fixed PSA 2023 anchor; category estimates",
     urban_rural_residence: "Explicit PSA barangay class with source provenance",
     waist_cm: "Mean of two observed PURE-form readings",
     hip_circumference_cm: "Mean of two observed PURE-form readings",
@@ -974,7 +974,7 @@ export function derive27(a: Answers27, p: Patient) {
     modelStatus: "blocked" as const,
     limitations: [
       "No compatible validated 27-feature model is registered.",
-      "SES, diet, residence classification and activity mapping remain unsupported.",
+      "SES and other questionnaire-derived features are not validated equivalents of synthetic training features.",
       "Alcohol ABV, measurement means and binary stress are explicit PINTIG adaptations.",
       "Overlapping passive exposure cannot be resolved from domain years alone.",
       ...(years === 70

@@ -441,7 +441,7 @@ export function Assessment27Page() {
                 {result?.protocol && (
                   <dl className="intake27-derived">
                     <div>
-                      <dt>Education based SES index</dt>
+                      <dt>Education and income SES index</dt>
                       <dd>
                         {result.protocol.features.ses_index_0_100 ??
                           "Unavailable"}{" "}
@@ -482,7 +482,7 @@ export function Assessment27Page() {
                 )}
                 <p>
                   Diet uses the documented PINTIG Food6 adaptation, not a
-                  complete AHEI score. SES is an education-only index. Activity
+                  complete AHEI score. SES combines education and income with equal weights using an experimental method. Activity
                   reports IPAQ minutes and MET-minutes separately.
                 </p>
                 {result && (

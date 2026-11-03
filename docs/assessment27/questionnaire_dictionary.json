@@ -1,5 +1,22 @@
 {
   "schema": "PINTIG-INTAKE-27-20261103",
+  "featureProtocol": "PINTIG-FE-1.1",
+  "retiredQuestions": [
+    {
+      "id": "education",
+      "section": "Demographics and socioeconomic information",
+      "text": "What level of formal education have you completed? (check highest level only):",
+      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 3, Q9",
+      "options": [
+        "None",
+        "Primary",
+        "Secondary/highschool/higher secondary",
+        "Trade School",
+        "College/University",
+        "Unknown"
+      ]
+    }
+  ],
   "predictors": [
     "age_years",
     "sex_male",
@@ -30,23 +47,6 @@
     "sleep_duration_hours"
   ],
   "questions": [
-    {
-      "id": "education",
-      "section": "Demographics and socioeconomic information",
-      "text": "What level of formal education have you completed? (check highest level only):",
-      "source": "pone.0271169.s001.pdf / PURE.pdf, PDF 3, Q9",
-      "options": [
-        "None",
-        "Primary",
-        "Secondary/highschool/higher secondary",
-        "Trade School",
-        "College/University",
-        "Unknown"
-      ],
-      "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
     {
       "id": "sbp1",
       "section": "Anthropometric and cardiovascular measurements",
@@ -1852,6 +1852,84 @@
         "9 = prefer not to answer"
       ],
       "note": "If currently enrolled, mark the highest grade completed, degree received. Educational attainment alone does not describe all socioeconomic circumstances.",
+      "applicability": "Always applicable",
+      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
+      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
+    },
+    {
+      "id": "employmentStatus",
+      "section": "Demographics and socioeconomic information",
+      "text": "Please choose which of the following best describes your current employment status?",
+      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 5, SA01, employment (unnumbered)",
+      "options": [
+        "0 = homemaker, not working outside the home",
+        "1 = employed (or self-employed) full time",
+        "2 = employed (or self-employed) part time",
+        "3 = employed, but on leave for health reasons",
+        "4 = employed, but temporarily away from my job",
+        "5 = unemployed or laid off or full-time student",
+        "6 = retired from my usual occupation and not working",
+        "7 = retired from my usual occupation but working for pay",
+        "8 = retired from my usual occupation but volunteering",
+        "9 = prefer not to answer",
+        "10 = unemployed due to disability"
+      ],
+      "applicability": "Always applicable",
+      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
+      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
+    },
+    {
+      "id": "currentOccupation",
+      "section": "Demographics and socioeconomic information",
+      "text": "What is your current occupation?",
+      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 6, SA02, current occupation (unnumbered)",
+      "inputType": "text",
+      "note": "Write in. Leave blank if unavailable. Occupation codes are not assigned.",
+      "applicability": "Always applicable",
+      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
+      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
+    },
+    {
+      "id": "longestOccupation",
+      "section": "Demographics and socioeconomic information",
+      "text": "What is the occupation you have worked in longest?",
+      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 6, SA02, longest occupation (unnumbered)",
+      "inputType": "text",
+      "note": "Write in. Leave blank if unavailable. Occupation codes are not assigned.",
+      "applicability": "Always applicable",
+      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
+      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
+    },
+    {
+      "id": "familyIncomePH",
+      "section": "Demographics and socioeconomic information",
+      "text": "Please select which income group best represents your combined family income for the past 12 months.",
+      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 6, SA02, income; PINTIG Philippine response-category adaptation",
+      "options": [
+        "0 = No income (PHP 0)",
+        "1 = Above PHP 0 to below PHP 166,476",
+        "2 = PHP 166,476 to below PHP 332,952",
+        "3 = PHP 332,952 to below PHP 665,904",
+        "4 = PHP 665,904 to below PHP 1,331,808",
+        "5 = PHP 1,331,808 or more",
+        "98 = Unknown",
+        "99 = Prefer not to answer"
+      ],
+      "note": "Annual Philippine pesos, not monthly income. These peso categories are a Philippine adaptation; the source uses US dollars.",
+      "applicability": "Always applicable",
+      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
+      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
+    },
+    {
+      "id": "incomeSupportedPeople",
+      "section": "Demographics and socioeconomic information",
+      "text": "How many people are supported by this income?",
+      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 6, SA02, supported people (unnumbered)",
+      "unit": "people",
+      "integer": true,
+      "min": 1,
+      "max": 100,
+      "note": "Count all people supported by the combined family income reported above. Leave blank if unknown or declined.",
       "applicability": "Always applicable",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."

@@ -144,3 +144,5 @@ synthetic-data, and evaluation limitations, and
 ## Current questionnaire intake (27 proposed predictors)
 
 New Risk Assessment collects source-referenced questionnaire responses and saves them for the session without risk calculation. Historical illustrative results remain available. The proposed schema is blocked from both existing calculators. See [assessment documentation](docs/assessment27/IMPLEMENTATION.md) for the 13-source review, 27-feature mapping, storage contract and unresolved scoring definitions. See [Feature Engineering Protocol v1.0](docs/feature_engineering/v1.0/PROTOCOL.md) and its generated [data dictionary](docs/feature_engineering/v1.0/data_dictionary.csv) for the equations, provenance, source review and dataset comparison. Earlier descriptions of live illustrative assessment calculation refer to the retained historical workflow.
+
+Current SES calculation: [Protocol 1.1 income adaptation](docs/feature_engineering/v1.1/SES_PROTOCOL.md). It replaces the education-only SES method with equal education/income weights; historical v1.0 documents remain available. Prediction is still disabled.

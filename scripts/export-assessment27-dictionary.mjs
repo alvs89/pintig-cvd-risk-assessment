@@ -3,7 +3,9 @@ import {
   QUESTIONS27,
   FEATURE_NAMES27,
   INTAKE27_SCHEMA,
+  RETIRED_QUESTIONS27,
 } from "../src/services/assessment27.ts";
+import { FEATURE_PROTOCOL_VERSION } from "../src/services/featureProtocolV1.ts";
 
 // Run with node --import tsx scripts/export-assessment27-dictionary.mjs.
 // Documentation only: never reads patient records or research datasets.
@@ -21,6 +23,8 @@ fs.writeFileSync(
   JSON.stringify(
     {
       schema: INTAKE27_SCHEMA,
+      featureProtocol: FEATURE_PROTOCOL_VERSION,
+      retiredQuestions: RETIRED_QUESTIONS27,
       predictors: FEATURE_NAMES27,
       questions,
       note: "Executable skip logic is authoritative in assessment27.ts. Displayed labels expand grid headings; selector states represent source checkboxes. See MAPPING.md for unsupported features and proposed calculations.",

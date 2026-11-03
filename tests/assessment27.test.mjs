@@ -1,3 +1,4 @@
+import { INCOME_OPTIONS, EMPLOYMENT_OPTIONS } from "../src/services/sesProtocol.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -19,6 +20,7 @@ import { SCREENING_KEYS } from "../src/services/preAssessmentRules.mjs";
 import { age } from "../src/utils/format.ts";
 import {
   additionalFeatures,
+  educationIndex,
   EDUCATION_OPTIONS,
   FOOD_FREQUENCIES,
   FOODS,
@@ -214,8 +216,7 @@ test("IPAQ work/duration skips and weighted sitting keep missing values distinct
 test("protocol v1 maps education levels monotonically and retains prefer-not-to-answer as missing", () => {
   const scores = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(
     (i) =>
-      additionalFeatures({ gen3Education: EDUCATION_OPTIONS[i] }).features
-        .ses_index_0_100,
+      educationIndex({ gen3Education: EDUCATION_OPTIONS[i] }),
   );
   assert.deepEqual(scores, [0, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100]);
   assert.equal(
@@ -299,7 +300,7 @@ test("saving requires current eligibility and active role; raw snapshots do not 
   assert.throws(() => createIntake27(users[0], p, null, {}));
   const a = { smokeEver: "9 = Unknown" };
   const r = createIntake27(users[1], p, check(), a);
-  assert.equal(r.featureProtocol, "PINTIG-FE-1.0");
+  assert.equal(r.featureProtocol, "PINTIG-FE-1.1");
   assert.equal(r.featureProvenance.ses_index_0_100.state, "unavailable");
   a.smokeEver = "0 = No";
   assert.equal(r.rawResponses.smokeEver, "9 = Unknown");
@@ -342,4 +343,18 @@ test("daily total errors belong to the activity group rather than the sleep meas
   assert.ok(issues.some(issue => issue.startsWith("typicalDay:")));
   assert.ok(!issues.some(issue => issue.startsWith("sleep:")));
   assert.ok(!derive27({ ...answers, sleepSedentary: "6" }, p).issues.some(issue => issue.startsWith("typicalDay:")));
+});
+
+test("SES requires education, Philippine income and a valid supported-person count", () => {
+  const a = { gen3Education: EDUCATION_OPTIONS[7], familyIncomePH: INCOME_OPTIONS[3], incomeSupportedPeople: "5" };
+  assert.equal(additionalFeatures(a).features.ses_index_0_100, 62.5);
+  assert.equal(additionalFeatures({ ...a, incomeSupportedPeople: "10" }).features.ses_index_0_100, 53.125);
+  for (const missing of [{ gen3Education: "" }, { gen3Education: EDUCATION_OPTIONS[9] }, { familyIncomePH: "" }, { familyIncomePH: INCOME_OPTIONS[6] }, { familyIncomePH: INCOME_OPTIONS[7] }, { familyIncomePH: "$12,000" }, { incomeSupportedPeople: "" }, { incomeSupportedPeople: "0" }, { incomeSupportedPeople: "2.5" }, { incomeSupportedPeople: "101" }])
+    assert.equal(additionalFeatures({ ...a, ...missing }).features.ses_index_0_100, null);
+  assert.equal(additionalFeatures({ ...a, gen3Education: EDUCATION_OPTIONS[0], familyIncomePH: INCOME_OPTIONS[0] }).features.ses_index_0_100, 0);
+  assert.equal(additionalFeatures({ ...a, gen3Education: EDUCATION_OPTIONS[8], familyIncomePH: INCOME_OPTIONS[5], incomeSupportedPeople: "1" }).features.ses_index_0_100, 100);
+  const scores = INCOME_OPTIONS.slice(0,6).map(familyIncomePH => additionalFeatures({ ...a, familyIncomePH }).features.ses_index_0_100);
+  assert.deepEqual([...scores].sort((x,y) => x-y), scores);
+  assert.ok(!QUESTIONS27.some(q => q.id === "education"));
+  assert.equal(EMPLOYMENT_OPTIONS.length, 11);
 });

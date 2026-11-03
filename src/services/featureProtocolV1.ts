@@ -1,6 +1,7 @@
+import { householdSes, SES_QUESTIONS } from "./sesProtocol";
 import type { Answers27, Question27 } from "./assessment27";
 
-export const FEATURE_PROTOCOL_VERSION = "PINTIG-FE-1.0";
+export const FEATURE_PROTOCOL_VERSION = "PINTIG-FE-1.1";
 export const EDUCATION_OPTIONS = [
   "0 = no schooling",
   "1 = grades 1-8",
@@ -193,6 +194,7 @@ export const PROTOCOL_QUESTIONS: Question27[] = [
     options: EDUCATION_OPTIONS,
     note: "If currently enrolled, mark the highest grade completed, degree received. Educational attainment alone does not describe all socioeconomic circumstances.",
   },
+  ...SES_QUESTIONS,
   {
     id: "residenceClass",
     section: "Residential classification",
@@ -372,7 +374,7 @@ export function additionalFeatures(a: Answers27, ageYears?: number) {
   }
   return {
     features: {
-      ses_index_0_100: educationIndex(a),
+      ses_index_0_100: householdSes(a, educationIndex(a)).score,
       diet_score_0_100: diet.score,
       urban_rural_residence: a.residenceReference?.trim()
         ? a.residenceClass === "Urban"
@@ -383,6 +385,7 @@ export function additionalFeatures(a: Answers27, ageYears?: number) {
         : null,
       activity_min_week: activity.minutes,
     },
+    ses: householdSes(a, educationIndex(a)),
     diet,
     activity,
   };

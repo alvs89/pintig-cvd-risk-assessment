@@ -20,6 +20,14 @@ for (const viewport of [
     await completePreAssessment(page);
 
     await expect(page.getByText("Step 1 of 9")).toBeVisible();
+    await expect(page.locator("#q27-education")).toHaveCount(0);
+    await page.locator("#q27-gen3Education").selectOption({ index: 8 });
+    await page.locator("#q27-familyIncomePH").selectOption({ index: 4 });
+    await page.locator("#q27-incomeSupportedPeople").fill("5");
+    await expect(page.locator("#q27-employmentStatus")).toBeVisible();
+    await expect(page.locator("#q27-currentOccupation")).toBeVisible();
+    await expect(page.locator("#q27-longestOccupation")).toBeVisible();
+
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(page.getByText("Step 2 of 9")).toBeVisible();
     const sbp = page.locator("#q27-sbp1");
@@ -129,6 +137,7 @@ for (const viewport of [
         exact: true,
       }),
     ).toBeVisible();
+    await expect(page.getByText("62.5 / 100", { exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Save questionnaire responses", exact: true }).click();
     const toast = page.locator(".assessment-save-toast");
     await expect(toast).toContainText("Questionnaire responses saved.");
