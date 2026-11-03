@@ -24,6 +24,10 @@ export function Assessment27Page() {
   const answers = S.draft?.schema === INTAKE27_SCHEMA ? S.draft : {};
   const unlocked = !!p && !!screeningForPatient(S.preAssessment, p);
   const result = p ? derive27(answers, p) : null;
+  const dayKeys = ["sleep", "sleepSedentary", "sleepSlight", "sleepModerate", "sleepHeavy"];
+  const dayEntered = dayKeys.filter((key) => answers[key]?.trim() && Number.isFinite(Number(answers[key])));
+  const dayTotal = dayEntered.reduce((sum, key) => sum + Number(answers[key]), 0);
+  const dayIssue = result?.issues.find((issue) => issue.startsWith("typicalDay:"));
   const sections = [...new Set(QUESTIONS27.map((q) => q.section))];
   const steps = assessment27Steps(sections);
   const finalStep = stepIndex === steps.length;
@@ -86,9 +90,14 @@ export function Assessment27Page() {
         );
         if (page >= 0) setStepIndex(page);
       }
+      if (firstIssue?.startsWith("typicalDay:")) {
+        setStepIndex(steps.findIndex((step) => step.sections.includes("Sleep and typical-day activity")));
+      }
       render();
       requestAnimationFrame(() =>
-        document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(),
+        (firstIssue?.startsWith("typicalDay:")
+          ? document.getElementById("typical-day-total")
+          : document.querySelector<HTMLElement>('[aria-invalid="true"]'))?.focus(),
       );
     }
   };
@@ -182,6 +191,16 @@ export function Assessment27Page() {
                   <div className="intake-section-head">
                     <h2>{section}</h2>
                   </div>
+                  {section === "Sleep and typical-day activity" && (
+                    <div id="typical-day-total" tabIndex={-1} role="status" aria-live="polite" className={dayIssue ? "notice field-error" : "notice"}>
+                      <strong>Combined daily total: {Number(dayTotal.toFixed(2))} / 24 hours</strong>
+                      <p>{dayIssue
+                        ? "The five activities must add up to 24 hours. Review all five entries without counting the same time twice."
+                        : dayEntered.length < 5
+                          ? `${dayEntered.length} of 5 activities entered. Complete the remaining entries to check the total.`
+                          : "The five activities total 24 hours."}</p>
+                    </div>
+                  )}
                   {section ===
                     "Anthropometric and cardiovascular measurements" && (
                     <p>
@@ -284,9 +303,8 @@ export function Assessment27Page() {
                           {q.sharedPrompt && !visible.slice(0, index).some((previous) => previous.sharedPrompt === q.sharedPrompt) && (
                             <p className="source-question-stem">{q.sharedPrompt}</p>
                           )}
-                        <div className="field">
                           {q.id === "ipaq2" && (
-                            <p>
+                            <p className="question-instruction">
                               The next questions are about all the physical
                               activity you did in the last 7 days as part of
                               your paid or unpaid work. This does not include
@@ -294,12 +312,13 @@ export function Assessment27Page() {
                             </p>
                           )}
                           {q.id === "ipaq10" && (
-                            <p>
+                            <p className="question-instruction">
                               Now think only about the bicycling and walking you
                               might have done to travel to and from work, to do
                               errands, or to go from place to place.
                             </p>
                           )}
+                        <div className="field">
                           <label htmlFor={id}>
                             {q.sharedPrompt && <span className="pintig-sr-only">{q.sharedPrompt} </span>}
                             {q.context && <span className="question-context">{q.context} &mdash; </span>}
@@ -367,6 +386,7 @@ export function Assessment27Page() {
                               aria-describedby={`${id}-source ${id}-error`}
                             />
                           )}
+                          <div className="question-help">
                           {q.note && <small>{q.note}</small>}
                           <small id={id + "-source"} className="muted">
                             {q.source}
@@ -381,6 +401,7 @@ export function Assessment27Page() {
                                 problem?.slice(problem.indexOf(":") + 1)}
                             </small>
                           )}
+                          </div>
                         </div>
                         </Fragment>
                       );

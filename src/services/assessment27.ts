@@ -892,7 +892,7 @@ export function derive27(a: Answers27, p: Patient) {
     sleepValues.every((v) => v !== null) &&
     Math.abs((sleepValues as number[]).reduce((s, v) => s + v, 0) - 24) > 0.01
   )
-    issues.push("sleep: typical-day activities must total 24 hours.");
+    issues.push("typicalDay: the five typical-day activities must total 24 hours. Review all five entries.");
   features.sleep_duration_hours = num(a, "sleep");
   const protocol = additionalFeatures(a, years);
   Object.assign(features, protocol.features);

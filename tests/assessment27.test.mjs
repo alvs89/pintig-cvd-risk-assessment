@@ -335,3 +335,11 @@ test("shared prompts retain row identity and independent response fields across 
   assert.equal(find("sleep").sharedPrompt, find("sleepHeavy").sharedPrompt);
   assert.equal(find("passive_work_years").context, "At Work?");
 });
+
+test("daily total errors belong to the activity group rather than the sleep measurement", () => {
+  const answers = { sleep: "14", sleepSedentary: "8", sleepSlight: "2", sleepModerate: "1", sleepHeavy: "1" };
+  const issues = derive27(answers, p).issues;
+  assert.ok(issues.some(issue => issue.startsWith("typicalDay:")));
+  assert.ok(!issues.some(issue => issue.startsWith("sleep:")));
+  assert.ok(!derive27({ ...answers, sleepSedentary: "6" }, p).issues.some(issue => issue.startsWith("typicalDay:")));
+});

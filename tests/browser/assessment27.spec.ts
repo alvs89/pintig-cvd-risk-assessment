@@ -71,6 +71,37 @@ for (const viewport of [
     await page.getByRole("button", { name: "Back", exact: true }).click();
     await page.getByRole("button", { name: "Back", exact: true }).click();
     for (let step = 1; step < 9; step++) {
+      if (step === 5) {
+        await page.locator("#q27-passiveChild").selectOption("1 = Yes");
+        await page.locator("#q27-childOther").selectOption("1 = Yes");
+        await page.locator("#q27-passiveHome").selectOption("1 = Yes");
+        await page.locator("#q27-passiveOutside").selectOption("1 = Yes");
+      }
+      if (step === 8) {
+        for (const [id, value] of Object.entries({ sleep: "14", sleepSedentary: "8", sleepSlight: "2", sleepModerate: "1", sleepHeavy: "1" }))
+          await page.locator("#q27-" + id).fill(value);
+        await expect(page.locator("#typical-day-total")).toContainText("26 / 24 hours");
+        await expect(page.locator("#typical-day-total")).toContainText("Review all five entries");
+        await expect(page.locator("#q27-sleep")).toHaveAttribute("aria-invalid", "false");
+        await page.locator("#q27-sleepSedentary").fill("6");
+        await expect(page.locator("#typical-day-total")).toContainText("The five activities total 24 hours.");
+        await page.locator("#q27-sleepHeavy").fill("");
+        await expect(page.locator("#typical-day-total")).toContainText("4 of 5 activities entered");
+      }
+      const alignment = await page.locator(".assessment27 .gridform").evaluateAll(grids =>
+        grids.flatMap(grid => {
+          const fields = [...grid.querySelectorAll(":scope > .field")];
+          return fields.flatMap((field, i) => {
+            const next = fields[i + 1];
+            if (!next || Math.abs(field.getBoundingClientRect().top - next.getBoundingClientRect().top) > 1) return [];
+            const a = field.querySelector("input, select")!.getBoundingClientRect();
+            const b = next.querySelector("input, select")!.getBoundingClientRect();
+            return [Math.abs(a.top - b.top)];
+          });
+        })
+      );
+      if (viewport.width > 680) expect(alignment.length).toBeGreaterThan(0);
+      for (const offset of alignment) expect(offset).toBeLessThanOrEqual(1);
       const spacing = await page.locator(".assessment27 .gridform > .field").evaluateAll(fields =>
         fields.flatMap(field => {
           const label = field.querySelector("label");

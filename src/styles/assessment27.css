@@ -3,7 +3,7 @@
   padding: 22px 0;
 }
 .assessment27 .gridform {
-  align-items: start;
+  align-items: stretch;
 }
 .assessment27 .field {
   min-width: 0;
@@ -133,3 +133,18 @@
 
 .assessment27 .gridform > .source-question-stem { grid-column: 1 / -1; margin: 8px 0; }
 .question-context { display: inline; font-weight: 600; }
+
+.assessment27 .question-instruction { grid-column: 1 / -1; }
+.assessment27 .question-help { min-width: 0; }
+/* Adjacent fields share label, control and help rows without fixed heights. */
+@supports (grid-template-rows: subgrid) {
+  .assessment27 .gridform > .field {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    gap: 6px;
+  }
+  .assessment27 .gridform > .field > label { align-self: end; }
+  .assessment27 .gridform > .field > input,
+  .assessment27 .gridform > .field > select { align-self: start; }
+}
