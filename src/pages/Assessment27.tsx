@@ -320,6 +320,7 @@ export function Assessment27Page() {
                             {q.sharedPrompt && <span className="pintig-sr-only">{q.sharedPrompt} </span>}
                             {q.context && <span className="question-context">{q.context} &mdash; </span>}
                             {q.text}
+                            {q.optional && <span className="question-unit"> (optional)</span>}
                             {q.unit && (
                               <span className="question-unit"> ({q.unit})</span>
                             )}
@@ -442,6 +443,7 @@ export function Assessment27Page() {
                         {result.protocol.features.ses_index_0_100 ??
                           "Unavailable"}{" "}
                         / 100
+                        <small className="ses-availability">{result.protocol.ses.reason}</small>
                       </dd>
                     </div>
                     <div>
@@ -478,7 +480,7 @@ export function Assessment27Page() {
                 )}
                 <p>
                   Diet uses the documented PINTIG Food6 adaptation, not a
-                  complete AHEI score. SES combines education and income with equal weights using an experimental method. Activity
+                  complete AHEI score. SES awaits a validated reference-based scoring method; education and income responses are preserved. Activity
                   reports IPAQ minutes and MET-minutes separately.
                 </p>
                 {result && (

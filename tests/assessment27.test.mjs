@@ -22,7 +22,7 @@ import { SCREENING_KEYS } from "../src/services/preAssessmentRules.mjs";
 import { age } from "../src/utils/format.ts";
 import {
   additionalFeatures,
-  educationIndex,
+  educationCategory,
   EDUCATION_OPTIONS,
   FOOD_FREQUENCIES,
   FOODS,
@@ -215,12 +215,12 @@ test("IPAQ work/duration skips and weighted sitting keep missing values distinct
   );
   assert.equal(derive27(a, p).features.activity_min_week, null);
 });
-test("protocol v1 maps education levels monotonically and retains prefer-not-to-answer as missing", () => {
+test("education retains category identifiers without assigning interval-scale scores", () => {
   const scores = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(
     (i) =>
-      educationIndex({ gen3Education: EDUCATION_OPTIONS[i] }),
+      educationCategory({ gen3Education: EDUCATION_OPTIONS[i] }),
   );
-  assert.deepEqual(scores, [0, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100]);
+  assert.deepEqual(scores, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
   assert.equal(
     additionalFeatures({ gen3Education: EDUCATION_OPTIONS[9] }).features
       .ses_index_0_100,
@@ -296,7 +296,7 @@ test("saving requires current eligibility and active role; raw snapshots do not 
   assert.throws(() => createIntake27(users[0], p, null, {}));
   const a = { smokeEver: "9 = Unknown" };
   const r = createIntake27(users[1], p, check(), a);
-  assert.equal(r.featureProtocol, "PINTIG-FE-1.2");
+  assert.equal(r.featureProtocol, "PINTIG-FE-1.3");
   assert.equal(r.featureProvenance.ses_index_0_100.state, "unavailable");
   a.smokeEver = "0 = No";
   assert.equal(r.rawResponses.smokeEver, "9 = Unknown");
@@ -334,22 +334,43 @@ test("shared prompts retain row identity and independent response fields across 
 });
 
 
-test("SES requires education, Philippine income and a valid supported-person count", () => {
-  const a = { gen3Education: EDUCATION_OPTIONS[7], familyIncomePH: INCOME_OPTIONS[3], incomeSupportedPeople: "5" };
-  assert.equal(additionalFeatures(a).features.ses_index_0_100, 62.5);
-  assert.equal(additionalFeatures({ ...a, incomeSupportedPeople: "10" }).features.ses_index_0_100, 53.125);
-  for (const missing of [{ gen3Education: "" }, { gen3Education: EDUCATION_OPTIONS[9] }, { familyIncomePH: "" }, { familyIncomePH: INCOME_OPTIONS[6] }, { familyIncomePH: INCOME_OPTIONS[7] }, { familyIncomePH: "$12,000" }, { incomeSupportedPeople: "" }, { incomeSupportedPeople: "0" }, { incomeSupportedPeople: "2.5" }, { incomeSupportedPeople: "101" }])
-    assert.equal(additionalFeatures({ ...a, ...missing }).features.ses_index_0_100, null);
-  assert.equal(additionalFeatures({ ...a, gen3Education: EDUCATION_OPTIONS[0], familyIncomePH: INCOME_OPTIONS[0] }).features.ses_index_0_100, 0);
-  assert.equal(additionalFeatures({ ...a, gen3Education: EDUCATION_OPTIONS[8], familyIncomePH: INCOME_OPTIONS[5], incomeSupportedPeople: "1" }).features.ses_index_0_100, 100);
-  const scores = INCOME_OPTIONS.slice(0,6).map(familyIncomePH => additionalFeatures({ ...a, familyIncomePH }).features.ses_index_0_100);
-  assert.deepEqual([...scores].sort((x,y) => x-y), scores);
-  assert.ok(!QUESTIONS27.some(q => q.id === "education"));
+test("SES remains unavailable without reference parameters; bracket bounds are never point incomes", () => {
+  const a = { gen3Education: EDUCATION_OPTIONS[7], familyIncomePH: INCOME_OPTIONS[3], incomeSupportedPeople: "4" };
+  const result = additionalFeatures(a);
+  assert.equal(result.features.ses_index_0_100, null);
+  assert.equal(result.ses.status, "reference-unavailable");
+  assert.equal(result.ses.educationCategory, 7);
+  assert.equal(result.ses.equivalizedIncomeInterval.lower, 166476);
+  assert.equal(result.ses.equivalizedIncomeInterval.upper, 332952);
+  assert.equal(result.ses.equivalizedIncomeInterval.upperInclusive, false);
+  for (const invalid of [{ gen3Education: "" }, { gen3Education: EDUCATION_OPTIONS[9] }, { familyIncomePH: "" }, { familyIncomePH: INCOME_OPTIONS[6] }, { familyIncomePH: INCOME_OPTIONS[7] }, { familyIncomePH: "$12,000" }, { incomeSupportedPeople: "" }, { incomeSupportedPeople: "0" }, { incomeSupportedPeople: "2.5" }, { incomeSupportedPeople: "101" }]) {
+    const r = additionalFeatures({ ...a, ...invalid });
+    assert.equal(r.features.ses_index_0_100, null);
+    assert.equal(r.ses.status, "responses-incomplete");
+  }
+  const zero = additionalFeatures({ ...a, gen3Education: EDUCATION_OPTIONS[0], familyIncomePH: INCOME_OPTIONS[0] });
+  assert.equal(zero.ses.incomeInterval.lower, 0);
+  assert.equal(zero.ses.incomeInterval.upper, 0);
+  assert.equal(zero.features.ses_index_0_100, null);
+  const top = additionalFeatures({ ...a, familyIncomePH: INCOME_OPTIONS[5] });
+  assert.equal(top.ses.equivalizedIncomeInterval.upper, null);
+  assert.equal(top.ses.equivalizedIncomeInterval.lower, 665904);
+  const low = additionalFeatures({ ...a, familyIncomePH: INCOME_OPTIONS[1] });
+  assert.equal(low.ses.incomeInterval.lowerInclusive, false);
+  assert.ok(!("representativeAnnualIncome" in result.ses));
+  assert.ok(!derive27(a, p).incomplete.includes("currentOccupation"));
+  assert.ok(!QUESTIONS27.some(q => q.id === "longestOccupation"));
+  assert.ok(RETIRED_QUESTIONS27.some(q => q.id === "longestOccupation"));
   assert.equal(EMPLOYMENT_OPTIONS.length, 11);
+  const saved = createIntake27(users[0], p, check(), { ...a, currentOccupation: "", longestOccupation: "Historical write-in" });
+  assert.equal(saved.features.ses_index_0_100, null);
+  assert.equal(saved.rawResponses.familyIncomePH, a.familyIncomePH);
+  assert.equal(saved.rawResponses.incomeSupportedPeople, "4");
+  assert.ok(!Object.hasOwn(saved.rawResponses, "longestOccupation"));
 });
 
 test("only approved fields are retired; stale retired answers cannot affect features or validation", () => {
-  assert.equal(REMOVED_QUESTION_IDS27.length, 31);
+  assert.equal(REMOVED_QUESTION_IDS27.length, 32);
   for (const id of REMOVED_QUESTION_IDS27) {
     assert.ok(!QUESTIONS27.some(q => q.id === id), id);
     assert.ok(RETIRED_QUESTIONS27.some(q => q.id === id), id);

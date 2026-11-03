@@ -26,7 +26,8 @@ for (const viewport of [
     await page.locator("#q27-incomeSupportedPeople").fill("5");
     await expect(page.locator("#q27-employmentStatus")).toBeVisible();
     await expect(page.locator("#q27-currentOccupation")).toBeVisible();
-    await expect(page.locator("#q27-longestOccupation")).toBeVisible();
+    await expect(page.locator("#q27-longestOccupation")).toHaveCount(0);
+    await expect(page.getByLabel("What is your current occupation? (optional)", { exact: true })).toBeVisible();
 
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(page.getByText("Step 2 of 9")).toBeVisible();
@@ -146,7 +147,8 @@ for (const viewport of [
         exact: true,
       }),
     ).toBeVisible();
-    await expect(page.getByText("62.5 / 100", { exact: true })).toBeVisible();
+    await expect(page.getByText("SES unavailable: a suitable reference population and validated scoring parameters are not yet available.", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Calculate risk", exact: true })).toBeDisabled();
     await page.getByRole("button", { name: "Save questionnaire responses", exact: true }).click();
     const toast = page.locator(".assessment-save-toast");
     await expect(toast).toContainText("Questionnaire responses saved.");

@@ -199,3 +199,5 @@
   .assessment27 .gridform > .field > input,
   .assessment27 .gridform > .field > select { align-self: start; }
 }
+
+.ses-availability { display: block; margin-top: 6px; font-weight: normal; }

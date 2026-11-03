@@ -1,6 +1,6 @@
 {
   "schema": "PINTIG-INTAKE-27-20261103",
-  "featureProtocol": "PINTIG-FE-1.2",
+  "featureProtocol": "PINTIG-FE-1.3",
   "retiredQuestions": [
     {
       "id": "education",
@@ -334,6 +334,14 @@
       "min": 0,
       "max": 24,
       "sharedPrompt": "Rest and Activity for a Typical Day (Activities must equal 24 hours)"
+    },
+    {
+      "id": "longestOccupation",
+      "section": "Demographics and socioeconomic information",
+      "text": "What is the occupation you have worked in longest?",
+      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 6, SA02, longest occupation (unnumbered)",
+      "inputType": "text",
+      "note": "Write in. Leave blank if unavailable. Occupation codes are not assigned."
     }
   ],
   "predictors": [
@@ -1766,50 +1774,6 @@
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
     },
     {
-      "id": "employmentStatus",
-      "section": "Demographics and socioeconomic information",
-      "text": "Please choose which of the following best describes your current employment status?",
-      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 5, SA01, employment (unnumbered)",
-      "options": [
-        "0 = homemaker, not working outside the home",
-        "1 = employed (or self-employed) full time",
-        "2 = employed (or self-employed) part time",
-        "3 = employed, but on leave for health reasons",
-        "4 = employed, but temporarily away from my job",
-        "5 = unemployed or laid off or full-time student",
-        "6 = retired from my usual occupation and not working",
-        "7 = retired from my usual occupation but working for pay",
-        "8 = retired from my usual occupation but volunteering",
-        "9 = prefer not to answer",
-        "10 = unemployed due to disability"
-      ],
-      "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "currentOccupation",
-      "section": "Demographics and socioeconomic information",
-      "text": "What is your current occupation?",
-      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 6, SA02, current occupation (unnumbered)",
-      "inputType": "text",
-      "note": "Write in. Leave blank if unavailable. Occupation codes are not assigned.",
-      "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
-      "id": "longestOccupation",
-      "section": "Demographics and socioeconomic information",
-      "text": "What is the occupation you have worked in longest?",
-      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 6, SA02, longest occupation (unnumbered)",
-      "inputType": "text",
-      "note": "Write in. Leave blank if unavailable. Occupation codes are not assigned.",
-      "applicability": "Always applicable",
-      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
-      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
-    },
-    {
       "id": "familyIncomePH",
       "section": "Demographics and socioeconomic information",
       "text": "Please select which income group best represents your combined family income for the past 12 months.",
@@ -1839,6 +1803,42 @@
       "min": 1,
       "max": 100,
       "note": "Count all people supported by the combined family income reported above. Leave blank if unknown or declined.",
+      "applicability": "Always applicable",
+      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
+      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
+    },
+    {
+      "id": "employmentStatus",
+      "section": "Demographics and socioeconomic information",
+      "text": "Please choose which of the following best describes your current employment status?",
+      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 5, SA01, employment (unnumbered)",
+      "options": [
+        "0 = homemaker, not working outside the home",
+        "1 = employed (or self-employed) full time",
+        "2 = employed (or self-employed) part time",
+        "3 = employed, but on leave for health reasons",
+        "4 = employed, but temporarily away from my job",
+        "5 = unemployed or laid off or full-time student",
+        "6 = retired from my usual occupation and not working",
+        "7 = retired from my usual occupation but working for pay",
+        "8 = retired from my usual occupation but volunteering",
+        "9 = prefer not to answer",
+        "10 = unemployed due to disability"
+      ],
+      "optional": true,
+      "note": "Supplementary information; not used to calculate SES.",
+      "applicability": "Always applicable",
+      "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
+      "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
+    },
+    {
+      "id": "currentOccupation",
+      "section": "Demographics and socioeconomic information",
+      "text": "What is your current occupation?",
+      "source": "Gen-3-Exam-1 (1).pdf / Gen-3-Exam-1.pdf, PDF 6, SA02, current occupation (unnumbered)",
+      "inputType": "text",
+      "optional": true,
+      "note": "Optional occupational context. Write in or leave blank; occupation codes are not assigned.",
       "applicability": "Always applicable",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."

@@ -11,7 +11,7 @@ See `source_review.json` for all 13 filenames, checksums, lengths and review fin
 `MAPPING.md` for the 27 predictor decisions, `feature_dictionary.csv` for their export,
 and `questionnaire_dictionary.json` for every implemented response field, source,
 unit, response options and executable applicability expression. The assessment
-derives v1.2 features (SES addendum: ../feature_engineering/v1.1/SES_PROTOCOL.md) as responses are entered and records per-feature provenance;
+uses v1.3 feature engineering (SES protocol: ../feature_engineering/v1.3/SES_PROTOCOL.md) as responses are entered and records per-feature provenance;
 raw responses remain the source of truth.
 Regenerate the dictionaries with
 `node --import tsx scripts/export-assessment27-dictionary.mjs`.
@@ -86,3 +86,5 @@ No training, dataset regeneration, clinical threshold change or model replacemen
 is part of this change.
 
 The approved streamlined intake has 159 response fields. See STREAMLINING_1.2.md. Removed-field definitions remain in retired metadata solely for historical response rendering, not new collection or validation.
+
+Current SES assessment has three core items plus supplementary employment and optional occupation. Longest-held occupation is retired. There are 158 active response fields; optional context does not contribute to incomplete counts. All new SES values are unavailable until reference scoring is validated. Historical protocol snapshots and responses are preserved.

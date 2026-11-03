@@ -1,7 +1,7 @@
 import { householdSes, SES_QUESTIONS } from "./sesProtocol";
 import type { Answers27, Question27 } from "./assessment27";
 
-export const FEATURE_PROTOCOL_VERSION = "PINTIG-FE-1.2";
+export const FEATURE_PROTOCOL_VERSION = "PINTIG-FE-1.3";
 export const EDUCATION_OPTIONS = [
   "0 = no schooling",
   "1 = grades 1-8",
@@ -194,7 +194,7 @@ export const PROTOCOL_QUESTIONS: Question27[] = [
     options: EDUCATION_OPTIONS,
     note: "If currently enrolled, mark the highest grade completed, degree received. Educational attainment alone does not describe all socioeconomic circumstances.",
   },
-  ...SES_QUESTIONS,
+  ...["familyIncomePH", "incomeSupportedPeople", "employmentStatus", "currentOccupation", "longestOccupation"].map(id => SES_QUESTIONS.find(q => q.id === id)!),
   {
     id: "residenceClass",
     section: "Residential classification",
@@ -226,11 +226,11 @@ export const PROTOCOL_QUESTIONS: Question27[] = [
 const number = (a: Answers27, k: string) =>
   a[k]?.trim() && Number.isFinite(Number(a[k])) ? Number(a[k]) : null;
 const clip = (x: number) => Math.max(0, Math.min(1, x));
-export function educationIndex(a: Answers27): number | null {
+export function educationCategory(a: Answers27): number | null {
   const i = EDUCATION_OPTIONS.indexOf(
     a.gen3Education as (typeof EDUCATION_OPTIONS)[number],
   );
-  return i >= 0 && i < 9 ? (100 * i) / 8 : null;
+  return i >= 0 && i < 9 ? i : null;
 }
 export function foodScore(a: Answers27) {
   const totals = {
@@ -374,7 +374,7 @@ export function additionalFeatures(a: Answers27, ageYears?: number) {
   }
   return {
     features: {
-      ses_index_0_100: householdSes(a, educationIndex(a)).score,
+      ses_index_0_100: householdSes(a, educationCategory(a)).score,
       diet_score_0_100: diet.score,
       urban_rural_residence: a.residenceReference?.trim()
         ? a.residenceClass === "Urban"
@@ -385,7 +385,7 @@ export function additionalFeatures(a: Answers27, ageYears?: number) {
         : null,
       activity_min_week: activity.minutes,
     },
-    ses: householdSes(a, educationIndex(a)),
+    ses: householdSes(a, educationCategory(a)),
     diet,
     activity,
   };

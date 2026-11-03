@@ -19,6 +19,7 @@ export type Question27 = {
   integer?: boolean;
   note?: string;
   inputType?: "text";
+  optional?: boolean;
   when?: (a: Answers27) => boolean;
 };
 const yn = ["0 = No", "1 = Yes", "9 = Unknown"];
@@ -555,6 +556,7 @@ for (const [id, text] of [
 questions.push(...PROTOCOL_QUESTIONS);
 // Retain source metadata for saved historical answers; omit only the approved items from new intake.
 export const REMOVED_QUESTION_IDS27 = [
+  "longestOccupation",
   "hypertensionYears", "diabetesYears",
   "bpMedStartAge", "lipidMedStartAge", "diabetesMedStartAge",
   "diabetesMedInsulin", "diabetesMedPregnancy",
@@ -663,7 +665,7 @@ export function derive27(a: Answers27, p: Patient) {
   const incomplete: string[] = [];
   for (const q of QUESTIONS27.filter((q) => isApplicable27(q, a))) {
     if (!a[q.id]?.trim()) {
-      incomplete.push(q.id);
+      if (!q.optional) incomplete.push(q.id);
       continue;
     }
     if (q.options && !q.options.includes(a[q.id]))
@@ -917,7 +919,7 @@ export function derive27(a: Answers27, p: Patient) {
     sleep_duration_hours: "observed",
   };
   const methods: Record<string, string> = {
-    ses_index_0_100: "PINTIG-SES-1.1: 50% education + 50% per-person income; fixed PSA 2023 anchor; category estimates",
+    ses_index_0_100: "PINTIG-SES-1.3: unavailable until suitable reference data, categorical encoding, income treatment and scoring parameters are validated",
     urban_rural_residence: "Explicit PSA barangay class with source provenance",
     waist_cm: "Mean of two observed PURE-form readings",
     hip_circumference_cm: "Mean of two observed PURE-form readings",
