@@ -235,3 +235,9 @@
 .assessment27 .activity-card { grid-column: 1 / -1; min-width: 0; margin: 12px 0; padding: 14px 18px; border: 1px solid #d3e0e7; border-radius: 12px; }
 .assessment27 .activity-card legend { padding: 0 6px; font-weight: 650; }
 .assessment27 .activity-card > .gridform > .field:first-child { grid-column: 1 / -1; }
+
+.assessment27 .activity-card > legend,
+.assessment27 .beverage-card > legend,
+.assessment27 .circumference-group > legend {
+  color: #087e83;
+}

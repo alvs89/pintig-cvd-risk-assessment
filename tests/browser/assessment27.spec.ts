@@ -35,6 +35,7 @@ for (const viewport of [
       const group = page.getByRole("group", { name: measurement === "waist" ? "Waist measurements" : "Hip measurements", exact: true });
       await expect(group.locator("input")).toHaveCount(2);
       await expect(group.locator("select")).toHaveCount(1);
+      await expect(group.locator(":scope > legend")).toHaveCSS("color", "rgb(8, 126, 131)");
       await expect(group).toContainText("Measurement conditions only; not a risk predictor.");
       await group.locator("select").selectOption("minimal/no clothing");
       if (viewport.width >= 1000) {
@@ -87,6 +88,7 @@ for (const viewport of [
     }
     await expect(page.getByRole("group", { name: "What forms of alcohol have you regularly used? (check all that apply)", exact: true })).toBeVisible();
     await page.locator("#q27-alc_beer").check();
+    await expect(page.locator(".beverage-card > legend")).toHaveCSS("color", "rgb(8, 126, 131)");
     await expect(page.locator("#q27-alc_beer_quantity")).toHaveAccessibleName("Average # of drinks (drinks)");
     await page.locator("#q27-alc_beer_quantity").fill("5");
     await page.locator("#q27-alc_beer_frequency").selectOption("Monthly");
@@ -137,6 +139,8 @@ for (const viewport of [
         await page.getByRole("button", { name: "Travel", exact: true }).click();
         await expect(page.locator("#q27-ipaq11_minutes")).toHaveValue("30");
         await expect(page.getByRole("group", { name: "Cycling for transportation", exact: true })).toContainText("Hours per day");
+        await expect(page.getByRole("group", { name: "Cycling for transportation", exact: true }).locator(":scope > legend")).toHaveCSS("color", "rgb(8, 126, 131)");
+        await expect(page.locator('label[for="q27-ipaq11_hours"]')).not.toHaveCSS("color", "rgb(8, 126, 131)");
         await page.getByRole("group", { name: "Cycling for transportation", exact: true }).screenshot({ path: "test-results/activity-" + viewport.width + ".png" });
         await page.getByRole("button", { name: "Sitting", exact: true }).click();
       }
