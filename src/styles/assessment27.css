@@ -134,6 +134,28 @@
 .assessment27 .gridform > .source-question-stem { grid-column: 1 / -1; margin: 8px 0; }
 .question-context { display: inline; font-weight: 600; }
 
+.assessment27 .circumference-group {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: 12px 0;
+  padding: 12px 16px;
+  border: 1px solid #d3e0e7;
+  border-radius: 12px;
+}
+.assessment27 .circumference-group legend {
+  padding: 0 6px;
+  font-weight: 650;
+}
+.assessment27 .circumference-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.assessment27 .measurement-metadata > label {
+  font-weight: 500;
+}
+@media (max-width: 680px) {
+  .assessment27 .circumference-fields { grid-template-columns: minmax(0, 1fr); }
+}
+
 .assessment-save-toast:empty { display: none; }
 .assessment-save-toast {
   position: fixed;

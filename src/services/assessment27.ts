@@ -86,6 +86,7 @@ for (const [id, text, unit, min, max] of [
       text: `${text} — clothing`,
       source: pure(35, "Q41"),
       options: ["minimal/no clothing", "full clothing"],
+      note: "Measurement conditions only; not a risk predictor.",
     });
 }
 for (const [id, text] of [

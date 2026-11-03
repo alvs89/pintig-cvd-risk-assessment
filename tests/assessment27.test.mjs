@@ -366,3 +366,15 @@ test("only approved fields are retired; stale retired answers cannot affect feat
   const saved = createIntake27(users[0], p, check(), { ...a, hypertensionYears: "999" });
   assert.ok(!Object.hasOwn(saved.rawResponses, "hypertensionYears"));
 });
+
+test("clothing remains raw measurement metadata without changing the 27 predictors", () => {
+  const readings = { waist1: "90", waist2: "92", hip1: "100", hip2: "102" };
+  const minimal = derive27({ ...readings, waistClothing: "minimal/no clothing", hipClothing: "minimal/no clothing" }, p);
+  const full = derive27({ ...readings, waistClothing: "full clothing", hipClothing: "full clothing" }, p);
+  assert.deepEqual(minimal.features, full.features);
+  assert.equal(minimal.features.waist_cm, 91);
+  assert.equal(minimal.features.hip_circumference_cm, 101);
+  const saved = createIntake27(users[0], p, check(), { ...readings, waistClothing: "full clothing" });
+  assert.equal(saved.rawResponses.waistClothing, "full clothing");
+  assert.equal(Object.keys(saved.features).length, 27);
+});

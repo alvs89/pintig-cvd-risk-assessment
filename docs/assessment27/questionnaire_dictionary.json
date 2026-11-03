@@ -479,6 +479,7 @@
         "minimal/no clothing",
         "full clothing"
       ],
+      "note": "Measurement conditions only; not a risk predictor.",
       "applicability": "Always applicable",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."
@@ -518,6 +519,7 @@
         "minimal/no clothing",
         "full clothing"
       ],
+      "note": "Measurement conditions only; not a risk predictor.",
       "applicability": "Always applicable",
       "missing": "Blank remains missing; original unknown/refusal codes remain in raw responses.",
       "bounds": "UI plausibility checks are PINTIG adaptations, not source response codes."

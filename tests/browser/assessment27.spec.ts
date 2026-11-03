@@ -30,6 +30,17 @@ for (const viewport of [
 
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(page.getByText("Step 2 of 9")).toBeVisible();
+    for (const measurement of ["waist", "hip"]) {
+      const group = page.getByRole("group", { name: measurement === "waist" ? "Waist measurements" : "Hip measurements", exact: true });
+      await expect(group.locator("input")).toHaveCount(2);
+      await expect(group.locator("select")).toHaveCount(1);
+      await expect(group).toContainText("Measurement conditions only; not a risk predictor.");
+      await group.locator("select").selectOption("minimal/no clothing");
+      if (viewport.width > 680) {
+        const positions = await group.locator("input, select").evaluateAll(elements => elements.map(el => el.getBoundingClientRect().top));
+        expect(Math.max(...positions) - Math.min(...positions)).toBeLessThanOrEqual(1);
+      }
+    }
     const sbp = page.locator("#q27-sbp1");
     await expect(sbp).toHaveAttribute("inputmode", "decimal");
     await sbp.fill("40");

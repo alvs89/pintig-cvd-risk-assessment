@@ -315,7 +315,7 @@ export function Assessment27Page() {
                               errands, or to go from place to place.
                             </p>
                           )}
-                        <div className="field">
+                        <div className={q.id.endsWith("Clothing") ? "field measurement-metadata" : "field"}>
                           <label htmlFor={id}>
                             {q.sharedPrompt && <span className="pintig-sr-only">{q.sharedPrompt} </span>}
                             {q.context && <span className="question-context">{q.context} &mdash; </span>}
@@ -402,6 +402,21 @@ export function Assessment27Page() {
                         </div>
                         </Fragment>
                       );
+                    }).flatMap((field, index, fields) => {
+                      const key = String(field.key);
+                      if (["waist1", "hip1"].includes(key)) {
+                        const measurement = key === "waist1" ? "Waist" : "Hip";
+                        return [
+                          <fieldset className="circumference-group" key={key + "-group"}>
+                            <legend>{measurement} measurements</legend>
+                            <div className="gridform circumference-fields">
+                              {fields.slice(index, index + 3)}
+                            </div>
+                          </fieldset>,
+                        ];
+                      }
+                      if (["waist2", "waistClothing", "hip2", "hipClothing"].includes(key)) return [];
+                      return [field];
                     })}
                   </div>
                 </section>

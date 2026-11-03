@@ -14,3 +14,5 @@ Source stems are shown once above their response rows. Standalone source questio
 | Measurements, education, stress, administrative residence | Existing measurement labels and standalone questions retained |
 
 The renderer handles shared prompts through metadata, without a medical-history special case. Screen-reader names include the shared prompt or row context. Saved responses and exported dictionaries retain that context. Selectors remain digital adaptations of paper boxes, with existing codes, missing responses and skip logic preserved. This presentation review does not certify every transcription as a fresh verbatim PDF audit. No dataset, scoring formula or model changes are part of this change.
+
+Waist and hip each have a measurement group containing their two readings and clothing selector. Clothing is visually secondary measurement metadata, retains the original two response options, and is saved without entering the predictor matrix or numerically correcting circumference. On narrow screens the fields stack within the same labeled group.
