@@ -102,6 +102,7 @@ export const S: Session = {
   confirmation: null,
   formRevision: 0,
   announcement: "",
+  assessmentSavedNotice: 0,
 };
 
 let revision = 0;

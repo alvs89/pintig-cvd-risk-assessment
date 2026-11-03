@@ -1,5 +1,5 @@
 import { FocusedAssessment27 } from "../components/FocusedAssessment27";
-import { Fragment, useEffect, useState, type FormEvent } from "react";
+import { Fragment, useState, type FormEvent } from "react";
 import { PreAssessmentCheck } from "../components/PreAssessmentCheck";
 import { b, head, patientIdent } from "../components/shared";
 import {
@@ -25,12 +25,6 @@ export function Assessment27Page() {
   const [stepIndex, setStepIndex] = useState(0);
   const [activityIndex, setActivityIndex] = useState(0);
   const [dietIndex, setDietIndex] = useState(0);
-  const [saveNotice, setSaveNotice] = useState(0);
-  useEffect(() => {
-    if (!saveNotice) return;
-    const timer = window.setTimeout(() => setSaveNotice(0), 6000);
-    return () => window.clearTimeout(timer);
-  }, [saveNotice]);
   const p = P(S.patientId);
   const answers = S.draft?.schema === INTAKE27_SCHEMA ? S.draft : {};
   const unlocked = !!p && !!screeningForPatient(S.preAssessment, p);
@@ -80,7 +74,6 @@ export function Assessment27Page() {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSaveNotice(0);
     if (!p) {
       msg("Choose a patient before saving.", true);
       render();
@@ -89,7 +82,6 @@ export function Assessment27Page() {
     try {
       const record = createIntake27(S.user, p, S.preAssessment, answers);
       intakes27.push({ ...record, id: intakes27.length + 1 });
-      setSaveNotice(Date.now());
       S.result = null;
       log("Saved questionnaire responses for " + p.record);
       msg(
@@ -120,14 +112,6 @@ export function Assessment27Page() {
   };
   return (
     <>
-      <div className="assessment-save-toast" role="status" aria-live="polite" aria-atomic="true">
-        {!!saveNotice && (
-          <>
-            <span>Questionnaire responses saved. View them in Assessment History.</span>
-            <button type="button" aria-label="Dismiss save notification" onClick={() => setSaveNotice(0)}>×</button>
-          </>
-        )}
-      </div>
       {head(
         "New Risk Assessment",
         "Record measurements and original questionnaire responses.",

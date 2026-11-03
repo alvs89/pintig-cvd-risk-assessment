@@ -218,6 +218,7 @@ export function handleClick(e: ActionEvent) {
       S.patientId = +arg;
       S.page = "New Risk Assessment";
       S.result = null;
+      S.assessmentSavedNotice = 0;
       S.formRevision++;
       render();
     };
@@ -375,6 +376,7 @@ export function handleClick(e: ActionEvent) {
     );
     records.push(rec);
     r.saved = true;
+    S.assessmentSavedNotice = Date.now();
     log("Saved assessment AST-" + rec.id);
     msg("Assessment saved successfully.");
     return render();
@@ -695,6 +697,7 @@ export function handleSubmit(e: FormEvent) {
       saved: false,
       guidanceRules: generateGuidance(x, p),
     };
+    S.assessmentSavedNotice = 0;
     S.page = "New Risk Assessment";
     S.message = "";
     log(

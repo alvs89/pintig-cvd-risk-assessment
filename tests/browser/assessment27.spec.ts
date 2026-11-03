@@ -217,16 +217,7 @@ for (const viewport of [
     await expect(page.getByRole("button", { name: "Calculate risk", exact: true })).toBeDisabled();
     await page.getByRole("button", { name: "Save questionnaire responses", exact: true }).click();
     const toast = page.locator(".assessment-save-toast");
-    await expect(toast).toContainText("Questionnaire responses saved.");
-    await expect(toast).toBeVisible();
-    const toastBounds = await toast.boundingBox();
-    expect(toastBounds!.y).toBe(20);
-    expect(Math.abs(viewport.width - toastBounds!.x - toastBounds!.width - 20)).toBeLessThanOrEqual(1);
-    await page.getByRole("button", { name: "Dismiss save notification" }).click();
     await expect(toast).toBeHidden();
-    await page.getByRole("button", { name: "Save questionnaire responses", exact: true }).click();
-    await expect(toast).toBeVisible();
-    await expect(toast).toBeHidden({ timeout: 8000 });
     expect(errors).toEqual([]);
     expect(
       await page.evaluate(

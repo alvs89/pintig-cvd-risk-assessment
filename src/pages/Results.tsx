@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { TenYearProbabilityChart } from "../components/TenYearProbabilityChart";
 import { FurtherAssessmentPanel } from "../components/FurtherAssessmentPanel";
 import { furtherAssessment } from "../services/furtherAssessment";
@@ -10,10 +10,19 @@ import { ModelStatus } from "../components/ModelStatus";
 import { CumulativeIncidencePanel } from "../components/CumulativeIncidencePanel";
 import { ResearchCigPanel } from "../components/ResearchCigPanel";
 import { AssessmentVisualizations } from "../components/AssessmentVisualizations";
-import { P, S } from "../state/store";
+import { P, S, render } from "../state/store";
 import { screeningForPatient } from "../services/preAssessment";
 import { esc } from "../utils/format";
 export function ResultsPage() {
+  const notice = S.assessmentSavedNotice;
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => {
+      S.assessmentSavedNotice = 0;
+      render();
+    }, 6000);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
   let r = S.result!,
     p = P(r.pid)!,
     guid = r.guidanceRules || generateGuidance(r.inputs, p);
@@ -21,6 +30,14 @@ export function ResultsPage() {
   const approximateWithoutEventPer100 = 100 - approximateEventsPer100;
   return (
     <>
+      <div className="assessment-save-toast" role="status" aria-live="polite" aria-atomic="true">
+        {!!notice && (
+          <>
+            <span>Assessment saved. View it in Assessment History.</span>
+            <button type="button" aria-label="Dismiss save notification" onClick={() => { S.assessmentSavedNotice = 0; render(); }}>×</button>
+          </>
+        )}
+      </div>
       {head(
         "Assessment Result",
         p.record + " · 10-year assessment",

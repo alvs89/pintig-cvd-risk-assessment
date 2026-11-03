@@ -121,6 +121,7 @@ export interface Session {
   confirmation: Confirmation | null;
   formRevision: number;
   announcement: string;
+  assessmentSavedNotice: number;
 }
 /** Future model integration must implement this contract without changing risk bands or guidance. */
 export interface PredictionService {
