@@ -1,0 +1,38 @@
+import { test, expect } from '@playwright/test';
+import { completePreAssessment } from './preAssessmentHelpers';
+
+for (const width of [1440, 820, 390]) test(`questionnaire opens original illustrative results and saves at ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 1000 });
+  await page.goto('/');
+  await page.locator('[data-act="workerDemo"]').click();
+  await page.locator('#loginForm button[type="submit"]').click();
+  await page.locator('[data-act="nav:New Risk Assessment"]').first().click();
+  await page.locator('#pid').selectOption('1');
+  await completePreAssessment(page);
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await page.locator('#illustrativeHeight').fill('170');
+  await page.locator('#illustrativeWeight').fill('83.81');
+  await expect(page.getByText('29 kg/m²', { exact: true })).toBeVisible();
+  for (let i = 0; i < 25 && await page.getByRole('button', { name: 'Continue', exact: true }).count(); i++)
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await expect(page.locator('#illustrative-bmi')).toHaveCount(0);
+  const review = page.getByRole('region', { name: 'Response review', exact: true });
+  await expect(review).toContainText('All required applicable fields are complete');
+  await expect(page.getByRole('heading', { name: 'Assessment actions', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Save Questionnaire Responses', exact: true })).toHaveCount(1);
+  await expect(page.locator('.review-card svg')).toHaveCount(0);
+  await page.locator('.review-research > summary').click();
+  await expect(page.getByRole('button', { name: 'Calculate research estimate', exact: true })).toBeVisible();
+  await page.locator('.review-research > summary').click();
+  await expect(page.getByRole('button', { name: 'Calculate research estimate', exact: true })).toBeHidden();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  await review.screenshot({ path: `test-results/response-review-${width}.png` });
+  await expect(page.getByRole('region', { name: 'Illustrative assessment review' })).not.toContainText('BMI');
+  await page.getByRole('button', { name: 'Calculate Risk', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Assessment Result', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Factors associated with this estimate' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'General Educational Guidance' })).toBeVisible();
+  await page.getByRole('button', { name: 'Save Assessment', exact: true }).click();
+  await expect(page.getByText('Saved assessment', { exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});

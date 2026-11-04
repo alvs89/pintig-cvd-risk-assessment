@@ -75,7 +75,7 @@ test("professional copy, responsive form alignment and keyboard confirmations", 
       .evaluate((input: HTMLInputElement) => input.validity.valueMissing),
   ).toBe(true);
   await page
-    .getByRole("button", { name: "Clear assessment", exact: true })
+    .getByRole("button", { name: "Clear Assessment", exact: true })
     .click();
   await expect(page.locator("#pintigCancel")).toBeFocused();
   await page.keyboard.press("Tab");
@@ -87,7 +87,7 @@ test("professional copy, responsive form alignment and keyboard confirmations", 
   await page.keyboard.press("Escape");
   await expect(page.getByRole("alertdialog")).toBeHidden();
   await expect(
-    page.getByRole("button", { name: "Clear assessment", exact: true }),
+    page.getByRole("button", { name: "Clear Assessment", exact: true }),
   ).toBeFocused();
   await page.locator('.sidebar [data-act="nav:Help"]').click();
   await page.getByRole("tab", { name: "FAQs", exact: true }).click();

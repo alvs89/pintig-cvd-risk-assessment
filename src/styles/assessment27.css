@@ -246,3 +246,40 @@
 .assessment27 .circumference-group > legend {
   color: #087e83;
 }
+
+.assessment27 .review-card { margin-top: 28px; border: 1px solid #d3e0e7; border-radius: 16px; background: #fff; box-shadow: 0 5px 18px #1230470d; overflow: hidden; }
+.assessment27 .review-card-header { padding: 22px 26px; background: #eff7f8; }
+.assessment27 .review-card-header h2 { margin: 0 0 6px; color: #123047; }
+.assessment27 .review-card-header p { margin: 0; color: #40566a; }
+.assessment27 .review-card-columns { display: grid; grid-template-columns: 1fr 1fr; padding: 24px 26px; gap: 26px; }
+.assessment27 .review-card-columns > div { min-width: 0; }
+.assessment27 .review-card h3 { margin: 0 0 16px; color: #123047; }
+.assessment27 .review-summary { border: 1px solid #e1ecef; border-radius: 12px; overflow: hidden; }
+.assessment27 .review-summary p { margin: 0; padding: 16px 18px; }
+.assessment27 .review-summary p + p { border-top: 1px solid #e1ecef; }
+.assessment27 .review-completion { background: #eaf6f3; font-weight: 600; }
+.assessment27 .review-summary strong { color: #087e83; }
+.assessment27 .review-notes { border-left: 1px solid #d3e0e7; padding-left: 26px; }
+.assessment27 .review-notes p { background: #f2f6f9; padding: 16px 18px; margin: 0 0 14px; border-radius: 12px; }
+.assessment27 .review-notes p:last-child { margin-bottom: 0; }
+.assessment27 .review-actions-body { padding: 26px; }
+.assessment27 .review-action-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.assessment27 .review-action-group { display: flex; flex-wrap: wrap; gap: 12px; }
+.assessment27 .review-secondary { background: #e3f3f3; color: #07666c; border-color: #e3f3f3; }
+.assessment27 .review-secondary:hover { background: #cfe9e9; }
+.assessment27 [aria-label="Feature calculation review"] { padding-bottom: 0; }
+.assessment27 [aria-label="Feature calculation review"] > details.intake27-section { padding-bottom: 0; margin-bottom: 0; }
+.assessment27 .review-card[aria-label="Response review"] { margin-top: 14px; }
+.assessment27 .review-research { margin-top: 26px; border: 1px solid #d3e0e7; border-radius: 12px; padding: 0 18px; }
+.assessment27 .review-research > summary { list-style: none; padding: 18px 0; min-height: 44px; cursor: pointer; font-weight: 600; color: #123047; }
+.assessment27 .review-research > summary::-webkit-details-marker { display: none; }
+.assessment27 .review-research > summary::after { content: 'Show'; float: right; color: #087e83; font-weight: 400; margin-left: 12px; }
+.assessment27 .review-research[open] > summary::after { content: 'Hide'; }
+.assessment27 .review-research > summary:focus-visible { outline: 2px solid #087e83; outline-offset: 4px; }
+@media (max-width: 760px) {
+  .assessment27 .review-card-columns { grid-template-columns: 1fr; }
+  .assessment27 .review-notes { border-left: 0; border-top: 1px solid #d3e0e7; padding: 22px 0 0; }
+  .assessment27 .review-action-group { width: 100%; }
+  .assessment27 .review-action-group .btn { flex: 1 1 180px; white-space: normal; }
+  .assessment27 .review-card-header, .assessment27 .review-card-columns, .assessment27 .review-actions-body { padding: 20px; }
+}

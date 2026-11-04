@@ -25,7 +25,8 @@ for (const viewport of [
     await page.locator('[data-act="workerDemo"]').click();
     await page.locator('#loginForm button[type="submit"]').click();
     await page.locator('[data-act="nav:New Risk Assessment"]').first().click();
-    await page.locator("#pid").selectOption("1");
+    // Patient 11 is intentionally left without seeded answers for manual entry.
+    await page.locator("#pid").selectOption("11");
     await completePreAssessment(page);
 
     await expect(page.getByText("Step 1 of 9")).toBeVisible();
@@ -237,20 +238,20 @@ for (const viewport of [
     ).toBeVisible();
     await expect(
       page.getByRole("button", {
-        name: "Save questionnaire responses",
+        name: "Save Questionnaire Responses",
         exact: true,
       }),
     ).toBeVisible();
     await expect(page.getByText("SES unavailable: a suitable reference population and validated scoring parameters are not yet available.", { exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Calculate risk", exact: true })).toBeDisabled();
-    await page.getByRole("button", { name: "Save questionnaire responses", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Calculate Risk", exact: true })).toBeEnabled();
+    await page.getByRole("button", { name: "Save Questionnaire Responses", exact: true }).click();
     const toast = page.locator(".assessment-save-toast");
     await expect(toast).toBeVisible();
     await expect(toast).toContainText("Assessment saved. View it in Assessment History.");
     expect((await toast.boundingBox())!.y).toBe(20);
     await page.getByRole("button", { name: "Dismiss save notification" }).click();
     await expect(toast).toBeHidden();
-    await page.getByRole("button", { name: "Save questionnaire responses", exact: true }).click();
+    await page.getByRole("button", { name: "Save Questionnaire Responses", exact: true }).click();
     await expect(toast).toBeVisible();
     await expect(toast).toBeHidden({ timeout: 8000 });
     expect(errors).toEqual([]);

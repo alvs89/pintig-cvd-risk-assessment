@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "participants": 4191,
+  "columns": 33,
+  "predictors": 27,
+  "event_type_counts": {
+    "0": 3604,
+    "1": 369,
+    "2": 218
+  },
+  "fold_counts": {
+    "1": 839,
+    "2": 838,
+    "3": 838,
+    "4": 838,
+    "5": 838
+  },
+  "dataset_sha256": "f6361211f6c4e7b1f7da49b962e6ace94fed8eac73b80b908218a67d989f03fe",
+  "source_outcomes_and_folds_match": true,
+  "generation_uses_no_outcomes_times_or_folds": true,
+  "missing_by_predictor": {
+    "age_years": 0,
+    "sex_male": 0,
+    "ses_index_0_100": 0,
+    "urban_rural_residence": 0,
+    "waist_cm": 0,
+    "hip_circumference_cm": 0,
+    "sbp_mmhg": 0,
+    "dbp_mmhg": 0,
+    "heart_rate_bpm": 1,
+    "hypertension_history": 0,
+    "bp_medication": 52,
+    "diabetes": 0,
+    "diabetes_medication": 0,
+    "lipid_lowering_medication": 0,
+    "family_history_cvd": 0,
+    "alcohol_ethanol_g_week": 0,
+    "heavy_episodic_alcohol": 0,
+    "smoking_status": 0,
+    "smoking_pack_years": 0,
+    "current_smoking_intensity_cigs_day": 29,
+    "passive_smoking_childhood": 0,
+    "passive_smoking_adult_years": 0,
+    "activity_min_week": 0,
+    "sitting_minutes_day": 0,
+    "diet_score_0_100": 0,
+    "psychosocial_stress": 0,
+    "sleep_duration_hours": 0
+  }
+}

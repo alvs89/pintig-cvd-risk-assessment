@@ -255,7 +255,7 @@ export function AssessmentPage() {
             <button className={"btn primary"} type={"submit"}>
               {"Review 10-year risk result →"}
             </button>
-            {b("Clear assessment", "resetAssessment")}
+            {b("Clear Assessment", "resetAssessment")}
           </div>
           </fieldset>
         </form>

@@ -1,6 +1,7 @@
 import { BEVERAGES, QUESTIONS27, isApplicable27, sanitizeNumericInput, type Answers27 } from "../services/assessment27";
 import { numericError } from "../utils/numericValidation";
 import { questionnaireOptionLabel } from "../utils/questionnaireOptionLabel";
+import { requiredLabel } from "./shared";
 
 type Props = {
   section: "Alcohol consumption" | "Active smoking";
@@ -20,15 +21,15 @@ export function FocusedAssessment27({ section, answers, update, features, issues
     const inputId = "q27-" + id;
     const error = !q.options && answers[id] ? numericError(answers[id], { min: q.min, max: q.max, step: q.integer ? 1 : "any" }) : "";
     const options = q.options;
-    const label = <>{q.text}{q.unit && <span className="question-unit"> ({q.unit})</span>}</>;
+    const label = <>{requiredLabel(q.text, !q.optional)}{q.unit && <span className="question-unit"> ({q.unit})</span>}</>;
     const choiceLabel = questionnaireOptionLabel;
     return <div className="focused-field" key={id}>
       {options && id !== "alcoholHistory" && id.endsWith("_frequency") ? <>
         <label htmlFor={inputId}>{label}</label>
-        <select id={inputId} value={answers[id] ?? ""} onChange={e => update({ [id]: e.target.value })} aria-describedby={inputId + "-help"}>
+        <select id={inputId} value={answers[id] ?? ""} onChange={e => update({ [id]: e.target.value })} aria-required={!q.optional || undefined} aria-describedby={inputId + "-help"}>
           <option value="">Choose frequency</option>{options.map(o => <option key={o}>{o}</option>)}
         </select>
-      </> : options ? <fieldset className="response-choices" id={inputId} aria-describedby={inputId + "-help"}>
+      </> : options ? <fieldset className="response-choices" id={inputId} aria-required={!q.optional || undefined} aria-describedby={inputId + "-help"}>
         <legend>{label}</legend>
         <div className={id === "alcoholHistory" ? "choice-list" : "choice-row"}>
           {options.map(o => <label key={o}><input type="radio" name={id} value={o} checked={answers[id] === o} onChange={() => update({ [id]: o })} />{choiceLabel(o)}</label>)}
@@ -36,7 +37,7 @@ export function FocusedAssessment27({ section, answers, update, features, issues
         {!!answers[id] && <button className="clear-response" type="button" onClick={() => update({ [id]: "" })}>Clear answer</button>}
       </fieldset> : <>
         <label htmlFor={inputId}>{label}</label>
-        <input id={inputId} type="text" inputMode={q.integer ? "numeric" : "decimal"} value={answers[id] ?? ""}
+        <input id={inputId} type="text" inputMode={q.integer ? "numeric" : "decimal"} value={answers[id] ?? ""} aria-required={!q.optional || undefined}
           aria-invalid={!!problem || !!error} aria-describedby={inputId + "-help"}
           onChange={e => {
             const value = sanitizeNumericInput(e.target.value, q.integer);
@@ -61,7 +62,7 @@ export function FocusedAssessment27({ section, answers, update, features, issues
     {alcohol ? <>
       {field("alcoholHistory")}
       {showBeverages && <fieldset className="beverage-selection">
-        <legend>{sourceQuestions.find(q => q.id === "alc_beer")!.sharedPrompt}</legend>
+        <legend>{requiredLabel(sourceQuestions.find(q => q.id === "alc_beer")!.sharedPrompt ?? "Alcohol types used", true)}</legend>
         {formerDrinker && <p>Past drinking history: enter the beverages and usual amounts consumed when you drank.</p>}
         <p>Select all that apply. Unchecked types are recorded as not selected after you make a selection.</p>
         <div className="choice-row">

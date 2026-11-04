@@ -7,6 +7,7 @@ import type {
 } from "../types/domain";
 import { originalPatients } from "./originalPatients";
 import { createAdditionalPopulation } from "./additionalPatients";
+import { seedFictionalDemoQuestionnaires } from "./intakes27";
 const additionalPopulation = createAdditionalPopulation();
 export const users: User[] = [
   {
@@ -74,6 +75,9 @@ export const records: AssessmentRecord[] = [
 export const logs: AuditEntry[] = [
   { when: "2026-09-30", user: "System", action: "Initialized patient records" },
 ];
+// Session-only fictional questionnaire records support the presentation flow.
+// Patient 11 is intentionally omitted for manual demonstration entry.
+seedFictionalDemoQuestionnaires(patients, users[0]);
 export const S: Session = {
   preAssessment: null,
   user: null,

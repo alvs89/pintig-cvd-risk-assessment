@@ -220,7 +220,7 @@ export function ResultsPage() {
         <div className={"actions"}>
           {r.saved
             ? tag("Saved assessment")
-            : b("Save assessment", "saveAssessment", "primary")}
+            : b("Save Assessment", "saveAssessment", "primary")}
           {b("Assessment History", "nav:Assessment History")}
           {b("Print", "print")}
         </div>

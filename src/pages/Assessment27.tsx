@@ -1,7 +1,7 @@
 import { FocusedAssessment27 } from "../components/FocusedAssessment27";
 import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { PreAssessmentCheck } from "../components/PreAssessmentCheck";
-import { b, head, patientIdent } from "../components/shared";
+import { b, head, patientIdent, requiredLabel } from "../components/shared";
 import {
   FEATURE_NAMES27,
   QUESTIONS27,
@@ -19,6 +19,9 @@ import { openPintigConfirm } from "../state/actions";
 import { age } from "../utils/format";
 import { numericError } from "../utils/numericValidation";
 import { questionnaireOptionLabel } from "../utils/questionnaireOptionLabel";
+import { educationCategory } from "../services/featureProtocolV1";
+import { INCOME_OPTIONS } from "../services/sesProtocol";
+import { illustrativeQuestionnaire, measurementBmi } from "../services/illustrativeQuestionnaire";
 import "../styles/assessment27.css";
 
 export function Assessment27Page() {
@@ -26,6 +29,10 @@ export function Assessment27Page() {
   const [activityIndex, setActivityIndex] = useState(0);
   const [dietIndex, setDietIndex] = useState(0);
   const [navigation, setNavigation] = useState(0);
+  const [researchEstimate, setResearchEstimate] = useState<number | null>(null);
+  const [researchEstimateError, setResearchEstimateError] = useState<string | null>(null);
+  const [researchEstimatePending, setResearchEstimatePending] = useState(false);
+  const [illustrativeError, setIllustrativeError] = useState<string | null>(null);
   const destinationHeading = useRef<HTMLHeadingElement>(null);
   useLayoutEffect(() => {
     if (!navigation) return;
@@ -46,6 +53,7 @@ export function Assessment27Page() {
   const finalStep = stepIndex === steps.length;
   const currentStep = steps[Math.min(stepIndex, steps.length - 1)];
   const updateMany = (values: Record<string, string>) => {
+    setIllustrativeError(null);
     S.draft = {
       ...answers,
       schema: INTAKE27_SCHEMA,
@@ -53,6 +61,8 @@ export function Assessment27Page() {
       ...values,
     };
     S.result = null;
+    setResearchEstimate(null);
+    setResearchEstimateError(null);
     render();
   };
   const update = (id: string, value: string) => updateMany({ [id]: value });
@@ -64,12 +74,20 @@ export function Assessment27Page() {
   const visibleSections = isActivityStep ? [currentStep.sections[activityIndex]] : currentStep.sections;
   const changePatient = (value: string) => {
     const change = () => {
+      setIllustrativeError(null);
+      setResearchEstimate(null);
+      setResearchEstimateError(null);
       setStepIndex(0);
       setActivityIndex(0);
       setDietIndex(0);
       S.patientId = P(value)?.id ?? null;
       S.preAssessment = null;
-      S.draft = { schema: INTAKE27_SCHEMA, pid: value };
+      const saved = [...intakes27]
+        .reverse()
+        .find((record) => record.patientId === S.patientId);
+      S.draft = saved
+        ? { ...saved.rawResponses, schema: INTAKE27_SCHEMA, pid: value }
+        : { schema: INTAKE27_SCHEMA, pid: value };
       S.result = null;
       render();
     };
@@ -123,6 +141,58 @@ export function Assessment27Page() {
       );
     }
   };
+  const calculateIllustrative = () => {
+    if (!p || !finalStep) return;
+    try {
+      if (!S.user?.active || !['admin', 'worker'].includes(S.user.role)) throw new Error('Sign in with an authorized account.');
+      const output = illustrativeQuestionnaire(answers, p, S.preAssessment);
+      const questionnaire = createIntake27(S.user, p, S.preAssessment, answers);
+      intakes27.push({ ...questionnaire, id: intakes27.length + 1 });
+      S.result = output;
+      S.assessmentSavedNotice = 0;
+      S.message = '';
+      log('Calculated an illustrative cardiovascular risk estimate for ' + p.record);
+      render();
+      requestAnimationFrame(() => {
+        document.querySelector('.appmain')?.scrollTo({ top: 0, behavior: 'instant' });
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        const heading = document.querySelector<HTMLElement>('.maincontent h1');
+        heading?.setAttribute('tabindex', '-1');
+        heading?.focus({ preventScroll: true });
+      });
+    } catch (error) { setIllustrativeError((error as Error).message); }
+  };
+  const calculateResearchEstimate = async () => {
+    if (!result) return;
+    setResearchEstimate(null);
+    setResearchEstimateError(null);
+    if (result.issues.length || result.incomplete.length) {
+      setResearchEstimateError("Correct the listed entries and complete all applicable questions before calculating the research estimate.");
+      return;
+    }
+    const education = educationCategory(answers);
+    const incomeBand = INCOME_OPTIONS.indexOf(answers.familyIncomePH as typeof INCOME_OPTIONS[number]);
+    const supportedPeople = Number(answers.incomeSupportedPeople);
+    const features = { ...result.features };
+    delete features.ses_index_0_100;
+    if (education === null || incomeBand < 0 || incomeBand > 5 || !Number.isInteger(supportedPeople) || supportedPeople < 1 || Object.values(features).some(value => value === null)) {
+      setResearchEstimateError("The questionnaire does not yet provide every input required by the experimental research model.");
+      return;
+    }
+    setResearchEstimatePending(true);
+    try {
+      const response = await fetch("/experimental-proxy-risk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Pintig-Research": "questionnaire-proxy-local-only" },
+        body: JSON.stringify({ features: { ...features, ses_index_0_100: 0 }, ses: { education_category: education, income_band: incomeBand, income_supported_people: supportedPeople } }),
+      });
+      const body: unknown = await response.json();
+      if (!response.ok || !body || typeof body !== "object" || typeof (body as { risk10?: unknown }).risk10 !== "number") throw new Error("The local research model is unavailable.");
+      setResearchEstimate((body as { risk10: number }).risk10);
+    } catch {
+      setResearchEstimateError("The local research model is unavailable. Start the research model service, then try again.");
+    } finally { setResearchEstimatePending(false); }
+  };
   return (
     <>
       {head(
@@ -134,7 +204,7 @@ export function Assessment27Page() {
         <form id="assessment27Form" noValidate onSubmit={e => e.preventDefault()}>
           <h2>Patient identification</h2>
           <div className="field">
-            <label htmlFor="pid">Patient profile *</label>
+              <label htmlFor="pid">{requiredLabel("Patient profile", true)}</label>
             <select
               id="pid"
               value={p?.id ?? ""}
@@ -157,10 +227,9 @@ export function Assessment27Page() {
           )}
           <PreAssessmentCheck />
           <div className="model-availability" role="status">
-            <strong>Risk calculation unavailable</strong>
+            <strong>Illustrative assessment</strong>
             <p>
-              This questionnaire is not supported by a validated risk model. You
-              can save the responses without generating a risk estimate.
+              The assessment uses the illustrative calculation and supported questionnaire inputs. It is not a validated clinical prediction.
             </p>
           </div>
           <fieldset
@@ -228,6 +297,20 @@ export function Assessment27Page() {
                   {(section === "Alcohol consumption" || section === "Active smoking") ? (
                     <FocusedAssessment27 section={section} answers={answers} update={updateMany} features={result?.features ?? {}} issues={result?.issues ?? []} patientAge={p ? age(p.dob) : 0} />
                   ) : <>
+                  {section === "Anthropometric and cardiovascular measurements" && <>
+                    <div className="gridform">
+                      {([['illustrativeHeight', 'Height', 'cm', 110, 220], ['illustrativeWeight', 'Weight', 'kg', 25, 250]] as const).map(([key, label, unit, min, max]) => {
+                        const error = answers[key] ? numericError(answers[key], { min, max, step: 'any' }) : '';
+                        return <div className="field" key={key}>
+                          <label htmlFor={key}>{requiredLabel(`${label} (${unit})`, true)}</label>
+                          <input id={key} type="text" inputMode="decimal" aria-required="true" aria-invalid={!!error} aria-describedby={`${key}-help`} value={answers[key] ?? ''}
+                            onChange={e => { const value = sanitizeNumericInput(e.target.value); if (value !== null) update(key, value); }} />
+                          <small id={`${key}-help`}>{error || `Record measured ${label.toLowerCase()} in ${unit}.`}</small>
+                        </div>;
+                      })}
+                    </div>
+                    <p aria-live="polite">Calculated BMI: <strong>{measurementBmi(answers) == null ? 'Unavailable — enter valid height and weight' : `${measurementBmi(answers)} kg/m²`}</strong></p>
+                  </>}
                   {section ===
                     "Anthropometric and cardiovascular measurements" && (
                     <p>
@@ -349,14 +432,14 @@ export function Assessment27Page() {
                           <label htmlFor={id}>
                             {q.sharedPrompt && <span className="pintig-sr-only">{q.sharedPrompt} </span>}
                             {q.context && <span className="question-context">{q.context} &mdash; </span>}
-                            {q.text}
+                            {requiredLabel(q.text, !q.optional)}
                             {q.optional && <span className="question-unit"> (optional)</span>}
                             {q.unit && (
                               <span className="question-unit"> ({q.unit})</span>
                             )}
                           </label>
                           {/^ipaq\d+$/.test(q.id) && IPAQ_DAYS.includes(Number(q.id.slice(4))) ? (
-                            <select id={id} value={answers[q.id] ?? ""} aria-invalid={!!problem} aria-describedby={id + "-source"} onChange={e => update(q.id, e.target.value)}>
+                            <select id={id} value={answers[q.id] ?? ""} aria-invalid={!!problem} aria-required={!q.optional || undefined} aria-describedby={id + "-source"} onChange={e => update(q.id, e.target.value)}>
                               <option value="">Select days</option>
                               {Array.from({ length: 8 }, (_, days) => <option key={days} value={days}>{days === 0 ? "0 days (none)" : days + (days === 1 ? " day" : " days")}</option>)}
                             </select>
@@ -367,6 +450,7 @@ export function Assessment27Page() {
                               value={answers[q.id] ?? ""}
                               onChange={(e) => update(q.id, e.target.value)}
                               aria-invalid={!!problem}
+                              aria-required={!q.optional || undefined}
                               aria-describedby={id + "-source"}
                             >
                               <option value="">Choose an answer</option>
@@ -384,6 +468,7 @@ export function Assessment27Page() {
                               value={answers[q.id] ?? ""}
                               onChange={(e) => update(q.id, e.target.value)}
                               aria-invalid={!!problem}
+                              aria-required={!q.optional || undefined}
                               aria-describedby={id + "-source"}
                             />
                           ) : (
@@ -416,6 +501,7 @@ export function Assessment27Page() {
                                 update(q.id, cleaned);
                               }}
                               aria-invalid={!!problem || !!numericProblem}
+                              aria-required={!q.optional || undefined}
                               aria-describedby={`${id}-source ${id}-error`}
                             />
                           )}
@@ -571,14 +657,21 @@ export function Assessment27Page() {
             )}
             {finalStep && result && (
               <section
-                className="intake27-section"
+                className="review-card"
                 aria-label="Response review"
               >
-                <h2>Response review</h2>
-                <p>
-                  {result.incomplete.length} applicable fields unanswered. These
-                  can be retained as missing in the saved record.
-                </p>
+                <header className="review-card-header">
+                  <h2>Response review</h2>
+                  <p>Review the completion status and key notes before proceeding.</p>
+                </header>
+                <div className="review-card-columns">
+                  <div>
+                    <h3>Assessment summary</h3>
+                    <div className="review-summary">
+                      <p className="review-completion">{result.incomplete.length === 0 && result.issues.length === 0 && measurementBmi(answers) !== null ? 'All required applicable fields are complete' : 'Review incomplete or invalid responses before calculating'}</p>
+                      <p>Applicable unanswered fields: <strong>{result.incomplete.length + ['illustrativeHeight', 'illustrativeWeight'].filter(key => !answers[key]?.trim()).length}</strong></p>
+                      <p>Unanswered fields can be saved as missing values.</p>
+                    </div>
                 {result.issues.length > 0 && (
                   <div role="alert">
                     <p>Resolve these inconsistencies before saving:</p>
@@ -591,14 +684,16 @@ export function Assessment27Page() {
                     </ul>
                   </div>
                 )}
-                <p>
-                  Overlapping passive-smoking periods cannot be combined
-                  reliably from the supplied questionnaire alone. Sleep is
-                  recorded per typical day, not specifically per night.
-                </p>
+                  </div>
+                  <div className="review-notes">
+                    <h3>Important notes</h3>
+                    <p>Passive-smoking exposure periods may overlap and are not automatically combined.</p>
+                    <p>Sleep duration is recorded as typical hours per day.</p>
+                  </div>
+                </div>
               </section>
             )}
-            <div className="actions assessment-pagination">
+            {!finalStep && <div className="actions assessment-pagination">
               <button
                 type="button"
                 className="btn"
@@ -622,21 +717,55 @@ export function Assessment27Page() {
                 </button>
               ) : (
                 <button type="button" className="btn primary" onClick={saveResponses}>
-                  Save questionnaire responses
+                  Save Questionnaire Responses
                 </button>
               )}
-            </div>
+            </div>}
+            {finalStep && <section className="review-card" aria-label="Illustrative assessment review">
+              <header className="review-card-header">
+                <h2>Assessment actions</h2>
+                <p>Save your responses, calculate risk, or manage this assessment.</p>
+              </header>
+              <div className="review-actions-body">
+              {illustrativeError && <p role="alert" className="field-error">{illustrativeError}</p>}
+              <div className="review-action-row">
+                <div className="review-action-group">
+                  <button type="button" className="btn primary" onClick={calculateIllustrative}>Calculate Risk</button>
+                  <button type="button" className="btn review-secondary" onClick={saveResponses}>Save Questionnaire Responses</button>
+                </div>
+                <div className="review-action-group">
+                  <button type="button" className="btn" onClick={() => { setStepIndex(Math.max(0, stepIndex - 1)); setActivityIndex(0); announceNavigation(); }}>Back</button>
+                  {b("Clear Assessment", "resetAssessment")}
+                </div>
+              </div>
+            <details className="review-research">
+            <summary>Optional research estimate</summary>
             <div className="actions">
               <button
                 type="button"
                 className="btn"
-                disabled
-                title="A compatible validated model is required"
+                onClick={calculateResearchEstimate}
+                disabled={researchEstimatePending || !finalStep}
+                title="Available only after questionnaire review; this is a research-only proxy estimate."
               >
-                Calculate risk
+                {researchEstimatePending ? "Calculating…" : "Calculate research estimate"}
               </button>
-              {b("Clear assessment", "resetAssessment")}
             </div>
+            {finalStep && (
+              <div className="model-availability research-estimate" role="status" aria-live="polite">
+                <strong>Research-only model output</strong>
+                {researchEstimate === null ? (
+                  <p>This optional calculation uses the local questionnaire-aligned competing-risk RSF experiment. It does not provide a clinical risk category or diagnosis.</p>
+                ) : (
+                  <p>Estimated 10-year recorded-CVD proxy probability: <strong>{(researchEstimate * 100).toFixed(1)}%</strong>. This is an experimental proxy estimate, not the intended major-CVD risk outcome.</p>
+                )}
+                {researchEstimateError && <p className="field-error">{researchEstimateError}</p>}
+              </div>
+            )}
+            </details>
+              </div>
+            </section>}
+            {!finalStep && <div className="actions">{b("Clear Assessment", "resetAssessment")}</div>}
           </fieldset>
         </form>
       </section>

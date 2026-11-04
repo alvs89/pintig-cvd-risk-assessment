@@ -193,7 +193,7 @@ test("existing live and historical assessments omit unavailable CIF panels", asy
   await expect(page.locator(".cif-svg")).toHaveCount(0);
   await expect(page.locator(".cif-panel")).toHaveCount(0);
   await page
-    .getByRole("button", { name: "Save assessment", exact: true })
+    .getByRole("button", { name: "Save Assessment", exact: true })
     .click();
   await expect(
     page.getByText("Saved assessment", { exact: true }),

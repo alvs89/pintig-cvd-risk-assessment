@@ -86,7 +86,7 @@ test("worker registers, edits, assesses and reviews an immutable saved snapshot"
     .click();
   await expect(page.locator("#sbp")).toHaveValue("132");
   await page
-    .getByRole("button", { name: "Clear assessment", exact: true })
+    .getByRole("button", { name: "Clear Assessment", exact: true })
     .click();
   await expect(page.getByRole("alertdialog")).toBeVisible();
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
@@ -103,7 +103,7 @@ test("worker registers, edits, assesses and reviews an immutable saved snapshot"
     ),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Save assessment", exact: true })
+    .getByRole("button", { name: "Save Assessment", exact: true })
     .click();
   await expect(
     page.getByText("Saved assessment", { exact: true }),
@@ -232,7 +232,7 @@ test("core input mode, eligibility, invalid pressure and clear confirmation", as
   ).toBeVisible();
   await nav(page, "New Risk Assessment");
   await page
-    .getByRole("button", { name: "Clear assessment", exact: true })
+    .getByRole("button", { name: "Clear Assessment", exact: true })
     .click();
   await page.locator("#pintigConfirmAction").click();
   await expect(page.locator("#sbp")).toHaveValue("");
