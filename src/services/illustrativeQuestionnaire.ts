@@ -1,4 +1,4 @@
-import { BEVERAGES, derive27, type Answers27 } from './assessment27';
+import { BEVERAGES, QUESTIONS27, derive27, type Answers27 } from './assessment27';
 import { educationCategory } from './featureProtocolV1';
 import { simulate } from './prediction';
 import { generateGuidance } from './guidance';
@@ -14,6 +14,37 @@ export function measurementBmi(answers: Answers27): number | null {
       !Number.isFinite(height) || !Number.isFinite(weight) || height < 110 || height > 220 || weight < 25 || weight > 250) return null;
   const bmi = Number((weight / (height / 100) ** 2).toFixed(1));
   return bmi >= 12 && bmi <= 65 ? bmi : null;
+}
+
+/** Current questionnaire guidance; no probability or saved snapshot is consulted. */
+export function questionnaireGuidance(answers: Answers27, patient: Patient) {
+  const derived = derive27(answers, patient);
+  // Avoid presenting guidance from invalid or contradictory current answers.
+  if (derived.issues.length) return [];
+  const f = derived.features;
+  let drinks = '';
+  if (['Never used alcohol products', 'Formerly used alcohol products'].includes(answers.alcoholHistory)) drinks = '0';
+  else if (f.alcohol_ethanol_g_week != null) {
+    const factors: Record<string, number> = { Daily: 7, Weekly: 1, Monthly: 12 / 52 };
+    drinks = BEVERAGES.reduce((sum, [id]) => sum + (answers['alc_' + id] === 'Selected' ? Number(answers['alc_' + id + '_quantity']) * factors[answers['alc_' + id + '_frequency']] : 0), 0).toFixed(1);
+  }
+  const rules = generateGuidance({
+    sbp: f.sbp_mmhg == null ? '' : String(f.sbp_mmhg),
+    dbp: f.dbp_mmhg == null ? '' : String(f.dbp_mmhg),
+    bmi: measurementBmi(answers)?.toString() ?? '',
+    currentSmoking: f.smoking_status === 'Current' ? 'Yes' : '',
+    bpMeds: answers.bpMed === '1 = yes, now' ? 'Yes' : '',
+    mode: 'extended', alcoholDrinks: drinks,
+    activityMinutes: f.activity_min_week == null ? '' : String(Math.round(Number(f.activity_min_week))),
+    family: f.family_history_cvd === 1 ? 'Yes' : '',
+    fruitVeg: '', saltFrequency: '', processedFood: '',
+  }, patient);
+  // Missing answers are not evidence that no risk-factor thresholds apply.
+  return rules.filter(rule => {
+    if (rule.id.startsWith('BP-') && (f.sbp_mmhg == null || f.dbp_mmhg == null)) return false;
+    if (rule.id === 'PREVENTION' && (derived.incomplete.length || measurementBmi(answers) === null)) return false;
+    return true;
+  });
 }
 
 /** Explicit projection into ILLUSTRATIVE-0.2; never passes the RSF schema. */
@@ -32,6 +63,10 @@ export function illustrativeQuestionnaire(answers: Answers27, patient: Patient, 
   if (!['Never', 'Former', 'Current'].includes(String(smoking))) throw new Error('Confirm current smoking status.');
   const medication = ({ '0 = no': 'No', '1 = yes, now': 'Yes', '2 = yes, not now': 'Past' } as Record<string,string>)[answers.bpMed];
   if (!medication) throw new Error('Confirm current hypertension-medication status.');
+  if (derived.incomplete.length) {
+    const question = QUESTIONS27.find(q => q.id === derived.incomplete[0]);
+    throw new Error(`Complete all required applicable questions before calculating. ${derived.incomplete.length} unanswered. First unanswered question: ${question?.text ?? 'Review your responses.'}`);
+  }
   let drinks = '';
   if (['Never used alcohol products', 'Formerly used alcohol products'].includes(answers.alcoholHistory)) drinks = '0';
   else if (f.alcohol_ethanol_g_week != null) {
@@ -51,5 +86,5 @@ export function illustrativeQuestionnaire(answers: Answers27, patient: Patient, 
     questionnaireMapping: 'illustrative-questionnaire-v1',
   };
   const prediction = simulate(x, patient);
-  return { ...prediction, inputs: x, pid: patient.id, ageAtAssessment: age(patient.dob), band: band(prediction.risk), saved: false, preAssessmentVersion: SCREENING_VERSION, guidanceRules: generateGuidance(x, patient) };
+  return { ...prediction, inputs: x, pid: patient.id, ageAtAssessment: age(patient.dob), band: band(prediction.risk), saved: false, preAssessmentVersion: SCREENING_VERSION, guidanceRules: questionnaireGuidance(answers, patient) };
 }

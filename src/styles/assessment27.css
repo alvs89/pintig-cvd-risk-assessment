@@ -263,6 +263,23 @@
 .assessment27 .review-notes p { background: #f2f6f9; padding: 16px 18px; margin: 0 0 14px; border-radius: 12px; }
 .assessment27 .review-notes p:last-child { margin-bottom: 0; }
 .assessment27 .review-actions-body { padding: 26px; }
+.assessment27 .assessment-correction-message { margin: 0 0 20px; line-height: 1.6; }
+.assessment27 .assessment-correction-link {
+  display: inline;
+  border: 0;
+  border-radius: 3px;
+  padding: 4px 2px;
+  background: transparent;
+  box-shadow: none;
+  color: #006b73;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.assessment27 .assessment-correction-link:hover { color: #004b52; }
+.assessment27 .assessment-correction-link:focus-visible { outline: 2px solid #006b73; outline-offset: 3px; }
 .assessment27 .review-action-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
 .assessment27 .review-action-group { display: flex; flex-wrap: wrap; gap: 12px; }
 .assessment27 .review-secondary { background: #e3f3f3; color: #07666c; border-color: #e3f3f3; }
@@ -282,4 +299,32 @@
   .assessment27 .review-action-group { width: 100%; }
   .assessment27 .review-action-group .btn { flex: 1 1 180px; white-space: normal; }
   .assessment27 .review-card-header, .assessment27 .review-card-columns, .assessment27 .review-actions-body { padding: 20px; }
+}
+.assessment27 .assessment-section-picker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 410px);
+  margin-top: 16px;
+}
+.assessment27 .assessment-section-picker label { flex: 0 0 auto; margin: 0; font-weight: 650; color: #17324b; }
+.assessment27 .assessment-section-picker select {
+  flex: 0 1 280px;
+  min-width: 0;
+  width: 280px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #cddce5;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #17324b;
+  font: inherit;
+  cursor: pointer;
+}
+.assessment27 .assessment-section-picker select:hover { border-color: #087f80; }
+.assessment27 .assessment-section-picker select:focus-visible {
+  border-color: #087f80;
+  outline: 2px solid #087f80;
+  outline-offset: 2px;
 }

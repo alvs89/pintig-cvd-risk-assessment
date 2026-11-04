@@ -1,0 +1,34 @@
+import { test, expect } from '@playwright/test';
+import { completePreAssessment } from './preAssessmentHelpers';
+
+for (const width of [1440, 390]) test(`section shortcuts preserve responses and recover from errors at ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await page.goto('/');
+  await page.locator('[data-act="workerDemo"]').click();
+  await page.locator('#loginForm button[type="submit"]').click();
+  await page.locator('[data-act="nav:New Risk Assessment"]').first().click();
+  await page.locator('#pid').selectOption('1');
+  await completePreAssessment(page);
+  const shortcut = page.getByLabel('Go to section', { exact: true });
+  const labelBox = await page.locator('label[for="assessment-section-shortcut"]').boundingBox();
+  const selectBox = await shortcut.boundingBox();
+  expect(Math.abs((labelBox!.y + labelBox!.height / 2) - (selectBox!.y + selectBox!.height / 2))).toBeLessThan(2);
+  expect(selectBox!.height).toBeGreaterThanOrEqual(44);
+  expect(selectBox!.width).toBeLessThanOrEqual(300);
+  await shortcut.selectOption('1');
+  await page.locator('#q27-sbp1').fill('');
+  await page.locator('#q27-sbp2').fill('');
+  await shortcut.selectOption({ label: 'Review and save' });
+  await page.getByRole('button', { name: 'Calculate Risk', exact: true }).click();
+  const correction = page.locator('.assessment-correction-message[role="alert"]');
+  await expect(correction).toContainText('Complete 2 unanswered required questions');
+  await expect(correction.getByRole('button', { name: 'Systolic #2', exact: true })).toBeVisible();
+  await correction.getByRole('button', { name: 'Systolic #1', exact: true }).click();
+  await expect(page.locator('#q27-sbp1')).toBeVisible();
+  await expect(page.locator('#q27-sbp1')).toHaveValue('');
+  await page.locator('#q27-sbp1').fill('125');
+  await shortcut.selectOption({ label: 'Review and save' });
+  await shortcut.selectOption('1');
+  await expect(page.locator('#q27-sbp1')).toHaveValue('125');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});

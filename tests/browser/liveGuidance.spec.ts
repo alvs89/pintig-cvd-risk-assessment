@@ -1,0 +1,31 @@
+import { test, expect } from '@playwright/test';
+import { completePreAssessment } from './preAssessmentHelpers';
+
+test('guidance cards and priorities refresh from current measurement edits', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('[data-act="workerDemo"]').click();
+  await page.locator('#loginForm button[type="submit"]').click();
+  await page.locator('[data-act="nav:New Risk Assessment"]').first().click();
+  await page.locator('#pid').selectOption('2');
+  await completePreAssessment(page);
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  const panel = page.locator('details[aria-label="Current educational guidance"]');
+  await panel.locator('summary').click();
+  await expect(panel).toContainText('Recorded blood pressure 142/86 mmHg');
+  const bpCard = panel.locator('.guidance-item').filter({ hasText: /Recorded blood pressure \d+\// });
+  await expect(bpCard).toContainText('Follow-up priority');
+  await page.locator('#q27-sbp1').fill('132');
+  await page.locator('#q27-sbp2').fill('132');
+  await page.locator('#q27-dbp1').fill('78');
+  await page.locator('#q27-dbp2').fill('78');
+  await expect(bpCard).toContainText('Recorded blood pressure 132/78 mmHg');
+  await expect(bpCard).not.toContainText('Follow-up priority');
+  await expect(panel).not.toContainText('Arrange blood pressure review');
+  await page.locator('#q27-sbp1').fill('120');
+  await page.locator('#q27-sbp2').fill('120');
+  await expect(bpCard).toHaveCount(0);
+  await page.locator('#q27-sbp1').fill('185');
+  await page.locator('#q27-sbp2').fill('185');
+  await expect(bpCard).toContainText('Repeat and escalate markedly elevated blood pressure');
+  await expect(bpCard).toContainText('Follow-up priority');
+});

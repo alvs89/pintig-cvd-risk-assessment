@@ -1,7 +1,7 @@
 import { FocusedAssessment27 } from "../components/FocusedAssessment27";
 import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { PreAssessmentCheck } from "../components/PreAssessmentCheck";
-import { b, head, patientIdent, requiredLabel } from "../components/shared";
+import { b, head, patientIdent, requiredLabel, guidanceHtml } from "../components/shared";
 import {
   FEATURE_NAMES27,
   QUESTIONS27,
@@ -21,7 +21,7 @@ import { numericError } from "../utils/numericValidation";
 import { questionnaireOptionLabel } from "../utils/questionnaireOptionLabel";
 import { educationCategory } from "../services/featureProtocolV1";
 import { INCOME_OPTIONS } from "../services/sesProtocol";
-import { illustrativeQuestionnaire, measurementBmi } from "../services/illustrativeQuestionnaire";
+import { illustrativeQuestionnaire, measurementBmi, questionnaireGuidance } from "../services/illustrativeQuestionnaire";
 import "../styles/assessment27.css";
 
 export function Assessment27Page() {
@@ -48,10 +48,24 @@ export function Assessment27Page() {
   const answers = S.draft?.schema === INTAKE27_SCHEMA ? S.draft : {};
   const unlocked = !!p && !!screeningForPatient(S.preAssessment, p);
   const result = p ? derive27(answers, p) : null;
+  const liveGuidance = p ? questionnaireGuidance(answers, p) : [];
   const sections = [...new Set(QUESTIONS27.map((q) => q.section))];
   const steps = assessment27Steps(sections);
   const finalStep = stepIndex === steps.length;
   const currentStep = steps[Math.min(stepIndex, steps.length - 1)];
+  const goToStep = (index: number) => {
+    setStepIndex(index);
+    setActivityIndex(0);
+    setDietIndex(0);
+    announceNavigation();
+  };
+  const errorQuestionId = illustrativeError?.includes('blood pressure measurements') ? 'sbp1'
+    : illustrativeError?.includes('height and weight') ? 'sbp1'
+    : illustrativeError?.includes('smoking status') ? 'smokeEver'
+    : illustrativeError?.includes('medication status') ? 'bpMed'
+    : QUESTIONS27.find(q => result?.issues[0]?.startsWith(q.id + ':'))?.id ?? result?.incomplete[0];
+  const errorSection = QUESTIONS27.find(q => q.id === errorQuestionId)?.section;
+  const errorStep = steps.findIndex(step => !!errorSection && step.sections.includes(errorSection));
   const updateMany = (values: Record<string, string>) => {
     setIllustrativeError(null);
     S.draft = {
@@ -71,6 +85,18 @@ export function Assessment27Page() {
   const dietQuestions = QUESTIONS27.filter(q => q.section === "Dietary questionnaire");
   const dietPageSize = 8;
   const dietPages = Math.ceil(dietQuestions.length / dietPageSize);
+  const missingQuestions = QUESTIONS27.filter(q => result?.incomplete.includes(q.id));
+  const missingMeasurements = ['illustrativeHeight', 'illustrativeWeight'].filter(key => !answers[key]?.trim());
+  const missingCount = missingQuestions.length + missingMeasurements.length;
+  const reviewQuestion = (id: string) => {
+    const question = QUESTIONS27.find(q => q.id === id);
+    const section = question?.section ?? QUESTIONS27.find(q => q.id === 'sbp1')!.section;
+    const index = steps.findIndex(step => step.sections.includes(section));
+    if (index < 0) return;
+    goToStep(index);
+    if (section === 'Dietary questionnaire') setDietIndex(Math.floor(dietQuestions.findIndex(q => q.id === id) / dietPageSize));
+    if (steps[index].title === 'Physical activity and sitting') setActivityIndex(steps[index].sections.indexOf(section));
+  };
   const visibleSections = isActivityStep ? [currentStep.sections[activityIndex]] : currentStep.sections;
   const changePatient = (value: string) => {
     const change = () => {
@@ -271,6 +297,13 @@ export function Assessment27Page() {
                 Move between steps at any time. Unanswered items can be saved as
                 missing; invalid numeric entries must be corrected.
               </p>
+              <div className="assessment-section-picker field">
+              <label htmlFor="assessment-section-shortcut">Go to section</label>
+              <select id="assessment-section-shortcut" value={stepIndex} onChange={event => goToStep(Number(event.target.value))}>
+                {steps.map((step, index) => <option key={step.title} value={index}>{step.title}</option>)}
+                <option value={steps.length}>Review and save</option>
+              </select>
+              </div>
             </div>
             {isActivityStep && (
               <nav className="activity-navigation" aria-label="Physical activity sections">
@@ -568,14 +601,13 @@ export function Assessment27Page() {
                 className="intake27-section"
                 aria-label="Feature calculation review"
               >
-                <h2>Calculated feature review</h2>
+                <h2>Assessment overview</h2>
                 <p>
-                  Values are retained with their source responses. A missing
-                  value means the required source response or provenance is
-                  incomplete. Values come from the recorded profile, answers, or
-                  documented calculations; no experimental dataset values are
-                  populated here.
+                  Review your responses and completion status before calculating. Your original answers are retained with the assessment.
                 </p>
+                <details className="calculated-inputs">
+                <summary>View calculated inputs</summary>
+                <p>These values summarize your questionnaire responses and measurements. Not all values are used by the current illustrative risk calculation. Unavailable values may reflect missing information or an unfinished scoring method.</p>
                 {result?.protocol && (
                   <dl className="intake27-derived">
                     <div>
@@ -584,7 +616,7 @@ export function Assessment27Page() {
                         {result.protocol.features.ses_index_0_100 ??
                           "Unavailable"}{" "}
                         / 100
-                        <small className="ses-availability">{result.protocol.ses.reason}</small>
+                        <small className="ses-availability">A validated reference-based scoring method is not yet available. Education and income answers are retained; completing them does not yet produce an SES score.</small>
                       </dd>
                     </div>
                     <div>
@@ -613,8 +645,8 @@ export function Assessment27Page() {
                         {result.protocol.features.urban_rural_residence == null
                           ? "Unavailable: add classification and source"
                           : result.protocol.features.urban_rural_residence === 1
-                            ? "Urban (0/1: 1)"
-                            : "Rural (0/1: 0)"}
+                            ? "Urban"
+                            : "Rural"}
                       </dd>
                     </div>
                   </dl>
@@ -653,6 +685,7 @@ export function Assessment27Page() {
                     </dl>
                   </details>
                 )}
+                </details>
               </section>
             )}
             {finalStep && result && (
@@ -727,7 +760,26 @@ export function Assessment27Page() {
                 <p>Save your responses, calculate risk, or manage this assessment.</p>
               </header>
               <div className="review-actions-body">
-              {illustrativeError && <p role="alert" className="field-error">{illustrativeError}</p>}
+              {illustrativeError && missingCount > 0 ? <div role="alert" className="assessment-correction-message">
+                <p className="field-error">Complete {missingCount} unanswered required {missingCount === 1 ? 'question' : 'questions'} before calculating. Select a question below to review it.</p>
+                {sections.map(section => {
+                  const questions = missingQuestions.filter(q => q.section === section);
+                  const measurements = section === QUESTIONS27.find(q => q.id === 'sbp1')?.section ? missingMeasurements : [];
+                  if (!questions.length && !measurements.length) return null;
+                  return <div key={section}><strong>{section}</strong><ul>
+                    {measurements.map(id => <li key={id}><button type="button" className="assessment-correction-link" onClick={() => reviewQuestion(id)}>{id === 'illustrativeHeight' ? 'Height (cm)' : 'Weight (kg)'}</button></li>)}
+                    {questions.map(q => <li key={q.id}><button type="button" className="assessment-correction-link" onClick={() => reviewQuestion(q.id)}>{q.text}</button></li>)}
+                  </ul></div>;
+                })}
+                {!!result?.issues.length && <p className="field-error">Some entered responses also need correction. Review the validation messages in their sections.</p>}
+              </div> : illustrativeError && <p role="alert" className="field-error assessment-correction-message">
+                {illustrativeError}{" "}
+                {errorStep >= 0 && <button type="button" className="assessment-correction-link" onClick={() => {
+                  goToStep(errorStep);
+                  if (errorSection === 'Dietary questionnaire') setDietIndex(Math.floor(dietQuestions.findIndex(q => q.id === errorQuestionId) / dietPageSize));
+                  if (steps[errorStep].title === 'Physical activity and sitting') setActivityIndex(steps[errorStep].sections.indexOf(errorSection!));
+                }}>Review {steps[errorStep].title}</button>}
+              </p>}
               <div className="review-action-row">
                 <div className="review-action-group">
                   <button type="button" className="btn primary" onClick={calculateIllustrative}>Calculate Risk</button>
@@ -766,6 +818,15 @@ export function Assessment27Page() {
               </div>
             </section>}
             {!finalStep && <div className="actions">{b("Clear Assessment", "resetAssessment")}</div>}
+            <details className="intake27-section" aria-label="Current educational guidance">
+              <summary>General Educational Guidance</summary>
+              <p>Based on your current responses. Updates automatically as answers change.</p>
+              {result?.issues.length ? <p role="status">Correct invalid or inconsistent responses to update guidance.</p> : <>
+                {guidanceHtml(liveGuidance)}
+                {!liveGuidance.length && <p role="status">No applicable guidance from the available responses. Complete the assessment for a fuller review.</p>}
+              </>}
+              <p className="tiny muted">Follow-up priority identifies a recorded factor needing attention under the existing guidance rules; it is separate from the risk category.</p>
+            </details>
           </fieldset>
         </form>
       </section>

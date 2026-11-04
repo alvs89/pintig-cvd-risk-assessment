@@ -16,6 +16,13 @@ for (const width of [1440, 820, 390]) test(`questionnaire opens original illustr
   for (let i = 0; i < 25 && await page.getByRole('button', { name: 'Continue', exact: true }).count(); i++)
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await expect(page.locator('#illustrative-bmi')).toHaveCount(0);
+  const calculated = page.locator('details.calculated-inputs');
+  await expect(calculated).not.toHaveAttribute('open', '');
+  await expect(calculated.getByText('Education and income SES index', { exact: true })).toBeHidden();
+  await calculated.locator(':scope > summary').click();
+  await expect(calculated).toContainText('Not all values are used by the current illustrative risk calculation');
+  await expect(calculated).toContainText('completing them does not yet produce an SES score');
+  await calculated.locator(':scope > summary').click();
   const review = page.getByRole('region', { name: 'Response review', exact: true });
   await expect(review).toContainText('All required applicable fields are complete');
   await expect(page.getByRole('heading', { name: 'Assessment actions', exact: true })).toBeVisible();
