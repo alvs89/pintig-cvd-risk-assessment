@@ -6,11 +6,12 @@ import {
   type ScreeningAttestation,
 } from "../services/preAssessmentRules.mjs";
 import {
-  RESEARCH_CIG_ENDPOINT,
-  researchInputsFor,
-  verifyResearchCif,
-  type ResearchCif,
-} from "../services/researchCig";
+  RESEARCH_CIG27_ENDPOINT,
+  research27Compatibility,
+  verifyResearchCif27,
+  firstThresholdCrossing,
+} from "../services/researchCig27";
+import type { ResearchCif } from "../services/researchCig";
 
 interface Props {
   patient: Patient;
@@ -38,13 +39,15 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
     typeof window !== "undefined" &&
     (window.location.hostname === "localhost" ||
       window.location.hostname === "127.0.0.1");
-  const observed = validScreeningAttestation(screening, result.ageAtAssessment)
-    ? researchInputsFor(patient, result)
-    : null;
+  const compatibility = validScreeningAttestation(screening, result.ageAtAssessment)
+    ? research27Compatibility(patient, result)
+    : { request: null, reasons: ['Complete the eligibility and safety check before requesting a research graph.'] };
+  const observed = compatibility.request;
   const signature = JSON.stringify([patient.id, observed, screening]);
   const request = useMemo(() => observed, [signature]);
-  const remote: RemoteState =
-    response?.assessment === result &&
+  const remote: RemoteState = !observed
+    ? { kind: 'unavailable', reason: compatibility.reasons.join(' ') }
+    : response?.assessment === result &&
     response.key === signature &&
     response.version === version
       ? response.state
@@ -70,20 +73,16 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
       controller.abort();
     }, 50000);
     update({ kind: "loading" });
-    fetch(RESEARCH_CIG_ENDPOINT, {
+    fetch(RESEARCH_CIG27_ENDPOINT, {
       method: "POST",
       mode: "cors",
       cache: "no-store",
       signal: controller.signal,
       headers: {
         "Content-Type": "application/json",
-        "X-Pintig-Research": "fictional-local-only",
+        "X-Pintig-Research": "questionnaire-27-cig-research-only",
       },
-      body: JSON.stringify({
-        fictionalOnly: true,
-        predictors: request,
-        screening,
-      }),
+      body: JSON.stringify(request),
     })
       .then(async (response) => {
         if (!response.ok) throw Error("Local research model unavailable");
@@ -91,7 +90,7 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
       })
       .then((json: unknown) => {
         if (controller.signal.aborted) return;
-        const verified = verifyResearchCif(json);
+        const verified = verifyResearchCif27(json);
         if (!verified) throw Error("Research model response failed CIF checks");
         update({ kind: "ready", data: verified });
       })
@@ -105,17 +104,15 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
     };
   }, [localDevelopment, request, version, result, signature]);
 
-  if (!localDevelopment || !observed) return null;
+  if (!localDevelopment) return null;
 
   const chart = remote.kind === "ready" ? remote.data : null;
-  const reaching = chart?.annual.find(
-    (point) => point.probability >= reference,
-  );
+  const reaching = chart ? firstThresholdCrossing(chart, reference) : null;
   const current = chart?.annual[year - 1];
   const ceiling = chart
     ? Math.min(
         1,
-        Math.max(0.025, Math.ceil((chart.risk * 1.18) / 0.025) * 0.025),
+        Math.max(0.225, Math.ceil((chart.risk * 1.18) / 0.025) * 0.025),
       )
     : 0.2;
   const x = (time: number) => 47 + time * 64;
@@ -150,7 +147,7 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
           className="btn"
           type="button"
           onClick={() => setVersion((v) => v + 1)}
-          disabled={remote.kind === "loading"}
+          disabled={!observed || remote.kind === "loading"}
         >
           Refresh research CIG
         </button>
@@ -169,7 +166,7 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
       {remote.kind === "unavailable" && (
         <div className="research-cig-empty" role="status">
           <strong>Research graph unavailable</strong>
-          <p>{remote.reason}</p>
+          {!observed ? <ul>{compatibility.reasons.map(reason => <li key={reason}>{reason}</li>)}</ul> : <p>{remote.reason}</p>}
         </div>
       )}
       {chart && (
@@ -212,9 +209,9 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
             aria-live="polite"
           >
             {reaching
-              ? "Selected reference first reached by the annual Year " +
-                reaching.year +
-                "."
+              ? "Selected reference first reached at model day " +
+                (reaching.year * 365.25).toFixed(1) +
+                " (Year " + reaching.year.toFixed(2) + ")."
               : "Selected reference not reached by Year 10."}{" "}
             This is a model-curve reference, not the predicted date of a
             cardiovascular event.
@@ -267,15 +264,18 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
                 </text>
               ))}
               <path d={curve} className="research-cif-curve" />
-              {reaching && (
+              {[0.05, 0.1, 0.2].map(threshold => (
                 <line
+                  key={threshold}
+                  aria-label={`${threshold * 100}% probability reference`}
                   x1="47"
                   x2="687"
-                  y1={y(reference)}
-                  y2={y(reference)}
+                  y1={y(threshold)}
+                  y2={y(threshold)}
+                  opacity={threshold === reference ? 1 : 0.4}
                   className="research-reference-line"
                 />
-              )}
+              ))}
               <line
                 x1={x(year)}
                 x2={x(year)}
@@ -326,7 +326,7 @@ export function ResearchCigPanel({ patient, result, screening }: Props) {
         </>
       )}
       <p className="research-cig-footer">
-        Provisional Framingham competing-risk Random Survival Forest. For
+        Provisional 27-predictor Framingham competing-risk Random Survival Forest. For
         fictional assessments only.
       </p>
     </section>

@@ -174,7 +174,7 @@ export function Assessment27Page() {
       const output = illustrativeQuestionnaire(answers, p, S.preAssessment);
       const questionnaire = createIntake27(S.user, p, S.preAssessment, answers);
       intakes27.push({ ...questionnaire, id: intakes27.length + 1 });
-      S.result = output;
+      S.result = { ...output, researchQuestionnaire: { schema: INTAKE27_SCHEMA, age: output.ageAtAssessment, answers: { ...answers } } };
       S.assessmentSavedNotice = 0;
       S.message = '';
       log('Calculated an illustrative cardiovascular risk estimate for ' + p.record);

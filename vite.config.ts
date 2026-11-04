@@ -5,6 +5,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      "/research-cig-27": {
+        target: "http://127.0.0.1:8767",
+        changeOrigin: true,
+        configure(proxy) {
+          proxy.on("proxyReq", request => request.setHeader("Origin", "http://127.0.0.1:5173"));
+        },
+      },
       "/experimental-proxy-risk": {
         target: "http://127.0.0.1:8766",
         changeOrigin: true,

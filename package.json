@@ -12,6 +12,7 @@
     "check": "tsc --noEmit && npm test",
     "start:local": "npm run build && node scripts/serve.mjs",
     "start:experimental-proxy-model": "node scripts/experimental-proxy-rsf-server.mjs",
+    "start:research-cig27": "node scripts/research-cig27/server.mjs",
     "test:e2e": "playwright test",
     "verify:production": "node scripts/verify-production.mjs",
     "format": "prettier --write src tests scripts/serve.mjs vite.config.ts playwright.config.ts"

@@ -53,6 +53,7 @@ export interface Prediction {
   cif?: CumulativeIncidenceOutput;
 }
 export interface Result extends Prediction {
+  researchQuestionnaire?: { schema: string; age: number; answers: Record<string, string> };
   preAssessmentVersion?: string;
   pid: number;
   ageAtAssessment: number;
